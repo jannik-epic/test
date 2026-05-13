@@ -67,6 +67,19 @@ class CommandError(RuntimeError):
     pass
 
 
+def normalize_base64(value: Optional[str]) -> Optional[str]:
+    if not value:
+        return None
+    raw = value.strip()
+    if "," in raw:
+        raw = raw.split(",", 1)[1]
+    if not raw:
+        return None
+    # Validate early so the workflow fails before creating the app object.
+    base64.b64decode(raw, validate=True)
+    return raw
+
+
 def run(cmd: Iterable[str], *, cwd: Optional[Path] = None, check: bool = True) -> subprocess.CompletedProcess:
     LOGGER.debug("Running command: %s", " ".join(cmd))
     result = subprocess.run(
@@ -574,6 +587,18 @@ class IntuneClient:
         icon_payload = params.get("largeIcon")
         if icon_payload:
             payload["largeIcon"] = icon_payload
+        pre_install_script = params.get("preInstallScript")
+        if pre_install_script:
+            payload["preInstallScript"] = {
+                "@odata.type": "#microsoft.graph.macOSAppScript",
+                "scriptContent": pre_install_script,
+            }
+        post_install_script = params.get("postInstallScript")
+        if post_install_script:
+            payload["postInstallScript"] = {
+                "@odata.type": "#microsoft.graph.macOSAppScript",
+                "scriptContent": post_install_script,
+            }
         response = self._graph_request("POST", "/deviceAppManagement/mobileApps", data=payload, expected=201)
         app_id = response.get("id")
         if not app_id:
@@ -774,6 +799,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--publisher", default=None, help="Publisher in Intune")
     parser.add_argument("--description", default=None, help="Beschreibung in Intune")
     parser.add_argument("--icon-file", default=None, help="Pfad zu einem PNG/JPG Icon")
+    parser.add_argument("--pre-install-script-b64", default=None, help="Base64-kodiertes Pre-Install-Script")
+    parser.add_argument("--post-install-script-b64", default=None, help="Base64-kodiertes Post-Install-Script")
     parser.add_argument(
         "--skip-upload", action="store_true", help="Nur Paket erstellen, nicht in Intune hochladen"
     )
@@ -897,6 +924,12 @@ def main(argv: list[str]) -> int:
     }
     if icon_payload:
         app_params["largeIcon"] = icon_payload
+    pre_install_script = normalize_base64(args.pre_install_script_b64)
+    if pre_install_script:
+        app_params["preInstallScript"] = pre_install_script
+    post_install_script = normalize_base64(args.post_install_script_b64)
+    if post_install_script:
+        app_params["postInstallScript"] = post_install_script
 
     app_id = client.create_mac_app(
         metadata,
