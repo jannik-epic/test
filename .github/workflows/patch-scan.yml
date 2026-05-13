@@ -16,7 +16,7 @@ jobs:
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Scan upstream versions
         shell: bash
@@ -77,7 +77,7 @@ jobs:
           fs.writeFileSync('partial-' + os + '.json', JSON.stringify({ os, results }));
           NODE
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: scan-${{ matrix.os }}
           path: partial-*.json
@@ -87,7 +87,7 @@ jobs:
     needs: scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: actions/download-artifact@v4
