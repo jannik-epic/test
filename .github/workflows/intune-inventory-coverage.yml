@@ -17,12 +17,12 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Azure Login using OIDC
-        uses: azure/login@v1
+        uses: azure/login@v3
         with:
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           client-id: ${{ env.AZURE_CLIENT_ID }}
