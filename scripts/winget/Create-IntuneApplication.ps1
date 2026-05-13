@@ -1,5 +1,6 @@
 # Create-IntuneApplication.ps1
-# Creates a Win32 application in Microsoft Intune
+# Builds a real .intunewin package from generated Winget scripts and uploads it
+# as a Win32LobApp with content version + file commit through Microsoft Graph.
 
 param(
     [Parameter(Mandatory = $true)]
@@ -27,89 +28,287 @@ param(
     [bool]$UsePSADT = $true,
 
     [Parameter(Mandatory = $false)]
-    [string]$IntuneApiUrl = "https://graph.microsoft.com/v1.0"
+    [string]$IntuneApiUrl = "https://graph.microsoft.com/v1.0",
+
+    [Parameter(Mandatory = $false)]
+    [bool]$DryRun = $false
 )
+
+$ErrorActionPreference = "Stop"
+
+function Set-WorkflowOutput {
+    param([string]$Name, [string]$Value)
+    if ($env:GITHUB_OUTPUT) {
+        Add-Content -Path $env:GITHUB_OUTPUT -Value "$Name=$Value"
+    }
+}
+
+function Invoke-GraphJson {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("GET", "POST", "PATCH")]
+        [string]$Method,
+        [Parameter(Mandatory = $true)]
+        [string]$Uri,
+        [object]$Body = $null,
+        [int]$TimeoutSec = 120
+    )
+
+    $headers = @{
+        Authorization = "Bearer $AccessToken"
+        "Content-Type" = "application/json"
+    }
+    $args = @{
+        Method = $Method
+        Uri = $Uri
+        Headers = $headers
+        TimeoutSec = $TimeoutSec
+    }
+    if ($null -ne $Body) {
+        $args.Body = ($Body | ConvertTo-Json -Depth 20)
+    }
+    Invoke-RestMethod @args
+}
+
+function Ensure-IntuneWinAppUtil {
+    $toolsDir = Join-Path $PWD ".tools"
+    New-Item -ItemType Directory -Force -Path $toolsDir | Out-Null
+    $utilPath = Join-Path $toolsDir "IntuneWinAppUtil.exe"
+    if (-not (Test-Path -LiteralPath $utilPath -PathType Leaf)) {
+        $url = "https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/raw/master/IntuneWinAppUtil.exe"
+        Write-Host "Downloading IntuneWinAppUtil.exe..."
+        Invoke-WebRequest -Uri $url -OutFile $utilPath -UseBasicParsing
+    }
+    $utilPath
+}
+
+function New-WingetPackageSource {
+    $sourceDir = Join-Path $PWD "winget-package-source"
+    if (Test-Path -LiteralPath $sourceDir) {
+        Remove-Item -LiteralPath $sourceDir -Recurse -Force
+    }
+    New-Item -ItemType Directory -Force -Path $sourceDir | Out-Null
+    Copy-Item -LiteralPath "install_script.ps1" -Destination (Join-Path $sourceDir "install_script.ps1") -Force
+    Copy-Item -LiteralPath "uninstall_script.ps1" -Destination (Join-Path $sourceDir "uninstall_script.ps1") -Force
+    Copy-Item -LiteralPath "detection_script.ps1" -Destination (Join-Path $sourceDir "detection_script.ps1") -Force
+    $sourceDir
+}
+
+function New-IntuneWinPackage {
+    param([string]$SourceDir)
+
+    $utilPath = Ensure-IntuneWinAppUtil
+    $outDir = Join-Path $PWD "intunewin-output"
+    if (Test-Path -LiteralPath $outDir) {
+        Remove-Item -LiteralPath $outDir -Recurse -Force
+    }
+    New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+
+    & $utilPath -c $SourceDir -s "install_script.ps1" -o $outDir -q
+    if ($LASTEXITCODE -ne 0) {
+        throw "IntuneWinAppUtil failed with exit code $LASTEXITCODE"
+    }
+    $packagePath = Join-Path $outDir "install_script.intunewin"
+    if (-not (Test-Path -LiteralPath $packagePath -PathType Leaf)) {
+        throw "IntuneWinAppUtil did not produce $packagePath"
+    }
+    $packagePath
+}
+
+function Get-XmlText {
+    param([xml]$Xml, [string]$LocalName)
+    $node = $Xml.SelectSingleNode("//*[local-name()='$LocalName']")
+    if ($node) { return [string]$node.InnerText }
+    $null
+}
+
+function Get-IntuneWinPackageInfo {
+    param([string]$IntuneWinPath)
+
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $extractDir = Join-Path ([IO.Path]::GetTempPath()) ("modern-dev-mgmt-intunewin-" + [Guid]::NewGuid().ToString("N"))
+    New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($IntuneWinPath, $extractDir)
+
+    $detectionXmlPath = Get-ChildItem -LiteralPath $extractDir -Recurse -Filter "Detection.xml" | Select-Object -First 1
+    if (-not $detectionXmlPath) {
+        throw "Detection.xml was not found in $IntuneWinPath"
+    }
+    [xml]$detectionXml = Get-Content -LiteralPath $detectionXmlPath.FullName -Raw
+
+    $encryptedContent = Get-ChildItem -LiteralPath $extractDir -Recurse -File |
+        Where-Object { $_.Name -ieq "IntunePackage.intunewin" } |
+        Select-Object -First 1
+    if (-not $encryptedContent) {
+        $encryptedContent = Get-ChildItem -LiteralPath $extractDir -Recurse -File |
+            Where-Object { $_.FullName -ne $detectionXmlPath.FullName -and $_.Extension -ieq ".intunewin" } |
+            Sort-Object Length -Descending |
+            Select-Object -First 1
+    }
+    if (-not $encryptedContent) {
+        throw "Encrypted Intune content was not found in $IntuneWinPath"
+    }
+
+    $sizeText = Get-XmlText $detectionXml "UnencryptedContentSize"
+    $setupFile = Get-XmlText $detectionXml "SetupFile"
+    if (-not $setupFile) { $setupFile = "install_script.ps1" }
+
+    @{
+        encryptedContentPath = $encryptedContent.FullName
+        encryptedSize = [int64]$encryptedContent.Length
+        unencryptedSize = if ($sizeText) { [int64]$sizeText } else { [int64](Get-Item -LiteralPath $IntuneWinPath).Length }
+        setupFile = $setupFile
+        fileEncryptionInfo = @{
+            encryptionKey = Get-XmlText $detectionXml "EncryptionKey"
+            macKey = Get-XmlText $detectionXml "MacKey"
+            initializationVector = Get-XmlText $detectionXml "InitializationVector"
+            mac = Get-XmlText $detectionXml "Mac"
+            profileIdentifier = (Get-XmlText $detectionXml "ProfileIdentifier")
+            fileDigest = Get-XmlText $detectionXml "FileDigest"
+            fileDigestAlgorithm = (Get-XmlText $detectionXml "FileDigestAlgorithm")
+        }
+    }
+}
+
+function Wait-GraphFileState {
+    param(
+        [string]$AppId,
+        [string]$ContentVersionId,
+        [string]$FileId,
+        [string]$WantedState,
+        [int]$TimeoutSec = 180
+    )
+    $deadline = (Get-Date).AddSeconds($TimeoutSec)
+    do {
+        $file = Invoke-GraphJson -Method GET -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$AppId/microsoft.graph.win32LobApp/contentVersions/$ContentVersionId/files/$FileId" -TimeoutSec 60
+        if ($file.uploadState -eq $WantedState) { return $file }
+        if ([string]$file.uploadState -like "*Failed") {
+            throw "Intune file processing failed with state $($file.uploadState)"
+        }
+        Start-Sleep -Seconds 3
+    } while ((Get-Date) -lt $deadline)
+    throw "Timed out waiting for Intune file state $WantedState"
+}
+
+function Send-AzureBlobFile {
+    param([string]$AzureStorageUri, [string]$Path)
+    Invoke-WebRequest `
+        -Method Put `
+        -Uri $AzureStorageUri `
+        -InFile $Path `
+        -Headers @{ "x-ms-blob-type" = "BlockBlob" } `
+        -ContentType "application/octet-stream" `
+        -UseBasicParsing | Out-Null
+}
 
 if (-not $AppName) {
     $AppName = $PackageId.Split('.')[-1]
 }
-
 if (-not $AppDescription) {
     $AppDescription = "$AppName installed via Winget"
 }
-
-# Read generated scripts
-$installScript = Get-Content -Path "install_script.ps1" -Raw
-$uninstallScript = Get-Content -Path "uninstall_script.ps1" -Raw
-$detectionScript = Get-Content -Path "detection_script.ps1" -Raw
-
-# Create app data for Intune
-$appData = @{
-    '@odata.type' = '#microsoft.graph.win32LobApp'
-    displayName = $AppName
-    description = $AppDescription
-    publisher = $Publisher
-    installExperience = @{
-        runAsAccount = $InstallContext
-        deviceRestartBehavior = 'basedOnReturnCode'
-    }
-    installCommandLine = if ($UsePSADT) { 'Deploy-Application.exe -DeploymentType "Install" -DeployMode "Silent"' } else { $installScript }
-    uninstallCommandLine = $uninstallScript
-    detectionRules = @(
-        @{
-            '@odata.type' = '#microsoft.graph.win32LobAppPowerShellScriptDetection'
-            enforceSignatureCheck = $false
-            runAs32Bit = $false
-            scriptContent = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($detectionScript))
-        }
-    )
-    requirementRules = @(
-        @{
-            '@odata.type' = '#microsoft.graph.win32LobAppRegistryRequirement'
-            operator = 'equal'
-            keyPath = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion'
-            valueName = 'ProgramFilesDir'
-            check32BitOn64System = $false
-            detectionType = 'exists'
-        }
-    )
-    returnCodes = @(
-        @{ returnCode = 0; type = 'success' }
-        @{ returnCode = 1; type = 'failed' }
-        @{ returnCode = 1641; type = 'hardReboot' }
-        @{ returnCode = 3010; type = 'softReboot' }
-        @{ returnCode = 1618; type = 'retry' }
-    )
-    notes = "Package ID: $PackageId`nInstalled via: Winget`nInstall Method: $InstallContext`nUsing PSADT: $UsePSADT`nDeployed via: GitHub Actions"
-}
-
-# Convert to JSON
-$jsonData = $appData | ConvertTo-Json -Depth 10
-
-# Create the application in Intune
-$headers = @{
-    'Authorization' = "Bearer $AccessToken"
-    'Content-Type' = 'application/json'
+if (-not $Publisher) {
+    $Publisher = "Winget"
 }
 
 try {
-    $response = Invoke-RestMethod -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps" -Method POST -Headers $headers -Body $jsonData
+    $sourceDir = New-WingetPackageSource
+    $intuneWinPath = New-IntuneWinPackage -SourceDir $sourceDir
+    $packageInfo = Get-IntuneWinPackageInfo -IntuneWinPath $intuneWinPath
 
-    $appId = $response.id
-    $appDisplayName = $response.displayName
+    Write-Host "Built Win32 package: $intuneWinPath"
 
-    Write-Host "Successfully created application: $appDisplayName (ID: $appId)"
-
-    if ($env:GITHUB_OUTPUT) {
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "app_id=$appId"
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "app_name=$appDisplayName"
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "success=true"
+    if ($DryRun) {
+        Write-Host "Dry run complete. The .intunewin package was built but no Intune app was created."
+        Set-WorkflowOutput -Name "app_name" -Value $AppName
+        Set-WorkflowOutput -Name "success" -Value "true"
+        exit 0
     }
+
+    $detectionScript = Get-Content -Path "detection_script.ps1" -Raw
+    $installCommand = 'powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File .\install_script.ps1'
+    $uninstallCommand = 'powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File .\uninstall_script.ps1'
+
+    $appData = @{
+        '@odata.type' = '#microsoft.graph.win32LobApp'
+        displayName = $AppName
+        description = $AppDescription
+        publisher = $Publisher
+        fileName = [IO.Path]::GetFileName($intuneWinPath)
+        setupFilePath = $packageInfo.setupFile
+        installCommandLine = $installCommand
+        uninstallCommandLine = $uninstallCommand
+        installExperience = @{
+            runAsAccount = $InstallContext
+            deviceRestartBehavior = 'basedOnReturnCode'
+        }
+        detectionRules = @(
+            @{
+                '@odata.type' = '#microsoft.graph.win32LobAppPowerShellScriptDetection'
+                enforceSignatureCheck = $false
+                runAs32Bit = $false
+                scriptContent = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($detectionScript))
+            }
+        )
+        requirementRules = @(
+            @{
+                '@odata.type' = '#microsoft.graph.win32LobAppRegistryRequirement'
+                operator = 'equal'
+                keyPath = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion'
+                valueName = 'ProgramFilesDir'
+                check32BitOn64System = $false
+                detectionType = 'exists'
+            }
+        )
+        returnCodes = @(
+            @{ returnCode = 0; type = 'success' }
+            @{ returnCode = 1707; type = 'success' }
+            @{ returnCode = 1641; type = 'hardReboot' }
+            @{ returnCode = 3010; type = 'softReboot' }
+            @{ returnCode = 1618; type = 'retry' }
+        )
+        notes = "Package ID: $PackageId`nInstalled via: Winget`nInstall Method: $InstallContext`nUsing PSADT-compatible script hooks: $UsePSADT`nDeployed via: GitHub Actions"
+    }
+
+    $app = Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps" -Body $appData
+    $appId = [string]$app.id
+    $appDisplayName = [string]$app.displayName
+    Write-Host "Created Win32 application shell: $appDisplayName (ID: $appId)"
+
+    $contentVersion = Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$appId/microsoft.graph.win32LobApp/contentVersions" -Body @{}
+    $contentVersionId = [string]$contentVersion.id
+
+    $fileBody = @{
+        '@odata.type' = '#microsoft.graph.mobileAppContentFile'
+        name = [IO.Path]::GetFileName($intuneWinPath)
+        size = $packageInfo.unencryptedSize
+        sizeEncrypted = $packageInfo.encryptedSize
+        manifest = $null
+        isDependency = $false
+    }
+    $file = Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$appId/microsoft.graph.win32LobApp/contentVersions/$contentVersionId/files" -Body $fileBody
+    $fileId = [string]$file.id
+    $file = Wait-GraphFileState -AppId $appId -ContentVersionId $contentVersionId -FileId $fileId -WantedState "azureStorageUriRequestSuccess"
+
+    Send-AzureBlobFile -AzureStorageUri ([string]$file.azureStorageUri) -Path ([string]$packageInfo.encryptedContentPath)
+
+    Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$appId/microsoft.graph.win32LobApp/contentVersions/$contentVersionId/files/$fileId/commit" -Body @{
+        fileEncryptionInfo = $packageInfo.fileEncryptionInfo
+    } | Out-Null
+    Wait-GraphFileState -AppId $appId -ContentVersionId $contentVersionId -FileId $fileId -WantedState "commitFileSuccess" | Out-Null
+
+    Invoke-GraphJson -Method PATCH -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$appId" -Body @{
+        '@odata.type' = '#microsoft.graph.win32LobApp'
+        committedContentVersion = $contentVersionId
+    } | Out-Null
+
+    Write-Host "Successfully uploaded application content: $appDisplayName (ID: $appId)"
+    Set-WorkflowOutput -Name "app_id" -Value $appId
+    Set-WorkflowOutput -Name "app_name" -Value $appDisplayName
+    Set-WorkflowOutput -Name "success" -Value "true"
 }
 catch {
-    Write-Error "Failed to create application: $_"
-    if ($env:GITHUB_OUTPUT) {
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "success=false"
-    }
+    Write-Error "Failed to create/upload application: $_"
+    Set-WorkflowOutput -Name "success" -Value "false"
     exit 1
 }
