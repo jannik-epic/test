@@ -37,6 +37,33 @@ jobs:
           echo "::add-mask::$token"
           echo "GRAPH_TOKEN=$token" >> "$GITHUB_ENV"
 
+      - name: Validate Microsoft Graph application permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const token = process.env.GRAPH_TOKEN || '';
+          const required = [
+            'DeviceManagementManagedDevices.Read.All',
+            'DeviceManagementApps.ReadWrite.All',
+          ];
+          function decodeJwtPayload(jwt) {
+            const payload = jwt.split('.')[1];
+            if (!payload) throw new Error('Microsoft Graph token is not a JWT access token.');
+            return JSON.parse(Buffer.from(payload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'));
+          }
+          const claims = decodeJwtPayload(token);
+          const roles = new Set(Array.isArray(claims.roles) ? claims.roles : []);
+          const missing = required.filter((role) => !roles.has(role));
+          if (missing.length) {
+            console.error('Missing Microsoft Graph application roles on the GitHub deployment app:');
+            for (const role of missing) console.error('- ' + role);
+            console.error('Open Modern Dev Mgmt > Setup CI/CD > Permissions Validation, prepare permissions, then grant tenant-wide admin consent.');
+            process.exit(1);
+          }
+          console.log('Graph application roles validated: ' + required.join(', '));
+          NODE
+
       - name: Build unmanaged-app coverage report
         shell: bash
         run: |
