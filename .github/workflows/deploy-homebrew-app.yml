@@ -64,14 +64,14 @@ jobs:
     runs-on: macos-latest
     permissions:
       id-token: write
-      contents: read
+      contents: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Azure Login using OIDC
-        uses: azure/login@v1
+        uses: azure/login@v3
         with:
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           client-id: ${{ env.AZURE_CLIENT_ID }}
@@ -163,6 +163,8 @@ jobs:
           APP_DESCRIPTION: '${{ github.event.inputs.app_description }}'
           APP_PUBLISHER: '${{ github.event.inputs.app_publisher }}'
           APP_ICON_BASE64: '${{ github.event.inputs.app_icon_base64 }}'
+          PRE_INSTALL_SCRIPT_B64: '${{ github.event.inputs.pre_install_script_b64 }}'
+          POST_INSTALL_SCRIPT_B64: '${{ github.event.inputs.post_install_script_b64 }}'
         run: |
           set -euo pipefail
           if [[ -z "${INTUNE_ACCESS_TOKEN:-}" && -z "${INTUNE_CLIENT_SECRET:-}" ]]; then
@@ -179,6 +181,12 @@ jobs:
           fi
           if [[ -n "$APP_PUBLISHER" ]]; then
             ARGS+=(--publisher "$APP_PUBLISHER")
+          fi
+          if [[ -n "$PRE_INSTALL_SCRIPT_B64" ]]; then
+            ARGS+=(--pre-install-script-b64 "$PRE_INSTALL_SCRIPT_B64")
+          fi
+          if [[ -n "$POST_INSTALL_SCRIPT_B64" ]]; then
+            ARGS+=(--post-install-script-b64 "$POST_INSTALL_SCRIPT_B64")
           fi
           ICON_FILE_PATH=""
           if [[ -n "$APP_ICON_BASE64" ]]; then
@@ -209,7 +217,7 @@ jobs:
           ./scripts/common/Assign-IntuneMobileApp.ps1 -AccessToken "$env:INTUNE_ACCESS_TOKEN" -AppId "${{ steps.package_upload.outputs.app_id }}" -AssignmentJson $env:ASSIGNMENT_JSON -IntuneApiUrl "https://graph.microsoft.com/v1.0"
 
       - name: Upload Footprint Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ github.event.inputs.package_id }}-footprint-report
@@ -217,6 +225,42 @@ jobs:
             output/*_footprint_report.txt
             output/*_footprint_report.pdf
           if-no-files-found: ignore
+
+      - name: Persist Modern Dev Mgmt run result
+        if: ${{ github.event.inputs.dry_run != 'true' && steps.package_upload.outputs.app_id != '' }}
+        shell: bash
+        env:
+          APP_ID: ${{ steps.package_upload.outputs.app_id }}
+          APP_NAME: ${{ github.event.inputs.app_name }}
+          PACKAGE_ID: ${{ github.event.inputs.package_id }}
+        run: |
+          set -euo pipefail
+          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git pull --rebase
+          mkdir -p .modern-dev-mgmt/runs
+          node - <<'NODE'
+          const fs = require('fs');
+          const runId = process.env.GITHUB_RUN_ID;
+          const result = {
+            workflowRunId: runId,
+            workflow: 'deploy-homebrew-app.yml',
+            packageManager: 'homebrew',
+            packageId: process.env.PACKAGE_ID || null,
+            appId: process.env.APP_ID || null,
+            appName: process.env.APP_NAME || process.env.PACKAGE_ID || null,
+            status: 'success',
+            createdAt: new Date().toISOString(),
+          };
+          fs.writeFileSync(`.modern-dev-mgmt/runs/${runId}.json`, JSON.stringify(result, null, 2));
+          NODE
+          git add ".modern-dev-mgmt/runs/${GITHUB_RUN_ID}.json"
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "chore: record Modern Dev Mgmt run ${GITHUB_RUN_ID}"
+            git push
+          fi
 
       - name: Summary
         run: |
