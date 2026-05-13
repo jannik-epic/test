@@ -104,7 +104,9 @@ function New-IntuneWinPackage {
     }
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
-    & $utilPath -c $SourceDir -s "install_script.ps1" -o $outDir -q
+    & $utilPath -c $SourceDir -s "install_script.ps1" -o $outDir -q 2>&1 | ForEach-Object {
+        Write-Host $_
+    }
     if ($LASTEXITCODE -ne 0) {
         throw "IntuneWinAppUtil failed with exit code $LASTEXITCODE"
     }
