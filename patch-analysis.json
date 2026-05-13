@@ -1,25 +1,25 @@
 {
-  "scannedAt": "2026-05-13T17:45:14.438Z",
+  "scannedAt": "2026-05-13T18:35:51.164Z",
   "results": [
     {
       "appId": 2561,
       "packageManager": "winget",
       "packageId": "GreenfootTeam.Greenfoot",
       "currentDeployedVersion": "3.7.0",
-      "latestUpstreamVersion": null,
-      "hasUpdate": false,
-      "bumpType": null,
-      "releaseNotesUrl": null
+      "latestUpstreamVersion": "3.9.0",
+      "hasUpdate": true,
+      "bumpType": "minor",
+      "releaseNotesUrl": "https://www.greenfoot.org/download"
     },
     {
       "appId": 6991,
       "packageManager": "winget",
       "packageId": "Spice.SpiceWebDAVd",
       "currentDeployedVersion": "2.4.0",
-      "latestUpstreamVersion": null,
+      "latestUpstreamVersion": "2.4.0",
       "hasUpdate": false,
       "bumpType": null,
-      "releaseNotesUrl": null
+      "releaseNotesUrl": "https://gitlab.gnome.org/GNOME/phodav/"
     }
   ]
 }
