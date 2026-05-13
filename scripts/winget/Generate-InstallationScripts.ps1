@@ -21,17 +21,53 @@ param(
     [string]$Version,
 
     [Parameter(Mandatory = $false)]
-    [string]$CustomDetectionScript
+    [string]$CustomDetectionScript,
+
+    [Parameter(Mandatory = $false)]
+    [string]$CustomDetectionScriptBase64,
+
+    [Parameter(Mandatory = $false)]
+    [string]$InstallScriptBase64,
+
+    [Parameter(Mandatory = $false)]
+    [string]$UninstallScriptBase64,
+
+    [Parameter(Mandatory = $false)]
+    [string]$PreInstallScriptBase64,
+
+    [Parameter(Mandatory = $false)]
+    [string]$PostInstallScriptBase64
 )
+
+function Decode-Base64Utf8 {
+    param([string]$Value)
+    if ([string]::IsNullOrWhiteSpace($Value)) {
+        return $null
+    }
+    $raw = $Value.Trim()
+    if ($raw.Contains(',')) {
+        $raw = $raw.Split(',', 2)[1]
+    }
+    return [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw))
+}
 
 if (-not $AppName) {
     $AppName = $PackageId.Split('.')[-1]
 }
 
+$installScriptOverride = Decode-Base64Utf8 $InstallScriptBase64
+$uninstallScriptOverride = Decode-Base64Utf8 $UninstallScriptBase64
+$preInstallBlock = Decode-Base64Utf8 $PreInstallScriptBase64
+$postInstallBlock = Decode-Base64Utf8 $PostInstallScriptBase64
+$customDetectionFromBase64 = Decode-Base64Utf8 $CustomDetectionScriptBase64
+
 if ($UsePSADT) {
-    # Generate PSADT installation script
+    # Generate a self-contained PowerShell deployment script with PSADT-style
+    # phases. The customer workflow packages this script into a .intunewin
+    # directly, so it must not depend on a toolkit folder that is not present
+    # in the generated package.
     $installScript = @"
-## PowerShell App Deployment Toolkit Script
+## Modern Dev Mgmt Winget deployment script
 ## App Name - $AppName
 ## Publisher - $Publisher
 ## Version - $Version
@@ -49,70 +85,100 @@ Param (
 Try {
     Set-ExecutionPolicy -ExecutionPolicy 'ByPass' -Scope 'Process' -Force -ErrorAction 'Stop'
 
-    ## Variables: Application
-    [String]`$appVendor = '$Publisher'
-    [String]`$appName = '$AppName'
-    [String]`$appVersion = '$Version'
-    [String]`$appArch = 'x64'
-    [String]`$appLang = 'EN'
-    [String]`$appRevision = '01'
-    [String]`$appScriptVersion = '1.0.0'
-    [String]`$appScriptDate = '`$(Get-Date -Format 'yyyy-MM-dd')'
-    [String]`$appScriptAuthor = 'GitHub Actions'
-
-    ## Dot source the required App Deploy Toolkit Functions
-    Try {
-        [String]`$moduleAppDeployToolkitMain = "`$scriptDirectory\AppDeployToolkit\AppDeployToolkitMain.ps1"
-        If (-not (Test-Path -LiteralPath `$moduleAppDeployToolkitMain -PathType 'Leaf')) {
-            Throw "Module does not exist at the specified location [`$moduleAppDeployToolkitMain]."
+    function Invoke-Winget {
+        param([string[]]`$Arguments)
+        `$winget = Get-Command winget.exe -ErrorAction SilentlyContinue
+        if (-not `$winget) {
+            `$candidate = Join-Path `$env:LOCALAPPDATA "Microsoft\WindowsApps\winget.exe"
+            if (Test-Path -LiteralPath `$candidate) {
+                `$winget = Get-Item -LiteralPath `$candidate
+            }
         }
-        . `$moduleAppDeployToolkitMain
-    }
-    Catch {
-        If (`$mainExitCode -eq 0) { [Int32]`$mainExitCode = 60008 }
-        Write-Error "Module [`$moduleAppDeployToolkitMain] failed to load: ``n`$(`$_.Exception.Message)"
-        Exit `$mainExitCode
+        if (-not `$winget) {
+            throw "winget.exe was not found on this device."
+        }
+        `$process = Start-Process -FilePath `$winget.Source -ArgumentList `$Arguments -Wait -PassThru -WindowStyle Hidden
+        if (`$process.ExitCode -ne 0) {
+            throw "winget exited with code `$(`$process.ExitCode)"
+        }
     }
 
     If (`$deploymentType -ine 'Uninstall' -and `$deploymentType -ine 'Repair') {
         [String]`$installPhase = 'Pre-Installation'
-        Show-InstallationWelcome -CloseApps 'iexplore' -CheckDiskSpace -PersistPrompt
+        # __MODERNDEVMGMT_PRE_INSTALL__
 
         [String]`$installPhase = 'Installation'
-        Execute-Process -Path 'winget' -Parameters "install --id $PackageId --silent --accept-package-agreements --accept-source-agreements" -WindowStyle 'Hidden'
+        Invoke-Winget -Arguments @("install", "--id", "$PackageId", "--exact", "--silent", "--accept-package-agreements", "--accept-source-agreements")
 
         [String]`$installPhase = 'Post-Installation'
+        # __MODERNDEVMGMT_POST_INSTALL__
     }
     ElseIf (`$deploymentType -ieq 'Uninstall') {
         [String]`$installPhase = 'Pre-Uninstallation'
-        Show-InstallationWelcome -CloseApps 'iexplore' -CloseAppsCountdown 300
 
         [String]`$installPhase = 'Uninstallation'
-        Execute-Process -Path 'winget' -Parameters "uninstall --id $PackageId --silent" -WindowStyle 'Hidden'
+        Invoke-Winget -Arguments @("uninstall", "--id", "$PackageId", "--exact", "--silent")
 
         [String]`$installPhase = 'Post-Uninstallation'
     }
 
-    Exit-Script -ExitCode `$mainExitCode
+    exit 0
 }
 Catch {
-    [Int32]`$mainExitCode = 60001
-    [String]`$mainErrorMessage = "``$(Resolve-Error)"
-    Write-Log -Message `$mainErrorMessage -Severity 3 -Source `$deployAppScriptFriendlyName
-    Show-DialogBox -Text `$mainErrorMessage -Icon 'Stop'
-    Exit-Script -ExitCode `$mainExitCode
+    Write-Error "Deployment failed in phase [`$installPhase]: `$(`$_.Exception.Message)"
+    exit 1
 }
 "@
 
-    $uninstallScript = 'Deploy-Application.exe -DeploymentType "Uninstall" -DeployMode "Silent"'
+    $uninstallScript = @"
+try {
+    `$winget = Get-Command winget.exe -ErrorAction SilentlyContinue
+    if (-not `$winget) {
+        `$candidate = Join-Path `$env:LOCALAPPDATA "Microsoft\WindowsApps\winget.exe"
+        if (Test-Path -LiteralPath `$candidate) {
+            `$winget = Get-Item -LiteralPath `$candidate
+        }
+    }
+    if (-not `$winget) {
+        throw "winget.exe was not found on this device."
+    }
+    `$process = Start-Process -FilePath `$winget.Source -ArgumentList @("uninstall", "--id", "$PackageId", "--exact", "--silent") -Wait -PassThru -WindowStyle Hidden
+    exit `$process.ExitCode
+}
+catch {
+    Write-Error `$_.Exception.Message
+    exit 1
+}
+"@
 } else {
     # Standard Winget scripts
-    $installScript = "winget install --id $PackageId --silent --accept-package-agreements --accept-source-agreements"
+    $installParts = @()
+    if ($preInstallBlock) {
+        $installParts += "# Pre-install script"
+        $installParts += $preInstallBlock
+    }
+    $installParts += "winget install --id $PackageId --silent --accept-package-agreements --accept-source-agreements"
+    if ($postInstallBlock) {
+        $installParts += "# Post-install script"
+        $installParts += $postInstallBlock
+    }
+    $installScript = $installParts -join [Environment]::NewLine
     $uninstallScript = "winget uninstall --id $PackageId --silent"
 }
 
+if ($installScriptOverride) {
+    $installScript = $installScriptOverride
+} else {
+    $installScript = $installScript.Replace('# __MODERNDEVMGMT_PRE_INSTALL__', $(if ($preInstallBlock) { $preInstallBlock } else { '' }))
+    $installScript = $installScript.Replace('# __MODERNDEVMGMT_POST_INSTALL__', $(if ($postInstallBlock) { $postInstallBlock } else { '' }))
+}
+
+if ($uninstallScriptOverride) {
+    $uninstallScript = $uninstallScriptOverride
+}
+
 # Detection script
-$detectionScript = $CustomDetectionScript
+$detectionScript = if ($customDetectionFromBase64) { $customDetectionFromBase64 } else { $CustomDetectionScript }
 if (-not $detectionScript) {
     $detectionScript = @"
 # Detection script for $AppName
