@@ -73,6 +73,10 @@ on:
         description: 'Human-readable assignment plan summary'
         required: false
         type: string
+      modern_dev_mgmt_context_b64:
+        description: 'Base64 encoded Modern Dev Mgmt run context'
+        required: false
+        type: string
 
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
@@ -215,12 +219,23 @@ jobs:
       - name: Persist Modern Dev Mgmt run result
         if: ${{ github.event.inputs.dry_run != 'true' && steps.create_app.outputs.app_id != '' }}
         shell: pwsh
+        env:
+          MODERN_DEVMGMT_CONTEXT_B64: ${{ github.event.inputs.modern_dev_mgmt_context_b64 }}
         run: |
           git config user.email "actions@github.com"
           git config user.name "github-actions[bot]"
           git pull --rebase
           $runDir = ".modern-dev-mgmt/runs"
           New-Item -ItemType Directory -Force -Path $runDir | Out-Null
+          $context = $null
+          if ($env:MODERN_DEVMGMT_CONTEXT_B64) {
+            try {
+              $contextJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($env:MODERN_DEVMGMT_CONTEXT_B64))
+              $context = $contextJson | ConvertFrom-Json
+            } catch {
+              Write-Warning "Could not decode Modern Dev Mgmt context: $($_.Exception.Message)"
+            }
+          }
           $result = [ordered]@{
             workflowRunId = "${{ github.run_id }}"
             workflow = "deploy-winget-app.yml"
@@ -230,9 +245,17 @@ jobs:
             appName = "${{ steps.create_app.outputs.app_name }}"
             status = "success"
             createdAt = (Get-Date).ToUniversalTime().ToString("o")
+            context = $context
           }
           $result | ConvertTo-Json -Depth 5 | Set-Content -Path "$runDir/${{ github.run_id }}.json" -Encoding UTF8
           git add "$runDir/${{ github.run_id }}.json"
+          if ($context -and $context.patchRunId) {
+            $patchDir = ".modern-dev-mgmt/patch-runs"
+            New-Item -ItemType Directory -Force -Path $patchDir | Out-Null
+            $patchPath = "$patchDir/$($context.patchRunId).json"
+            $result | ConvertTo-Json -Depth 8 | Set-Content -Path $patchPath -Encoding UTF8
+            git add $patchPath
+          }
           git diff --cached --quiet
           if ($LASTEXITCODE -ne 0) {
             git commit -m "chore: record Modern Dev Mgmt run ${{ github.run_id }}"

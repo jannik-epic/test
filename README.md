@@ -24,7 +24,16 @@ This repository contains automated workflows for deploying applications to Micro
   - Custom detection scripts
   - Assignment template application to Required/Available/Uninstall groups
 
-### 3. Patch Scan
+### 3. Custom Installer Deployment
+- **File**: `.github/workflows/deploy-custom-package.yml`
+- **Purpose**: Deploy uploaded Windows MSI/EXE installers from Modern Dev Mgmt release assets to Intune
+- **Features**:
+  - Downloads the uploaded installer from a tenant-repo GitHub release asset
+  - Packages the installer together with generated install, uninstall and detection scripts
+  - Supports Modern Dev Mgmt app-setting script overrides through base64 workflow inputs
+  - Applies assignment templates and writes auditable run state under `.modern-dev-mgmt/runs/`
+
+### 4. Patch Scan
 - **File**: `.github/workflows/patch-scan.yml`
 - **Purpose**: Scheduled upstream version checks for managed Winget and Homebrew apps
 - **Features**:
@@ -32,13 +41,21 @@ This repository contains automated workflows for deploying applications to Micro
   - Detects major, minor and patch updates
   - Writes `patch-analysis.json` for PackageFlow to ingest
 
-### 4. Intune Inventory Coverage
+### 5. Intune Inventory Coverage
 - **File**: `.github/workflows/intune-inventory-coverage.yml`
 - **Purpose**: Scheduled check for detected device apps that have no centrally managed Intune app
 - **Features**:
   - Filters out Android/iOS/system packages outside the Windows/macOS scope
   - Compares detected apps with Intune managed apps
   - Writes `intune-inventory-coverage.json` for MSP review
+
+### 6. Wave Assignment
+- **File**: `.github/workflows/apply-wave-assignment.yml`
+- **Purpose**: Apply follow-up deployment-wave assignments for existing Intune apps
+- **Features**:
+  - Uses the same Azure federated credential model as deployments
+  - Writes auditable run and wave status files under `.modern-dev-mgmt/`
+  - Lets the Modern Dev Mgmt web UI monitor rollout progress without doing direct Intune writes
 
 ## Usage
 
@@ -90,6 +107,8 @@ Both workflows provide detailed outputs including:
 - Deployment status
 - Generated scripts (install, uninstall, detection)
 - Links to the created application in Intune admin center
+- Modern Dev Mgmt run state under `.modern-dev-mgmt/runs/`
+- Patch and wave state under `.modern-dev-mgmt/patch-runs/` and `.modern-dev-mgmt/waves/`
 
 ## Troubleshooting
 

@@ -52,6 +52,10 @@ on:
         description: 'Human-readable assignment plan summary'
         required: false
         type: string
+      modern_dev_mgmt_context_b64:
+        description: 'Base64 encoded Modern Dev Mgmt run context'
+        required: false
+        type: string
 
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
@@ -233,6 +237,7 @@ jobs:
           APP_ID: ${{ steps.package_upload.outputs.app_id }}
           APP_NAME: ${{ github.event.inputs.app_name }}
           PACKAGE_ID: ${{ github.event.inputs.package_id }}
+          MODERN_DEVMGMT_CONTEXT_B64: ${{ github.event.inputs.modern_dev_mgmt_context_b64 }}
         run: |
           set -euo pipefail
           git config user.email "actions@github.com"
@@ -242,6 +247,14 @@ jobs:
           node - <<'NODE'
           const fs = require('fs');
           const runId = process.env.GITHUB_RUN_ID;
+          let context = null;
+          if (process.env.MODERN_DEVMGMT_CONTEXT_B64) {
+            try {
+              context = JSON.parse(Buffer.from(process.env.MODERN_DEVMGMT_CONTEXT_B64, 'base64').toString('utf8'));
+            } catch (error) {
+              console.warn('Could not decode Modern Dev Mgmt context:', error.message);
+            }
+          }
           const result = {
             workflowRunId: runId,
             workflow: 'deploy-homebrew-app.yml',
@@ -251,10 +264,15 @@ jobs:
             appName: process.env.APP_NAME || process.env.PACKAGE_ID || null,
             status: 'success',
             createdAt: new Date().toISOString(),
+            context,
           };
           fs.writeFileSync(`.modern-dev-mgmt/runs/${runId}.json`, JSON.stringify(result, null, 2));
+          if (context && context.patchRunId) {
+            fs.mkdirSync('.modern-dev-mgmt/patch-runs', { recursive: true });
+            fs.writeFileSync(`.modern-dev-mgmt/patch-runs/${context.patchRunId}.json`, JSON.stringify(result, null, 2));
+          }
           NODE
-          git add ".modern-dev-mgmt/runs/${GITHUB_RUN_ID}.json"
+          git add ".modern-dev-mgmt/runs/${GITHUB_RUN_ID}.json" .modern-dev-mgmt/patch-runs || true
           if git diff --cached --quiet; then
             echo "no changes"
           else

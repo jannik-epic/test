@@ -31,7 +31,22 @@ param(
     [string]$IntuneApiUrl = "https://graph.microsoft.com/v1.0",
 
     [Parameter(Mandatory = $false)]
-    [bool]$DryRun = $false
+    [bool]$DryRun = $false,
+
+    [Parameter(Mandatory = $false)]
+    [string]$PackageFilesDirectory,
+
+    [Parameter(Mandatory = $false)]
+    [string]$InstallCommandLine,
+
+    [Parameter(Mandatory = $false)]
+    [string]$UninstallCommandLine,
+
+    [Parameter(Mandatory = $false)]
+    [string]$PackageSource = "Winget",
+
+    [Parameter(Mandatory = $false)]
+    [string]$PackageNotes
 )
 
 $ErrorActionPreference = "Stop"
@@ -91,6 +106,14 @@ function New-WingetPackageSource {
     Copy-Item -LiteralPath "install_script.ps1" -Destination (Join-Path $sourceDir "install_script.ps1") -Force
     Copy-Item -LiteralPath "uninstall_script.ps1" -Destination (Join-Path $sourceDir "uninstall_script.ps1") -Force
     Copy-Item -LiteralPath "detection_script.ps1" -Destination (Join-Path $sourceDir "detection_script.ps1") -Force
+    if ($PackageFilesDirectory) {
+        if (-not (Test-Path -LiteralPath $PackageFilesDirectory -PathType Container)) {
+            throw "PackageFilesDirectory was not found: $PackageFilesDirectory"
+        }
+        Get-ChildItem -LiteralPath $PackageFilesDirectory -Force | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $sourceDir -Recurse -Force
+        }
+    }
     $sourceDir
 }
 
@@ -228,8 +251,13 @@ try {
     }
 
     $detectionScript = Get-Content -Path "detection_script.ps1" -Raw
-    $installCommand = 'powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File .\install_script.ps1'
-    $uninstallCommand = 'powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File .\uninstall_script.ps1'
+    $installCommand = if ($InstallCommandLine) { $InstallCommandLine } else { 'powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File .\install_script.ps1' }
+    $uninstallCommand = if ($UninstallCommandLine) { $UninstallCommandLine } else { 'powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File .\uninstall_script.ps1' }
+    $notes = if ($PackageNotes) {
+        $PackageNotes
+    } else {
+        "Package ID: $PackageId`nInstalled via: $PackageSource`nInstall Method: $InstallContext`nUsing PSADT-compatible script hooks: $UsePSADT`nDeployed via: GitHub Actions"
+    }
 
     $appData = @{
         '@odata.type' = '#microsoft.graph.win32LobApp'
@@ -269,7 +297,7 @@ try {
             @{ returnCode = 3010; type = 'softReboot' }
             @{ returnCode = 1618; type = 'retry' }
         )
-        notes = "Package ID: $PackageId`nInstalled via: Winget`nInstall Method: $InstallContext`nUsing PSADT-compatible script hooks: $UsePSADT`nDeployed via: GitHub Actions"
+        notes = $notes
     }
 
     $app = Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps" -Body $appData
