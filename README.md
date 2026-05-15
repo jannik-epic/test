@@ -48,7 +48,7 @@ This repository contains automated workflows for deploying applications to Micro
 - **Features**:
   - Runs every 30 minutes
   - Detects major, minor and patch updates
-  - Writes `patch-analysis.json` for PackageFlow to ingest
+  - Writes `patch-analysis.json` for Modern Dev Mgmt to ingest
 
 ### 6. Intune Inventory Coverage
 - **File**: `.github/workflows/intune-inventory-coverage.yml`
