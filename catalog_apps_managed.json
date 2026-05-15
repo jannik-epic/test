@@ -5,7 +5,7 @@
     "package_id": "VinaySajip.PythonLauncher",
     "name": "Python Launcher",
     "os": "windows",
-    "version_deployed": "3.11.8150.0",
+    "version_deployed": "1.0.1.6",
     "pin_version": null
   }
 ]
