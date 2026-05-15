@@ -1,0 +1,117 @@
+{
+  "generatedAt": "2026-05-15T12:52:58.836Z",
+  "detectedInScope": 12,
+  "managedCovered": 4,
+  "unmanaged": [
+    {
+      "id": "0000a1e4e19b8a12c64d127b40418678bd400000ffff",
+      "displayName": "Canva",
+      "publisher": "Canva Pty Ltd",
+      "version": "1.101.0",
+      "platform": "windows",
+      "deviceCount": 1
+    },
+    {
+      "id": "000040760a1da722241e02c2691a39a658330000ffff",
+      "displayName": "JetBrains dotPeek 2024.2.3",
+      "publisher": "JetBrains s.r.o.",
+      "version": "2024.2.3",
+      "platform": "windows",
+      "deviceCount": 1
+    },
+    {
+      "id": "0000563a2d7ae813b2bfa8b4147a3a7f7ca90000ffff",
+      "displayName": "Microsoft Edge Beta",
+      "publisher": "Microsoft Corporation",
+      "version": "134.0.3124.8",
+      "platform": "windows",
+      "deviceCount": 1
+    },
+    {
+      "id": "0000b58087597ff1d073067a88733472ed9000000904",
+      "displayName": "Microsoft Intune Management Extension",
+      "publisher": "Microsoft Corporation",
+      "version": "1.91.102.0",
+      "platform": "windows",
+      "deviceCount": 1
+    },
+    {
+      "id": "0000807901b5f8bfa2ab6712dfbfae7558080000ffff",
+      "displayName": "Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.30.30704",
+      "publisher": "Microsoft Corporation",
+      "version": "14.30.30704.0",
+      "platform": "windows",
+      "deviceCount": 1
+    },
+    {
+      "id": "0000e7387a04d8dd77217062900a6109109300000904",
+      "displayName": "Python Launcher",
+      "publisher": "Python Software Foundation",
+      "version": "3.11.8150.0",
+      "platform": "windows",
+      "deviceCount": 1
+    },
+    {
+      "id": "0000f7fdd19940e11455a7d72bb91326eef800000904",
+      "displayName": "Spice webdavd 2.5 (ARM64)",
+      "publisher": "The Spice Project",
+      "version": "2.5.0",
+      "platform": "windows",
+      "deviceCount": 1
+    },
+    {
+      "id": "00008131c9b7f859f0d59f9aa6e26c255bf30000ffff",
+      "displayName": "UTM Guest Tools 0.229",
+      "publisher": "Turing Software, LLC",
+      "version": "0.229",
+      "platform": "windows",
+      "deviceCount": 1
+    }
+  ],
+  "managed": [
+    {
+      "id": "0000e3e7177c6cee3ba0c9c0c59df0aadca10000ffff",
+      "displayName": "Greenshot 1.2.10.6",
+      "version": "1.2.10.6",
+      "publisher": "Greenshot",
+      "platform": "windows",
+      "deviceCount": 1,
+      "managedIntuneAppId": "f7da4a83-91a4-48c9-bf10-42fda56e3df9",
+      "managedDisplayName": "Greenshot",
+      "confidence": 1.1
+    },
+    {
+      "id": "0000000eae80474011f801ca0a8eee90fd350000ffff",
+      "displayName": "Microsoft Edge",
+      "version": "133.0.3065.69",
+      "publisher": "Microsoft Corporation",
+      "platform": "windows",
+      "deviceCount": 1,
+      "managedIntuneAppId": "829ba40f-096a-4b17-8457-f5d9e7ccc2c6",
+      "managedDisplayName": "Microsoft Edge: Web Browser",
+      "confidence": 1.1
+    },
+    {
+      "id": "0000dfd251fd955b213ae88757f2eb39cc310000ffff",
+      "displayName": "Microsoft OneDrive",
+      "version": "24.221.1103.0003",
+      "publisher": "Microsoft Corporation",
+      "platform": "windows",
+      "deviceCount": 1,
+      "managedIntuneAppId": "316a1547-1659-437a-a565-03a50166dc14",
+      "managedDisplayName": "Microsoft OneDrive",
+      "confidence": 1
+    },
+    {
+      "id": "00004149217d06b98a76ed65044b1509737e0000ffff",
+      "displayName": "Microsoft Visual Studio Code",
+      "version": "1.87.2",
+      "publisher": "Microsoft Corporation",
+      "platform": "windows",
+      "deviceCount": 1,
+      "managedIntuneAppId": "5166d85f-1ce3-4100-b47f-6f64b6c3d32b",
+      "managedDisplayName": "Visual Studio Code",
+      "confidence": 0.9
+    }
+  ]
+}
