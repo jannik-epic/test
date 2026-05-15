@@ -1,0 +1,21 @@
+{
+  "workflowRunId": "25919956915",
+  "workflow": "apply-wave-assignment.yml",
+  "patchRunId": "dry-run-patch",
+  "waveRunId": "dry-run-wave",
+  "waveId": "1",
+  "waveName": "Pilot",
+  "intuneAppId": "00000000-0000-0000-0000-000000000000",
+  "dryRun": true,
+  "status": "success",
+  "assignmentSummary": {
+    "mode": "dry-run",
+    "waves": [
+      {
+        "name": "Pilot"
+      }
+    ]
+  },
+  "context": null,
+  "createdAt": "2026-05-15T13:19:00.7946256Z"
+}
