@@ -85,6 +85,20 @@ function Invoke-GraphJson {
     Invoke-RestMethod @args
 }
 
+function Invoke-GraphDelete {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Uri,
+        [int]$TimeoutSec = 120
+    )
+
+    Invoke-RestMethod `
+        -Method DELETE `
+        -Uri $Uri `
+        -Headers @{ Authorization = "Bearer $AccessToken" } `
+        -TimeoutSec $TimeoutSec | Out-Null
+}
+
 function Ensure-IntuneWinAppUtil {
     $toolsDir = Join-Path $PWD ".tools"
     New-Item -ItemType Directory -Force -Path $toolsDir | Out-Null
@@ -178,20 +192,51 @@ function Get-IntuneWinPackageInfo {
     $setupFile = Get-XmlText $detectionXml "SetupFile"
     if (-not $setupFile) { $setupFile = "install_script.ps1" }
 
+    $profileIdentifier = Get-XmlText $detectionXml "ProfileIdentifier"
+    if (-not $profileIdentifier) { $profileIdentifier = "ProfileVersion1" }
+    $fileDigestAlgorithm = Get-XmlText $detectionXml "FileDigestAlgorithm"
+    if (-not $fileDigestAlgorithm) { $fileDigestAlgorithm = "SHA256" }
+    $fileEncryptionInfo = @{
+        encryptionKey = Get-XmlText $detectionXml "EncryptionKey"
+        macKey = Get-XmlText $detectionXml "MacKey"
+        initializationVector = Get-XmlText $detectionXml "InitializationVector"
+        mac = Get-XmlText $detectionXml "Mac"
+        profileIdentifier = $profileIdentifier
+        fileDigest = Get-XmlText $detectionXml "FileDigest"
+        fileDigestAlgorithm = $fileDigestAlgorithm
+    }
+    $requiredEncryptionFields = @(
+        "encryptionKey",
+        "macKey",
+        "initializationVector",
+        "mac",
+        "profileIdentifier",
+        "fileDigest",
+        "fileDigestAlgorithm"
+    )
+    $missingEncryptionFields = $requiredEncryptionFields | Where-Object { -not $fileEncryptionInfo[$_] }
+    if ($missingEncryptionFields.Count -gt 0) {
+        throw "Detection.xml is missing required Intune encryption metadata: $($missingEncryptionFields -join ', ')"
+    }
+
+    Write-Host "IntuneWin metadata: setupFile=$setupFile encryptedSize=$($encryptedContent.Length) unencryptedSize=$sizeText"
+    Write-Host (
+        "Encryption metadata lengths: key={0}, macKey={1}, iv={2}, mac={3}, digest={4}, profile={5}, digestAlgorithm={6}" -f
+            $fileEncryptionInfo.encryptionKey.Length,
+            $fileEncryptionInfo.macKey.Length,
+            $fileEncryptionInfo.initializationVector.Length,
+            $fileEncryptionInfo.mac.Length,
+            $fileEncryptionInfo.fileDigest.Length,
+            $fileEncryptionInfo.profileIdentifier,
+            $fileEncryptionInfo.fileDigestAlgorithm
+    )
+
     @{
         encryptedContentPath = $encryptedContent.FullName
         encryptedSize = [int64]$encryptedContent.Length
         unencryptedSize = if ($sizeText) { [int64]$sizeText } else { [int64](Get-Item -LiteralPath $IntuneWinPath).Length }
         setupFile = $setupFile
-        fileEncryptionInfo = @{
-            encryptionKey = Get-XmlText $detectionXml "EncryptionKey"
-            macKey = Get-XmlText $detectionXml "MacKey"
-            initializationVector = Get-XmlText $detectionXml "InitializationVector"
-            mac = Get-XmlText $detectionXml "Mac"
-            profileIdentifier = (Get-XmlText $detectionXml "ProfileIdentifier")
-            fileDigest = Get-XmlText $detectionXml "FileDigest"
-            fileDigestAlgorithm = (Get-XmlText $detectionXml "FileDigestAlgorithm")
-        }
+        fileEncryptionInfo = $fileEncryptionInfo
     }
 }
 
@@ -217,13 +262,61 @@ function Wait-GraphFileState {
 
 function Send-AzureBlobFile {
     param([string]$AzureStorageUri, [string]$Path)
+
+    $blockSize = 4 * 1024 * 1024
+    $file = Get-Item -LiteralPath $Path
+    $totalBlocks = [Math]::Ceiling($file.Length / $blockSize)
+    $blockIds = New-Object System.Collections.Generic.List[string]
+    $buffer = New-Object byte[] $blockSize
+    $stream = [System.IO.File]::OpenRead($Path)
+
+    Write-Host "Uploading encrypted content to Intune blob in $totalBlocks block(s)."
+    try {
+        $blockIndex = 0
+        while (($bytesRead = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+            $blockId = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes(("block-{0:D8}" -f $blockIndex)))
+            $blockIds.Add($blockId)
+            $payload = if ($bytesRead -eq $buffer.Length) {
+                $buffer
+            } else {
+                $slice = New-Object byte[] $bytesRead
+                [Array]::Copy($buffer, 0, $slice, 0, $bytesRead)
+                $slice
+            }
+            $separator = if ($AzureStorageUri.Contains("?")) { "&" } else { "?" }
+            $blockUrl = "$AzureStorageUri${separator}comp=block&blockid=$([Uri]::EscapeDataString($blockId))"
+            Invoke-WebRequest `
+                -Method Put `
+                -Uri $blockUrl `
+                -Body $payload `
+                -Headers @{ "x-ms-blob-type" = "BlockBlob" } `
+                -ContentType "application/octet-stream" `
+                -TimeoutSec 300 `
+                -UseBasicParsing | Out-Null
+            $blockIndex += 1
+            $progress = [Math]::Round(($blockIndex / [Math]::Max($totalBlocks, 1)) * 100, 1)
+            Write-Host "Uploaded block $blockIndex/$totalBlocks ($progress%)."
+        }
+    } finally {
+        $stream.Dispose()
+    }
+
+    $blockListXml = '<?xml version="1.0" encoding="utf-8"?><BlockList>'
+    foreach ($blockId in $blockIds) {
+        $blockListXml += "<Latest>$blockId</Latest>"
+    }
+    $blockListXml += "</BlockList>"
+    $commitSeparator = if ($AzureStorageUri.Contains("?")) { "&" } else { "?" }
+    $commitUrl = "$AzureStorageUri${commitSeparator}comp=blocklist"
+
     Invoke-WebRequest `
         -Method Put `
-        -Uri $AzureStorageUri `
-        -InFile $Path `
-        -Headers @{ "x-ms-blob-type" = "BlockBlob" } `
-        -ContentType "application/octet-stream" `
+        -Uri $commitUrl `
+        -Body $blockListXml `
+        -ContentType "application/xml" `
+        -TimeoutSec 300 `
         -UseBasicParsing | Out-Null
+    Write-Host "Azure blob block list committed."
 }
 
 if (-not $AppName) {
@@ -235,6 +328,8 @@ if (-not $AppDescription) {
 if (-not $Publisher) {
     $Publisher = "Winget"
 }
+
+$appId = $null
 
 try {
     $sourceDir = New-WingetPackageSource
@@ -322,6 +417,7 @@ try {
 
     Send-AzureBlobFile -AzureStorageUri ([string]$file.azureStorageUri) -Path ([string]$packageInfo.encryptedContentPath)
 
+    Write-Host "Committing Intune file with validated encryption metadata..."
     Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$appId/microsoft.graph.win32LobApp/contentVersions/$contentVersionId/files/$fileId/commit" -Body @{
         fileEncryptionInfo = $packageInfo.fileEncryptionInfo
     } | Out-Null
@@ -338,7 +434,16 @@ try {
     Set-WorkflowOutput -Name "success" -Value "true"
 }
 catch {
-    Write-Error "Failed to create/upload application: $_"
+    $failure = $_
+    if (-not $DryRun -and $appId) {
+        try {
+            Invoke-GraphDelete -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$appId"
+            Write-Host "Cleaned up failed Intune application shell: $appId"
+        } catch {
+            Write-Warning "Could not clean up failed Intune application shell $appId`: $_"
+        }
+    }
+    Write-Error "Failed to create/upload application: $failure"
     Set-WorkflowOutput -Name "success" -Value "false"
     exit 1
 }
