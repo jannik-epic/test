@@ -1,4 +1,15 @@
 {
-  "scannedAt": "2026-05-15T15:15:28.091Z",
-  "results": []
+  "scannedAt": "2026-05-15T16:04:02.911Z",
+  "results": [
+    {
+      "appId": 5933,
+      "packageManager": "winget",
+      "packageId": "VinaySajip.PythonLauncher",
+      "currentDeployedVersion": "3.11.8150.0",
+      "latestUpstreamVersion": "1.0.1.6",
+      "hasUpdate": true,
+      "bumpType": null,
+      "releaseNotesUrl": null
+    }
+  ]
 }
