@@ -229,6 +229,7 @@ jobs:
             echo "no changes"
           else
             git commit -m "chore: record Modern Dev Mgmt macOS custom run ${GITHUB_RUN_ID}"
+            git pull --rebase origin "${GITHUB_REF_NAME:-main}"
             git push
           fi
 
