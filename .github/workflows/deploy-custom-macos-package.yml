@@ -126,7 +126,8 @@ jobs:
             echo "::error::macOS asset was not downloaded: $asset_path"
             exit 1
           fi
-          case "${asset_path,,}" in
+          asset_path_lower="$(printf '%s' "$asset_path" | tr '[:upper:]' '[:lower:]')"
+          case "$asset_path_lower" in
             *.pkg|*.dmg) echo "asset_path=$asset_path" >> "$GITHUB_ENV" ;;
             *) echo "::error::Only .pkg and .dmg assets are supported by this workflow"; exit 1 ;;
           esac
@@ -161,7 +162,8 @@ jobs:
           if [[ -n "$BUNDLE_ID" ]]; then ARGS+=(--bundle-id "$BUNDLE_ID"); fi
           if [[ -n "$PRE_INSTALL_SCRIPT_B64" ]]; then ARGS+=(--pre-install-script-b64 "$PRE_INSTALL_SCRIPT_B64"); fi
           if [[ -n "$POST_INSTALL_SCRIPT_B64" ]]; then ARGS+=(--post-install-script-b64 "$POST_INSTALL_SCRIPT_B64"); fi
-          case "${asset_path,,}" in
+          asset_path_lower="$(printf '%s' "$asset_path" | tr '[:upper:]' '[:lower:]')"
+          case "$asset_path_lower" in
             *.pkg) ARGS+=(--pkg-file "$asset_path") ;;
             *.dmg) ARGS+=(--dmg-file "$asset_path") ;;
           esac
