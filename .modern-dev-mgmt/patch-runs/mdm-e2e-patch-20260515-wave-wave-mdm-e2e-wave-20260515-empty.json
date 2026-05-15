@@ -1,0 +1,19 @@
+{
+  "workflowRunId": "25927464859",
+  "workflow": "apply-wave-assignment.yml",
+  "patchRunId": "mdm-e2e-patch-20260515-wave",
+  "waveRunId": "mdm-e2e-wave-20260515-empty",
+  "waveId": "mdm-e2e-wave-empty",
+  "waveName": "E2E Empty Group",
+  "intuneAppId": "e9ecaaa0-3bb0-448d-959e-84559bb845f8",
+  "dryRun": false,
+  "status": "success",
+  "assignmentSummary": {
+    "waveName": "E2E Empty Group",
+    "intent": "available",
+    "target": "Sanche Test",
+    "status": "included"
+  },
+  "context": null,
+  "createdAt": "2026-05-15T15:54:51.2242085Z"
+}
