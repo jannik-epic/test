@@ -1,0 +1,13 @@
+{
+  "workflowRunId": "25926551084",
+  "workflow": "deploy-custom-package.yml",
+  "packageManager": "custom",
+  "packageId": "modern-dev-mgmt.e2e.custom-smoke",
+  "appId": "1a237f9d-d28f-4101-800a-676411e66d0e",
+  "appName": "Modern Dev Mgmt E2E Custom Smoke",
+  "status": "success",
+  "releaseTag": "mdm-e2e-dryrun-20260515",
+  "assetName": "modern-dev-mgmt-dryrun.exe",
+  "createdAt": "2026-05-15T15:39:28.3448968Z",
+  "context": null
+}
