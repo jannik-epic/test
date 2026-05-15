@@ -135,6 +135,7 @@ jobs:
           git diff --cached --quiet
           if ($LASTEXITCODE -ne 0) {
             git commit -m "chore: record Modern Dev Mgmt wave ${{ github.run_id }}"
+            git pull --rebase origin "${{ github.ref_name }}"
             git push
           } else {
             Write-Host "no changes"
