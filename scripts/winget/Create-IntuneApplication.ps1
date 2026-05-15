@@ -189,7 +189,9 @@ function Get-IntuneWinPackageInfo {
     }
 
     $sizeText = Get-XmlText $detectionXml "UnencryptedContentSize"
+    $fileName = Get-XmlText $detectionXml "FileName"
     $setupFile = Get-XmlText $detectionXml "SetupFile"
+    if (-not $fileName) { $fileName = $encryptedContent.Name }
     if (-not $setupFile) { $setupFile = "install_script.ps1" }
 
     $profileIdentifier = Get-XmlText $detectionXml "ProfileIdentifier"
@@ -197,6 +199,7 @@ function Get-IntuneWinPackageInfo {
     $fileDigestAlgorithm = Get-XmlText $detectionXml "FileDigestAlgorithm"
     if (-not $fileDigestAlgorithm) { $fileDigestAlgorithm = "SHA256" }
     $fileEncryptionInfo = @{
+        '@odata.type' = 'microsoft.graph.fileEncryptionInfo'
         encryptionKey = Get-XmlText $detectionXml "EncryptionKey"
         macKey = Get-XmlText $detectionXml "MacKey"
         initializationVector = Get-XmlText $detectionXml "InitializationVector"
@@ -219,7 +222,7 @@ function Get-IntuneWinPackageInfo {
         throw "Detection.xml is missing required Intune encryption metadata: $($missingEncryptionFields -join ', ')"
     }
 
-    Write-Host "IntuneWin metadata: setupFile=$setupFile encryptedSize=$($encryptedContent.Length) unencryptedSize=$sizeText"
+    Write-Host "IntuneWin metadata: fileName=$fileName setupFile=$setupFile encryptedSize=$($encryptedContent.Length) unencryptedSize=$sizeText"
     Write-Host (
         "Encryption metadata lengths: key={0}, macKey={1}, iv={2}, mac={3}, digest={4}, profile={5}, digestAlgorithm={6}" -f
             $fileEncryptionInfo.encryptionKey.Length,
@@ -235,6 +238,7 @@ function Get-IntuneWinPackageInfo {
         encryptedContentPath = $encryptedContent.FullName
         encryptedSize = [int64]$encryptedContent.Length
         unencryptedSize = if ($sizeText) { [int64]$sizeText } else { [int64](Get-Item -LiteralPath $IntuneWinPath).Length }
+        fileName = $fileName
         setupFile = $setupFile
         fileEncryptionInfo = $fileEncryptionInfo
     }
@@ -359,7 +363,7 @@ try {
         displayName = $AppName
         description = $AppDescription
         publisher = $Publisher
-        fileName = [IO.Path]::GetFileName($intuneWinPath)
+        fileName = $packageInfo.fileName
         setupFilePath = $packageInfo.setupFile
         installCommandLine = $installCommand
         uninstallCommandLine = $uninstallCommand
@@ -405,7 +409,7 @@ try {
 
     $fileBody = @{
         '@odata.type' = '#microsoft.graph.mobileAppContentFile'
-        name = [IO.Path]::GetFileName($intuneWinPath)
+        name = $packageInfo.fileName
         size = $packageInfo.unencryptedSize
         sizeEncrypted = $packageInfo.encryptedSize
         manifest = $null
