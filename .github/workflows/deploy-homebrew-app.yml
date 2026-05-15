@@ -114,6 +114,11 @@ jobs:
         run: |
           set -euo pipefail
           export HOMEBREW_NO_AUTO_UPDATE=1
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            brew --version
+            echo "Dry run: skipping brew update, brew doctor, and footprint installation."
+            exit 0
+          fi
           # Clean up unnecessary local taps to avoid warnings
           brew untap homebrew/cask 2>/dev/null || true
           brew untap homebrew/core 2>/dev/null || true
@@ -161,6 +166,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export HOMEBREW_NO_AUTO_UPDATE=1
           brew info --cask --json=v2 "${{ github.event.inputs.package_id }}" | python3 -c "import json,sys; data=json.load(sys.stdin); casks=data.get('casks') or []; sys.exit('No Homebrew cask metadata returned') if not casks else print('Validated cask:', casks[0].get('token') or casks[0].get('full_token') or '${{ github.event.inputs.package_id }}')"
 
       - name: Package and upload to Intune
