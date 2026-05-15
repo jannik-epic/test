@@ -255,7 +255,7 @@ jobs:
 
       - name: Create Intune application
         id: create_app
-        shell: pwsh
+        shell: powershell
         run: |
           $params = @{
             AccessToken = "${{ steps.get_token.outputs.access_token }}"
