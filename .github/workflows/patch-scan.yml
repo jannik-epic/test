@@ -119,5 +119,6 @@ jobs:
             echo "no changes"
           else
             git commit -m "chore: refresh patch-analysis.json"
+            git pull --rebase origin "${GITHUB_REF_NAME:-main}"
             git push
           fi
