@@ -275,6 +275,7 @@ function Send-AzureBlobFile {
 
     Write-Host "Uploading encrypted content to Intune blob in $totalBlocks block(s) ($($file.Length) bytes)."
     try {
+        $isoEncoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
         $blockIndex = 0
         while (($bytesRead = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
             $blockId = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($blockIndex.ToString("0000")))
@@ -286,13 +287,14 @@ function Send-AzureBlobFile {
                 [Array]::Copy($buffer, 0, $slice, 0, $bytesRead)
                 $slice
             }
+            $encodedBody = $isoEncoding.GetString($payload)
             $separator = if ($AzureStorageUri.Contains("?")) { "&" } else { "?" }
-            $blockUrl = "$AzureStorageUri${separator}comp=block&blockid=$([Uri]::EscapeDataString($blockId))"
+            $blockUrl = "$AzureStorageUri${separator}comp=block&blockid=$blockId"
             Invoke-WebRequest `
                 -Method Put `
                 -Uri $blockUrl `
-                -Body $payload `
-                -ContentType "application/octet-stream" `
+                -Headers @{ "x-ms-blob-type" = "BlockBlob" } `
+                -Body $encodedBody `
                 -TimeoutSec 300 `
                 -UseBasicParsing | Out-Null
             $blockIndex += 1
