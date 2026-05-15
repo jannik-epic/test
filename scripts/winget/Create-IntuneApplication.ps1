@@ -329,7 +329,6 @@ try {
             '@odata.type' = '#microsoft.graph.win32LobAppInstallExperience'
             runAsAccount = $InstallContext
             deviceRestartBehavior = 'basedOnReturnCode'
-            maxRunTimeInMinutes = 60
         }
         applicableArchitectures = 'x64'
         minimumSupportedWindowsRelease = '1607'
