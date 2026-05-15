@@ -81,7 +81,7 @@ on:
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
   AZURE_CLIENT_ID: '7659f226-8344-4731-b758-a4d93238309c'
-  INTUNE_API_URL: 'https://graph.microsoft.com/beta'
+  INTUNE_API_URL: 'https://graph.microsoft.com/v1.0'
 
 jobs:
   deploy-winget-app:
