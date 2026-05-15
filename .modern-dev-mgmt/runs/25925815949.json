@@ -1,0 +1,11 @@
+{
+  "workflowRunId": "25925815949",
+  "workflow": "deploy-winget-app.yml",
+  "packageManager": "winget",
+  "packageId": "Greenshot.Greenshot",
+  "appId": "e9ecaaa0-3bb0-448d-959e-84559bb845f8",
+  "appName": "Modern Dev Mgmt E2E Winget Smoke",
+  "status": "success",
+  "createdAt": "2026-05-15T15:21:10.2404884Z",
+  "context": null
+}
