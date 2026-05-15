@@ -267,60 +267,17 @@ function Wait-GraphFileState {
 function Send-AzureBlobFile {
     param([string]$AzureStorageUri, [string]$Path)
 
-    $blockSize = 4 * 1024 * 1024
     $file = Get-Item -LiteralPath $Path
-    $totalBlocks = [Math]::Ceiling($file.Length / $blockSize)
-    $blockIds = New-Object System.Collections.Generic.List[string]
-    $buffer = New-Object byte[] $blockSize
-    $stream = [System.IO.File]::OpenRead($Path)
-
-    Write-Host "Uploading encrypted content to Intune blob in $totalBlocks block(s)."
-    try {
-        $blockIndex = 0
-        while (($bytesRead = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
-            $blockId = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes(("block-{0:D8}" -f $blockIndex)))
-            $blockIds.Add($blockId)
-            $payload = if ($bytesRead -eq $buffer.Length) {
-                $buffer
-            } else {
-                $slice = New-Object byte[] $bytesRead
-                [Array]::Copy($buffer, 0, $slice, 0, $bytesRead)
-                $slice
-            }
-            $separator = if ($AzureStorageUri.Contains("?")) { "&" } else { "?" }
-            $blockUrl = "$AzureStorageUri${separator}comp=block&blockid=$([Uri]::EscapeDataString($blockId))"
-            Invoke-WebRequest `
-                -Method Put `
-                -Uri $blockUrl `
-                -Body $payload `
-                -Headers @{ "x-ms-blob-type" = "BlockBlob" } `
-                -ContentType "application/octet-stream" `
-                -TimeoutSec 300 `
-                -UseBasicParsing | Out-Null
-            $blockIndex += 1
-            $progress = [Math]::Round(($blockIndex / [Math]::Max($totalBlocks, 1)) * 100, 1)
-            Write-Host "Uploaded block $blockIndex/$totalBlocks ($progress%)."
-        }
-    } finally {
-        $stream.Dispose()
-    }
-
-    $blockListXml = '<?xml version="1.0" encoding="utf-8"?><BlockList>'
-    foreach ($blockId in $blockIds) {
-        $blockListXml += "<Latest>$blockId</Latest>"
-    }
-    $blockListXml += "</BlockList>"
-    $commitSeparator = if ($AzureStorageUri.Contains("?")) { "&" } else { "?" }
-    $commitUrl = "$AzureStorageUri${commitSeparator}comp=blocklist"
-
+    Write-Host "Uploading encrypted content to Intune blob ($($file.Length) bytes)."
     Invoke-WebRequest `
         -Method Put `
-        -Uri $commitUrl `
-        -Body $blockListXml `
-        -ContentType "application/xml" `
+        -Uri $AzureStorageUri `
+        -InFile $Path `
+        -Headers @{ "x-ms-blob-type" = "BlockBlob" } `
+        -ContentType "application/octet-stream" `
         -TimeoutSec 300 `
         -UseBasicParsing | Out-Null
-    Write-Host "Azure blob block list committed."
+    Write-Host "Azure blob upload completed."
 }
 
 if (-not $AppName) {
