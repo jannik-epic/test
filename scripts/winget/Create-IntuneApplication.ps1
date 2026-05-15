@@ -320,30 +320,28 @@ try {
         displayName = $AppName
         description = $AppDescription
         publisher = $Publisher
+        displayVersion = $Version
         fileName = $packageInfo.fileName
         setupFilePath = $packageInfo.setupFile
         installCommandLine = $installCommand
         uninstallCommandLine = $uninstallCommand
         installExperience = @{
+            '@odata.type' = '#microsoft.graph.win32LobAppInstallExperience'
             runAsAccount = $InstallContext
             deviceRestartBehavior = 'basedOnReturnCode'
+            maxRunTimeInMinutes = 60
         }
-        detectionRules = @(
+        applicableArchitectures = 'x64'
+        minimumSupportedWindowsRelease = '1607'
+        rules = @(
             @{
-                '@odata.type' = '#microsoft.graph.win32LobAppPowerShellScriptDetection'
+                '@odata.type' = '#microsoft.graph.win32LobAppPowerShellScriptRule'
+                ruleType = 'detection'
                 enforceSignatureCheck = $false
                 runAs32Bit = $false
+                operationType = 'notConfigured'
+                operator = 'notConfigured'
                 scriptContent = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($detectionScript))
-            }
-        )
-        requirementRules = @(
-            @{
-                '@odata.type' = '#microsoft.graph.win32LobAppRegistryRequirement'
-                operator = 'equal'
-                keyPath = 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion'
-                valueName = 'ProgramFilesDir'
-                check32BitOn64System = $false
-                detectionType = 'exists'
             }
         )
         returnCodes = @(
