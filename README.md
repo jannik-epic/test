@@ -33,7 +33,16 @@ This repository contains automated workflows for deploying applications to Micro
   - Supports Modern Dev Mgmt app-setting script overrides through base64 workflow inputs
   - Applies assignment templates and writes auditable run state under `.modern-dev-mgmt/runs/`
 
-### 4. Patch Scan
+### 4. Custom macOS Package Deployment
+- **File**: `.github/workflows/deploy-custom-macos-package.yml`
+- **Purpose**: Deploy uploaded macOS PKG/DMG installers from Modern Dev Mgmt release assets to Intune
+- **Features**:
+  - Downloads the uploaded PKG/DMG from a tenant-repo GitHub release asset
+  - Converts DMGs containing an app bundle into a signed-package-ready PKG payload
+  - Uploads through Microsoft Graph `macOSPkgApp` content-version flow
+  - Applies assignment templates and writes auditable run state under `.modern-dev-mgmt/runs/`
+
+### 5. Patch Scan
 - **File**: `.github/workflows/patch-scan.yml`
 - **Purpose**: Scheduled upstream version checks for managed Winget and Homebrew apps
 - **Features**:
@@ -41,7 +50,7 @@ This repository contains automated workflows for deploying applications to Micro
   - Detects major, minor and patch updates
   - Writes `patch-analysis.json` for PackageFlow to ingest
 
-### 5. Intune Inventory Coverage
+### 6. Intune Inventory Coverage
 - **File**: `.github/workflows/intune-inventory-coverage.yml`
 - **Purpose**: Scheduled check for detected device apps that have no centrally managed Intune app
 - **Features**:
