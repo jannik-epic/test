@@ -121,6 +121,8 @@ jobs:
           brew doctor || true
 
       - name: Generate App Footprint Report
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        timeout-minutes: 20
         shell: bash
         run: |
           set -euo pipefail
@@ -137,6 +139,7 @@ jobs:
           fi
 
       - name: Convert Footprint Report to PDF
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -152,6 +155,13 @@ jobs:
           else
             echo "⚠️  Skipping PDF generation - text report not available"
           fi
+
+      - name: Validate Homebrew cask metadata
+        if: ${{ github.event.inputs.dry_run == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew info --cask --json=v2 "${{ github.event.inputs.package_id }}" | python3 -c "import json,sys; data=json.load(sys.stdin); casks=data.get('casks') or []; sys.exit('No Homebrew cask metadata returned') if not casks else print('Validated cask:', casks[0].get('token') or casks[0].get('full_token') or '${{ github.event.inputs.package_id }}')"
 
       - name: Package and upload to Intune
         id: package_upload
