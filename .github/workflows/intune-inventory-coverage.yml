@@ -158,5 +158,6 @@ jobs:
             echo "no changes"
           else
             git commit -m "chore: refresh Intune inventory coverage"
+            git pull --rebase origin "${GITHUB_REF_NAME:-main}"
             git push
           fi
