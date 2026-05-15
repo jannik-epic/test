@@ -23,7 +23,6 @@ import mimetypes
 import os
 import plistlib
 import shutil
-import stat
 import subprocess
 import sys
 import tempfile
@@ -792,12 +791,18 @@ def upload_file(upload_url: str, file_path: Path) -> None:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Package Homebrew Cask to Intune")
-    parser.add_argument("--cask", required=True, help="Homebrew Cask Token")
+    parser = argparse.ArgumentParser(description="Package Homebrew Cask or uploaded macOS package to Intune")
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--cask", help="Homebrew Cask Token")
+    source.add_argument("--pkg-file", help="Path to an uploaded .pkg file")
+    source.add_argument("--dmg-file", help="Path to an uploaded .dmg file")
     parser.add_argument("--output-dir", default="output", help="Zielordner für Artefakte")
     parser.add_argument("--display-name", default=None, help="Anzeigename in Intune")
     parser.add_argument("--publisher", default=None, help="Publisher in Intune")
     parser.add_argument("--description", default=None, help="Beschreibung in Intune")
+    parser.add_argument("--app-version", default=None, help="Version for uploaded custom PKG/DMG packages")
+    parser.add_argument("--bundle-id", default=None, help="Primary bundle id for uploaded custom PKG packages")
+    parser.add_argument("--bundle-name", default=None, help="Primary bundle name for uploaded custom PKG packages")
     parser.add_argument("--icon-file", default=None, help="Pfad zu einem PNG/JPG Icon")
     parser.add_argument("--pre-install-script-b64", default=None, help="Base64-kodiertes Pre-Install-Script")
     parser.add_argument("--post-install-script-b64", default=None, help="Base64-kodiertes Post-Install-Script")
@@ -852,11 +857,95 @@ def normalize_display_name(base_name: str, version: str) -> str:
     return candidate
 
 
+def slug(value: str) -> str:
+    normalized = "".join(ch.lower() if ch.isalnum() else "." for ch in value)
+    return ".".join(part for part in normalized.split(".") if part) or "custom"
+
+
+def metadata_from_args(args: argparse.Namespace, source_path: Path) -> BundleMetadata:
+    name = args.bundle_name or args.display_name or source_path.stem
+    version = args.app_version or "1.0.0"
+    bundle_id = args.bundle_id or f"com.moderndevmgmt.custom.{slug(name)}"
+    return BundleMetadata(bundle_id=bundle_id, bundle_name=name, version=version)
+
+
+def copy_pkg_for_upload(source: Path, output_dir: Path) -> Path:
+    if not source.exists():
+        raise FileNotFoundError(f"PKG-Datei nicht gefunden: {source}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    target = output_dir / source.name
+    if source.resolve() != target.resolve():
+        shutil.copy2(source, target)
+    return target
+
+
+def first_payload_from_dmg(dmg_path: Path, output_dir: Path, fallback_metadata: BundleMetadata) -> tuple[Path, BundleMetadata]:
+    if not dmg_path.exists():
+        raise FileNotFoundError(f"DMG-Datei nicht gefunden: {dmg_path}")
+    LOGGER.info("Mounte DMG %s", dmg_path)
+    attach = run(["hdiutil", "attach", "-nobrowse", "-readonly", "-plist", str(dmg_path)])
+    payload = plistlib.loads(attach.stdout.encode("utf-8"))
+    mount_points = [
+        entity.get("mount-point")
+        for entity in payload.get("system-entities", [])
+        if entity.get("mount-point")
+    ]
+    if not mount_points:
+        raise RuntimeError(f"DMG konnte nicht gemountet werden: {dmg_path}")
+    mounted_paths = [Path(point) for point in mount_points]
+    try:
+        for mount_point in mounted_paths:
+            app_candidates = sorted(mount_point.rglob("*.app"))
+            if app_candidates:
+                metadata = read_bundle_metadata(app_candidates[0])
+                pkg_output_dir = output_dir / metadata.bundle_id
+                return build_pkg(app_candidates[0], metadata, pkg_output_dir), metadata
+        for mount_point in mounted_paths:
+            pkg_candidates = sorted(mount_point.rglob("*.pkg"))
+            if pkg_candidates:
+                return copy_pkg_for_upload(pkg_candidates[0], output_dir), fallback_metadata
+    finally:
+        for mount_point in mounted_paths:
+            run(["hdiutil", "detach", str(mount_point)], check=False)
+    raise RuntimeError(f"DMG enthält keine unterstützte .app oder .pkg Payload: {dmg_path}")
+
+
+def resolve_package_source(args: argparse.Namespace) -> tuple[Path, BundleMetadata, Optional[BrewCask]]:
+    output_dir = Path(args.output_dir)
+    if args.cask:
+        cask = fetch_cask_metadata(args.cask)
+        install_cask(args.cask)
+        cask_path = resolve_caskroom_path(cask.token, cask.version)
+        app_path = None
+        for app_name in cask.app_names:
+            candidate = cask_path / app_name
+            if candidate.exists():
+                app_path = candidate
+                break
+        if not app_path:
+            raise FileNotFoundError(
+                f"Konnte kein App Bundle für {args.cask} finden. Erwartete eine der folgenden Dateien: {', '.join(cask.app_names)}"
+            )
+        metadata = read_bundle_metadata(app_path)
+        pkg_output_dir = output_dir / metadata.bundle_id
+        return build_pkg(app_path, metadata, pkg_output_dir), metadata, cask
+
+    if args.pkg_file:
+        source = Path(args.pkg_file)
+        metadata = metadata_from_args(args, source)
+        return copy_pkg_for_upload(source, output_dir / metadata.bundle_id), metadata, None
+
+    source = Path(args.dmg_file)
+    metadata = metadata_from_args(args, source)
+    pkg_path, resolved_metadata = first_payload_from_dmg(source, output_dir / metadata.bundle_id, metadata)
+    return pkg_path, resolved_metadata, None
+
+
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
 
     # Generate footprint report if requested
-    if args.generate_footprint_report:
+    if args.generate_footprint_report and args.cask:
         LOGGER.info("Generiere Footprint-Analyse für %s...", args.cask)
         try:
             # Import footprint analyzer
@@ -883,23 +972,10 @@ def main(argv: list[str]) -> int:
                     LOGGER.warning("Footprint-Analyse fehlgeschlagen: %s", result.stderr)
         except Exception as exc:
             LOGGER.warning("Footprint-Analyse konnte nicht erstellt werden: %s", exc)
+    elif args.generate_footprint_report:
+        LOGGER.info("Footprint-Analyse wird nur für Homebrew Casks unterstützt; überspringe Custom Package.")
 
-    cask = fetch_cask_metadata(args.cask)
-    install_cask(args.cask)
-    cask_path = resolve_caskroom_path(cask.token, cask.version)
-    app_path = None
-    for app_name in cask.app_names:
-        candidate = cask_path / app_name
-        if candidate.exists():
-            app_path = candidate
-            break
-    if not app_path:
-        raise FileNotFoundError(
-            f"Konnte kein App Bundle für {args.cask} finden. Erwartete eine der folgenden Dateien: {', '.join(cask.app_names)}"
-        )
-    metadata = read_bundle_metadata(app_path)
-    pkg_output_dir = Path(args.output_dir) / metadata.bundle_id
-    pkg_path = build_pkg(app_path, metadata, pkg_output_dir)
+    pkg_path, metadata, cask = resolve_package_source(args)
     check_pkg_signature(pkg_path)
     LOGGER.info("Verwende erzeugtes PKG direkt für Intune Upload (kein Wrapping)")
     intune_pkg_path = pkg_path
@@ -913,8 +989,8 @@ def main(argv: list[str]) -> int:
     config = load_intune_config()
     client = IntuneClient(config)
     display_name = normalize_display_name(args.display_name or metadata.bundle_name, metadata.version)
-    description = args.description or cask.desc or metadata.bundle_name
-    publisher = args.publisher or "Homebrew"
+    description = args.description or (cask.desc if cask else None) or metadata.bundle_name
+    publisher = args.publisher or ("Homebrew" if cask else "Modern Dev Mgmt")
 
     # Build params dict, only including icon if it exists
     app_params = {
@@ -999,6 +1075,7 @@ def main(argv: list[str]) -> int:
     if github_output:
         with open(github_output, "a", encoding="utf-8") as handle:
             handle.write(f"app_id={app_id}\n")
+            handle.write(f"app_name={display_name}\n")
     return 0
 
 
