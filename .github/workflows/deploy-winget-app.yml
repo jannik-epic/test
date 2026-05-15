@@ -177,7 +177,7 @@ jobs:
             $params.AppDescription = "${{ steps.winget_info.outputs.description }}"
           }
           ./scripts/winget/Create-IntuneApplication.ps1 @params
-        shell: pwsh
+        shell: powershell
 
       - name: Apply assignment template
         if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.assignment_json != '' }}
