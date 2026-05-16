@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-05-15T15:58:59.435Z",
+  "generatedAt": "2026-05-16T04:00:21.323Z",
   "detectedInScope": 12,
-  "managedCovered": 4,
+  "managedCovered": 5,
   "unmanaged": [
     {
       "id": "0000a1e4e19b8a12c64d127b40418678bd400000ffff",
@@ -40,14 +40,6 @@
       "displayName": "Microsoft Visual C++ 2022 Redistributable (Arm64) - 14.30.30704",
       "publisher": "Microsoft Corporation",
       "version": "14.30.30704.0",
-      "platform": "windows",
-      "deviceCount": 1
-    },
-    {
-      "id": "0000e7387a04d8dd77217062900a6109109300000904",
-      "displayName": "Python Launcher",
-      "publisher": "Python Software Foundation",
-      "version": "3.11.8150.0",
       "platform": "windows",
       "deviceCount": 1
     },
@@ -112,6 +104,17 @@
       "managedIntuneAppId": "5166d85f-1ce3-4100-b47f-6f64b6c3d32b",
       "managedDisplayName": "Visual Studio Code",
       "confidence": 0.9
+    },
+    {
+      "id": "0000e7387a04d8dd77217062900a6109109300000904",
+      "displayName": "Python Launcher",
+      "version": "3.11.8150.0",
+      "publisher": "Python Software Foundation",
+      "platform": "windows",
+      "deviceCount": 1,
+      "managedIntuneAppId": "eff12961-5c7d-4df0-9145-27839a1af4ab",
+      "managedDisplayName": "Python Launcher",
+      "confidence": 1
     }
   ]
 }
