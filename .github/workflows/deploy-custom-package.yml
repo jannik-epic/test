@@ -96,20 +96,8 @@ on:
         description: 'Human-readable assignment plan summary'
         required: false
         type: string
-      apps_to_close:
-        description: 'Rendered close-app list from the selected Modern Dev Mgmt app setting'
-        required: false
-        type: string
-      mst_transform_filename:
-        description: 'MST transform filename from the selected app setting'
-        required: false
-        type: string
-      mst_transform_b64:
-        description: 'Base64 encoded MST transform from the selected app setting'
-        required: false
-        type: string
-      accessory_files_b64:
-        description: 'Base64 encoded JSON accessory files from the selected app setting'
+      app_setting_files_b64:
+        description: 'Base64 encoded JSON payload with MST transform and accessory files from the selected app setting'
         required: false
         type: string
       signing_cert_thumbprint:
@@ -185,37 +173,48 @@ jobs:
         id: materialize_files
         shell: pwsh
         env:
-          MST_TRANSFORM_B64: ${{ github.event.inputs.mst_transform_b64 }}
-          ACCESSORY_FILES_B64: ${{ github.event.inputs.accessory_files_b64 }}
+          APP_SETTING_FILES_B64: ${{ github.event.inputs.app_setting_files_b64 }}
         run: |
           $ErrorActionPreference = 'Stop'
           $assetDir = "custom-files"
           New-Item -ItemType Directory -Force -Path $assetDir | Out-Null
-          $mstName = "${{ github.event.inputs.mst_transform_filename }}"
-          if ($mstName -or $env:MST_TRANSFORM_B64) {
-            if (-not $env:MST_TRANSFORM_B64) {
-              throw "mst_transform_b64 is required when mst_transform_filename is supplied."
+          $payload = $null
+          if ($env:APP_SETTING_FILES_B64) {
+            $json = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($env:APP_SETTING_FILES_B64 -replace '\s+', '')))
+            if ($json) { $payload = $json | ConvertFrom-Json }
+          }
+          $mstTransform = $null
+          if ($payload -and $payload.PSObject.Properties.Name -contains 'mstTransform') {
+            $mstTransform = $payload.mstTransform
+          }
+          if ($mstTransform) {
+            $mstName = [string]$mstTransform.filename
+            $mstBase64 = [string]$mstTransform.base64
+            if (-not $mstBase64) {
+              throw "app_setting_files_b64.mstTransform.base64 is required when mstTransform is supplied."
             }
             # Default filename when only the base64 payload is provided.
             if (-not $mstName) { $mstName = 'transform.mst' }
             $safeMstName = [IO.Path]::GetFileName($mstName)
             if (-not $safeMstName) { throw "MST transform filename is invalid." }
             $mstPath = Join-Path $assetDir $safeMstName
-            [IO.File]::WriteAllBytes($mstPath, [Convert]::FromBase64String(($env:MST_TRANSFORM_B64 -replace 's+', '')))
+            [IO.File]::WriteAllBytes($mstPath, [Convert]::FromBase64String(($mstBase64 -replace '\s+', '')))
             Write-Host "Materialized MST transform: $mstPath"
             # Expose the resolved filename so the install-script generator can
             # append TRANSFORMS="<file>" to silent msiexec invocations.
             Add-Content -Path $env:GITHUB_OUTPUT -Value "mst_filename=$safeMstName"
           }
-          if ($env:ACCESSORY_FILES_B64) {
-            $json = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($env:ACCESSORY_FILES_B64 -replace 's+', '')))
-            $entries = $json | ConvertFrom-Json
+          $entries = @()
+          if ($payload -and $payload.PSObject.Properties.Name -contains 'accessoryFiles') {
+            $entries = @($payload.accessoryFiles)
+          }
+          if ($entries.Count -gt 0) {
             foreach ($entry in @($entries)) {
               $filename = [IO.Path]::GetFileName([string]$entry.filename)
               if (-not $filename) { throw "Accessory file entry is missing a safe filename." }
               if (-not $entry.base64) { throw "Accessory file '$filename' is missing base64 content." }
               $target = Join-Path $assetDir $filename
-              [IO.File]::WriteAllBytes($target, [Convert]::FromBase64String(([string]$entry.base64 -replace 's+', '')))
+              [IO.File]::WriteAllBytes($target, [Convert]::FromBase64String(([string]$entry.base64 -replace '\s+', '')))
               Write-Host "Materialized accessory file: $target"
             }
           }
@@ -256,35 +255,6 @@ jobs:
           if ($mstFile -and $engine -eq 'msi' -and $installArgs -notmatch '(?i)\bTRANSFORMS\s*=') {
             $installArgs = ($installArgs.Trim() + ' TRANSFORMS="' + $mstFile + '"').Trim()
             Write-Host "Appended TRANSFORMS=$mstFile to install_args"
-          }
-
-          # Apps-to-close prologue: PSADT v4 emits Show-ADTInstallationWelcome; in
-          # non-PSADT runtimes fall back to Stop-Process so we never block-execute
-          # outside a PSADT session and never break dry-run (this only affects
-          # install_script.ps1 contents, not the build).
-          $appsToClose = "${{ github.event.inputs.apps_to_close }}"
-          $closeAppsPrologue = ''
-          if ($appsToClose) {
-            $apps = ($appsToClose -split '[,;\r\n]+' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) -join ','
-            if ($apps) {
-              $procList = (($apps -split ',') | ForEach-Object { ($_ -split '=', 2)[0].Trim() -replace '\.exe$','' } | Where-Object { $_ }) -join ','
-              $closeAppsPrologue = @"
-          # --- Modern Dev Mgmt: close running apps before install ---
-          if (Get-Command Show-ADTInstallationWelcome -ErrorAction SilentlyContinue) {
-              Show-ADTInstallationWelcome -CloseApps "$apps" -BlockExecution -Silent
-          } else {
-              foreach (`$proc in @('$procList' -split ',')) {
-                  if (`$proc) { Get-Process -Name `$proc -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue }
-              }
-          }
-          # --- end close-apps prologue ---
-          "@
-            }
-          }
-          # Merge close-apps prologue into the user-supplied $pre block so the
-          # existing template substitution flow picks it up without restructuring.
-          if ($closeAppsPrologue) {
-            $pre = if ($pre) { $closeAppsPrologue + [Environment]::NewLine + $pre } else { $closeAppsPrologue }
           }
 
           $installOverride = Decode-B64Utf8 $env:INSTALL_SCRIPT_B64
@@ -469,7 +439,7 @@ jobs:
           $ErrorActionPreference = "Stop"
           $raw = $env:UPDATE_ONLY_B64
           if ($raw.Contains(",")) { $raw = $raw.Split(",", 2)[1] }
-          [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -replace 's+', ''))) |
+          [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -replace '\s+', ''))) |
             Set-Content -Path "detection_script.ps1" -Encoding UTF8
           $baseName = "${{ github.event.inputs.package_name }}"
           if (-not $baseName) { $baseName = "${{ steps.create_app.outputs.app_name }}" }

@@ -243,7 +243,7 @@ jobs:
           $ErrorActionPreference = "Stop"
           $raw = $env:UPDATE_ONLY_B64
           if ($raw.Contains(",")) { $raw = $raw.Split(",", 2)[1] }
-          [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -replace 's+', ''))) |
+          [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -replace '\s+', ''))) |
             Set-Content -Path "detection_script.ps1" -Encoding UTF8
           $baseName = "${{ github.event.inputs.app_name }}"
           if (-not $baseName) { $baseName = "${{ steps.create_app.outputs.app_name }}" }
