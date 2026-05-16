@@ -1,0 +1,17 @@
+{
+  "workflowRunId": "25963146979",
+  "workflow": "apply-wave-assignment.yml",
+  "patchRunId": "live-ops-dry-run",
+  "waveRunId": "live-ops-dry-run",
+  "waveId": "live-ops",
+  "waveName": "Live Ops Dry Run",
+  "intuneAppId": "00000000-0000-0000-0000-000000000000",
+  "dryRun": true,
+  "status": "success",
+  "assignmentSummary": {
+    "mode": "live-ops-dry-run",
+    "source": "codex"
+  },
+  "context": null,
+  "createdAt": "2026-05-16T13:28:35.4916016Z"
+}
