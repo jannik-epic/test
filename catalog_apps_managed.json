@@ -9,12 +9,75 @@
     "pin_version": null
   },
   {
+    "id": 2564,
+    "source": "winget",
+    "package_id": "Greenshot.Greenshot",
+    "name": "Greenshot",
+    "os": "windows",
+    "version_deployed": "1.2.10.6",
+    "pin_version": null
+  },
+  {
+    "id": 4171,
+    "source": "winget",
+    "package_id": "Microsoft.Edge",
+    "name": "Microsoft Edge",
+    "os": "windows",
+    "version_deployed": "133.0.3065.69",
+    "pin_version": null
+  },
+  {
+    "id": 4173,
+    "source": "winget",
+    "package_id": "Microsoft.Edge.Beta",
+    "name": "Microsoft Edge Beta",
+    "os": "windows",
+    "version_deployed": "134.0.3124.8",
+    "pin_version": null
+  },
+  {
+    "id": 4191,
+    "source": "winget",
+    "package_id": "Microsoft.OneDrive",
+    "name": "Microsoft OneDrive",
+    "os": "windows",
+    "version_deployed": "24.221.1103.0003",
+    "pin_version": null
+  },
+  {
+    "id": 4359,
+    "source": "winget",
+    "package_id": "Microsoft.VCRedist.2005.x86",
+    "name": "Microsoft Visual C++ 2005 Redistributable",
+    "os": "windows",
+    "version_deployed": "14.30.30704.0",
+    "pin_version": null
+  },
+  {
+    "id": 4387,
+    "source": "winget",
+    "package_id": "Microsoft.VisualStudioCode",
+    "name": "Microsoft Visual Studio Code",
+    "os": "windows",
+    "version_deployed": "1.87.2",
+    "pin_version": null
+  },
+  {
     "id": 5933,
     "source": "winget",
     "package_id": "VinaySajip.PythonLauncher",
     "name": "Python Launcher",
     "os": "windows",
-    "version_deployed": "1.0.1.6",
+    "version_deployed": "3.11.8150.0",
+    "pin_version": null
+  },
+  {
+    "id": 6991,
+    "source": "winget",
+    "package_id": "Spice.SpiceWebDAVd",
+    "name": "Spice webdavd",
+    "os": "windows",
+    "version_deployed": "2.5.0",
     "pin_version": null
   }
 ]
