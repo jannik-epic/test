@@ -1,5 +1,14 @@
 [
   {
+    "id": 803,
+    "source": "winget",
+    "package_id": "Canva.Canva",
+    "name": "Canva",
+    "os": "windows",
+    "version_deployed": "1.101.0",
+    "pin_version": null
+  },
+  {
     "id": 5933,
     "source": "winget",
     "package_id": "VinaySajip.PythonLauncher",
