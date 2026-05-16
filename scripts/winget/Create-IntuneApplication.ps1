@@ -22,6 +22,9 @@ param(
     [string]$Version,
 
     [Parameter(Mandatory = $false)]
+    [string]$AppIconBase64,
+
+    [Parameter(Mandatory = $false)]
     [string]$InstallContext = "system",
 
     [Parameter(Mandatory = $false)]
@@ -97,6 +100,32 @@ function Invoke-GraphDelete {
         -Uri $Uri `
         -Headers @{ Authorization = "Bearer $AccessToken" } `
         -TimeoutSec $TimeoutSec | Out-Null
+}
+
+function Convert-AppIconBase64ToPayload {
+    param([string]$Value)
+    if ([string]::IsNullOrWhiteSpace($Value)) { return $null }
+    $raw = $Value.Trim()
+    $mime = "image/png"
+    if ($raw -match "^data:([^;,]+);base64,(.+)$") {
+        $mime = $Matches[1]
+        $raw = $Matches[2]
+    }
+    try {
+        $bytes = [Convert]::FromBase64String($raw)
+        if ($bytes.Length -eq 0 -or $raw.Length -gt 1048576) {
+            Write-Warning "Skipping app icon because it is empty or too large for Intune."
+            return $null
+        }
+        return @{
+            '@odata.type' = '#microsoft.graph.mimeContent'
+            type = $mime
+            value = $raw
+        }
+    } catch {
+        Write-Warning "Skipping invalid app icon payload: $($_.Exception.Message)"
+        return $null
+    }
 }
 
 function Ensure-IntuneWinAppUtil {
@@ -393,6 +422,10 @@ try {
             @{ returnCode = 1618; type = 'retry' }
         )
         notes = $notes
+    }
+    $iconPayload = Convert-AppIconBase64ToPayload -Value $AppIconBase64
+    if ($iconPayload) {
+        $appData.largeIcon = $iconPayload
     }
 
     $app = Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps" -Body $appData

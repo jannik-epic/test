@@ -77,6 +77,20 @@ on:
         description: 'Base64 encoded Modern Dev Mgmt run context'
         required: false
         type: string
+      apps_to_close:
+        description: 'Rendered close-app list from the selected Modern Dev Mgmt app setting (process.exe=Friendly Name, comma separated)'
+        required: false
+        type: string
+      update_only_b64:
+        # Dual-app pattern (RoboPack / Scappman parity): when present, a SECOND
+        # Intune mobileApp must be created with this script as its custom
+        # detection rule, intent=required, scope=all devices, display name
+        # suffixed with "(Update-Only)". The script reports detected for absent
+        # or current installs and not-detected only for outdated installs, so the
+        # required companion remediates outdated devices without clean-installing.
+        description: 'Base64 encoded PowerShell detection script for the Update-Only Required companion app'
+        required: false
+        type: string
 
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
@@ -155,6 +169,38 @@ jobs:
           ./scripts/winget/Generate-InstallationScripts.ps1 @params
         shell: pwsh
 
+      - name: Inject Show-ADTInstallationWelcome -CloseApps prologue
+        if: ${{ github.event.inputs.apps_to_close != '' }}
+        shell: pwsh
+        env:
+          APPS_TO_CLOSE: ${{ github.event.inputs.apps_to_close }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $apps = ($env:APPS_TO_CLOSE -split '[,;\r\n]+' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) -join ','
+          if (-not $apps) { return }
+          # PSADT v4 emits Show-ADTInstallationWelcome; in non-PSADT runtimes we
+          # fall back to Stop-Process on the same process-name list so we never
+          # block-execute outside a PSADT session and never break dry-run.
+          $processList = (($apps -split ',') | ForEach-Object { ($_ -split '=', 2)[0].Trim() -replace '\.exe$', '' } | Where-Object { $_ }) -join ','
+          $prologue = @"
+          # --- Modern Dev Mgmt: close running apps before install ---
+          if (Get-Command Show-ADTInstallationWelcome -ErrorAction SilentlyContinue) {
+              Show-ADTInstallationWelcome -CloseApps "$apps" -BlockExecution -Silent
+          } else {
+              foreach (`$proc in @('$processList' -split ',')) {
+                  if (`$proc) { Get-Process -Name `$proc -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue }
+              }
+          }
+          # --- end close-apps prologue ---
+          "@
+          foreach ($target in @('install_script.ps1','uninstall_script.ps1')) {
+            if (Test-Path -LiteralPath $target -PathType Leaf) {
+              $existing = Get-Content -LiteralPath $target -Raw
+              Set-Content -LiteralPath $target -Value ($prologue + [Environment]::NewLine + $existing) -Encoding UTF8
+              Write-Host "Injected close-apps prologue into $target"
+            }
+          }
+
       - name: Create Intune Application
         id: create_app
         run: |
@@ -187,6 +233,62 @@ jobs:
           ./scripts/common/Assign-IntuneMobileApp.ps1 -AccessToken "${{ steps.get_token.outputs.access_token }}" -AppId "${{ steps.create_app.outputs.app_id }}" -AssignmentJson $env:ASSIGNMENT_JSON -IntuneApiUrl "$env:INTUNE_API_URL"
         shell: pwsh
 
+      - name: Create Update-Only Required companion app
+        id: create_update_only_app
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.update_only_b64 != '' }}
+        shell: powershell
+        env:
+          UPDATE_ONLY_B64: ${{ github.event.inputs.update_only_b64 }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $raw = $env:UPDATE_ONLY_B64
+          if ($raw.Contains(",")) { $raw = $raw.Split(",", 2)[1] }
+          [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -replace 's+', ''))) |
+            Set-Content -Path "detection_script.ps1" -Encoding UTF8
+          $baseName = "${{ github.event.inputs.app_name }}"
+          if (-not $baseName) { $baseName = "${{ steps.create_app.outputs.app_name }}" }
+          if (-not $baseName) { $baseName = "${{ github.event.inputs.package_id }}" }
+          $params = @{
+            AccessToken = "${{ steps.get_token.outputs.access_token }}"
+            PackageId = "${{ github.event.inputs.package_id }}"
+            AppName = "$baseName (Update-Only)"
+            Publisher = "${{ steps.winget_info.outputs.publisher }}"
+            Version = "${{ steps.winget_info.outputs.version }}"
+            InstallContext = "${{ github.event.inputs.install_context }}"
+            UsePSADT = ("${{ github.event.inputs.use_psadt }}" -eq "true")
+            DryRun = $false
+            IntuneApiUrl = "$env:INTUNE_API_URL"
+            PackageSource = "Winget update-only companion"
+            PackageNotes = "Modern Dev Mgmt Update-Only Required companion. Primary Intune app: ${{ steps.create_app.outputs.app_id }}. Workflow: ${{ github.run_id }}."
+          }
+          if ("${{ github.event.inputs.app_description }}") {
+            $params.AppDescription = "${{ github.event.inputs.app_description }} (Update-Only Required companion)"
+          } elseif ("${{ steps.winget_info.outputs.description }}") {
+            $params.AppDescription = "${{ steps.winget_info.outputs.description }} (Update-Only Required companion)"
+          }
+          ./scripts/winget/Create-IntuneApplication.ps1 @params
+
+      - name: Assign Update-Only companion to all devices
+        if: ${{ github.event.inputs.dry_run != 'true' && steps.create_update_only_app.outputs.app_id != '' }}
+        shell: pwsh
+        run: |
+          $assignment = @{
+            mobileAppAssignments = @(
+              @{
+                '@odata.type' = '#microsoft.graph.mobileAppAssignment'
+                intent = 'required'
+                target = @{ '@odata.type' = '#microsoft.graph.allDevicesAssignmentTarget' }
+                settings = @{
+                  '@odata.type' = '#microsoft.graph.win32LobAppAssignmentSettings'
+                  notifications = 'showAll'
+                  restartSettings = $null
+                  deliveryOptimizationPriority = 'notConfigured'
+                }
+              }
+            )
+          } | ConvertTo-Json -Depth 20
+          ./scripts/common/Assign-IntuneMobileApp.ps1 -AccessToken "${{ steps.get_token.outputs.access_token }}" -AppId "${{ steps.create_update_only_app.outputs.app_id }}" -AssignmentJson $assignment -IntuneApiUrl "$env:INTUNE_API_URL"
+
       - name: Summary
         env:
           ASSIGNMENT_SUMMARY: ${{ github.event.inputs.assignment_summary }}
@@ -208,6 +310,9 @@ jobs:
             Write-Host "📱 App Name: $appName"
             Write-Host "🆔 App ID: $appId"
             Write-Host "📦 Package ID: $packageId"
+            if ("${{ steps.create_update_only_app.outputs.app_id }}") {
+              Write-Host "🔁 Update-Only companion App ID: ${{ steps.create_update_only_app.outputs.app_id }}"
+            }
             Write-Host ""
             Write-Host "The application is now available in the Microsoft Intune admin center."
           } else {
@@ -242,6 +347,7 @@ jobs:
             packageManager = "winget"
             packageId = "${{ github.event.inputs.package_id }}"
             appId = "${{ steps.create_app.outputs.app_id }}"
+            updateOnlyAppId = "${{ steps.create_update_only_app.outputs.app_id }}"
             appName = "${{ steps.create_app.outputs.app_name }}"
             status = "success"
             createdAt = (Get-Date).ToUniversalTime().ToString("o")

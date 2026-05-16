@@ -56,6 +56,10 @@ on:
         description: 'Human-readable assignment plan summary'
         required: false
         type: string
+      signing_identity:
+        description: 'codesign/productsign identity (Developer ID Installer common name or SHA-1 of the cert in the keychain)'
+        required: false
+        type: string
       modern_dev_mgmt_context_b64:
         description: 'Base64 encoded Modern Dev Mgmt run context'
         required: false
@@ -130,6 +134,43 @@ jobs:
           case "$asset_path_lower" in
             *.pkg|*.dmg) echo "asset_path=$asset_path" >> "$GITHUB_ENV" ;;
             *) echo "::error::Only .pkg and .dmg assets are supported by this workflow"; exit 1 ;;
+          esac
+
+      - name: Sign macOS package with productsign/codesign
+        if: ${{ github.event.inputs.signing_identity != '' && github.event.inputs.dry_run != 'true' }}
+        shell: bash
+        env:
+          SIGNING_IDENTITY: ${{ github.event.inputs.signing_identity }}
+          MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${asset_path:-}" ]]; then
+            echo "::error::asset_path is not set; cannot sign the selected package"
+            exit 1
+          fi
+          # Unlock the login keychain when a password was provisioned (required for non-interactive codesign).
+          if [[ -n "${MACOS_KEYCHAIN_PASSWORD:-}" ]]; then
+            security unlock-keychain -p "$MACOS_KEYCHAIN_PASSWORD" "$HOME/Library/Keychains/login.keychain-db" ||               security unlock-keychain -p "$MACOS_KEYCHAIN_PASSWORD" login.keychain || true
+          fi
+          asset_path_lower="$(printf '%s' "$asset_path" | tr '[:upper:]' '[:lower:]')"
+          case "$asset_path_lower" in
+            *.pkg)
+              signed_path="${asset_path%.pkg}.signed.pkg"
+              echo "Signing $asset_path with productsign identity '$SIGNING_IDENTITY'"
+              productsign --sign "$SIGNING_IDENTITY" "$asset_path" "$signed_path"
+              mv "$signed_path" "$asset_path"
+              pkgutil --check-signature "$asset_path" || true
+              ;;
+            *.dmg)
+              # codesign the DMG bundle itself; the python packager will convert it to pkg downstream.
+              echo "codesigning DMG $asset_path with identity '$SIGNING_IDENTITY'"
+              codesign --sign "$SIGNING_IDENTITY" --force --timestamp "$asset_path"
+              codesign --verify --verbose "$asset_path"
+              ;;
+            *)
+              echo "::error::Asset $asset_path is neither .pkg nor .dmg; cannot sign it"
+              exit 1
+              ;;
           esac
 
       - name: Package and upload to Intune

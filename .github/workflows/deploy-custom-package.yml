@@ -31,6 +31,10 @@ on:
         description: 'Application version'
         required: false
         type: string
+      app_icon_base64:
+        description: 'Base64 encoded app icon (optional)'
+        required: false
+        type: string
       installer_engine:
         description: 'Installer engine'
         required: true
@@ -92,8 +96,39 @@ on:
         description: 'Human-readable assignment plan summary'
         required: false
         type: string
+      apps_to_close:
+        description: 'Rendered close-app list from the selected Modern Dev Mgmt app setting'
+        required: false
+        type: string
+      mst_transform_filename:
+        description: 'MST transform filename from the selected app setting'
+        required: false
+        type: string
+      mst_transform_b64:
+        description: 'Base64 encoded MST transform from the selected app setting'
+        required: false
+        type: string
+      accessory_files_b64:
+        description: 'Base64 encoded JSON accessory files from the selected app setting'
+        required: false
+        type: string
+      signing_cert_thumbprint:
+        description: 'SHA-1 thumbprint of the tenant signing certificate to use (matches a SIGNING_CERT_PFX_BASE64 secret)'
+        required: false
+        type: string
       modern_dev_mgmt_context_b64:
         description: 'Base64 encoded Modern Dev Mgmt run context'
+        required: false
+        type: string
+      update_only_b64:
+        # Dual-app pattern (RoboPack / Scappman parity): when present, a SECOND
+        # Intune mobileApp must be created from the same installer with this
+        # script as its custom detection rule, intent=required, scope=all
+        # devices, display name suffixed with "(Update-Only)". The script
+        # reports detected for absent or current installs and not-detected only
+        # for outdated installs, so the required companion remediates outdated
+        # devices without clean-installing.
+        description: 'Base64 encoded PowerShell detection script for the Update-Only Required companion app'
         required: false
         type: string
 
@@ -146,6 +181,45 @@ jobs:
           }
           Write-Host "Downloaded installer asset: $assetPath"
 
+      - name: Materialize app setting files
+        id: materialize_files
+        shell: pwsh
+        env:
+          MST_TRANSFORM_B64: ${{ github.event.inputs.mst_transform_b64 }}
+          ACCESSORY_FILES_B64: ${{ github.event.inputs.accessory_files_b64 }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $assetDir = "custom-files"
+          New-Item -ItemType Directory -Force -Path $assetDir | Out-Null
+          $mstName = "${{ github.event.inputs.mst_transform_filename }}"
+          if ($mstName -or $env:MST_TRANSFORM_B64) {
+            if (-not $env:MST_TRANSFORM_B64) {
+              throw "mst_transform_b64 is required when mst_transform_filename is supplied."
+            }
+            # Default filename when only the base64 payload is provided.
+            if (-not $mstName) { $mstName = 'transform.mst' }
+            $safeMstName = [IO.Path]::GetFileName($mstName)
+            if (-not $safeMstName) { throw "MST transform filename is invalid." }
+            $mstPath = Join-Path $assetDir $safeMstName
+            [IO.File]::WriteAllBytes($mstPath, [Convert]::FromBase64String(($env:MST_TRANSFORM_B64 -replace 's+', '')))
+            Write-Host "Materialized MST transform: $mstPath"
+            # Expose the resolved filename so the install-script generator can
+            # append TRANSFORMS="<file>" to silent msiexec invocations.
+            Add-Content -Path $env:GITHUB_OUTPUT -Value "mst_filename=$safeMstName"
+          }
+          if ($env:ACCESSORY_FILES_B64) {
+            $json = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($env:ACCESSORY_FILES_B64 -replace 's+', '')))
+            $entries = $json | ConvertFrom-Json
+            foreach ($entry in @($entries)) {
+              $filename = [IO.Path]::GetFileName([string]$entry.filename)
+              if (-not $filename) { throw "Accessory file entry is missing a safe filename." }
+              if (-not $entry.base64) { throw "Accessory file '$filename' is missing base64 content." }
+              $target = Join-Path $assetDir $filename
+              [IO.File]::WriteAllBytes($target, [Convert]::FromBase64String(([string]$entry.base64 -replace 's+', '')))
+              Write-Host "Materialized accessory file: $target"
+            }
+          }
+
       - name: Generate custom installer scripts
         shell: pwsh
         env:
@@ -174,6 +248,44 @@ jobs:
           $version = "${{ github.event.inputs.app_version }}"
           $pre = Decode-B64Utf8 $env:PRE_INSTALL_SCRIPT_B64
           $post = Decode-B64Utf8 $env:POST_INSTALL_SCRIPT_B64
+
+          # If the MST materialization step published an mst_filename and we are
+          # installing an MSI silently, append TRANSFORMS="<file>" so msiexec
+          # picks up the transform from the same package directory.
+          $mstFile = "${{ steps.materialize_files.outputs.mst_filename }}"
+          if ($mstFile -and $engine -eq 'msi' -and $installArgs -notmatch '(?i)\bTRANSFORMS\s*=') {
+            $installArgs = ($installArgs.Trim() + ' TRANSFORMS="' + $mstFile + '"').Trim()
+            Write-Host "Appended TRANSFORMS=$mstFile to install_args"
+          }
+
+          # Apps-to-close prologue: PSADT v4 emits Show-ADTInstallationWelcome; in
+          # non-PSADT runtimes fall back to Stop-Process so we never block-execute
+          # outside a PSADT session and never break dry-run (this only affects
+          # install_script.ps1 contents, not the build).
+          $appsToClose = "${{ github.event.inputs.apps_to_close }}"
+          $closeAppsPrologue = ''
+          if ($appsToClose) {
+            $apps = ($appsToClose -split '[,;\r\n]+' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) -join ','
+            if ($apps) {
+              $procList = (($apps -split ',') | ForEach-Object { ($_ -split '=', 2)[0].Trim() -replace '\.exe$','' } | Where-Object { $_ }) -join ','
+              $closeAppsPrologue = @"
+          # --- Modern Dev Mgmt: close running apps before install ---
+          if (Get-Command Show-ADTInstallationWelcome -ErrorAction SilentlyContinue) {
+              Show-ADTInstallationWelcome -CloseApps "$apps" -BlockExecution -Silent
+          } else {
+              foreach (`$proc in @('$procList' -split ',')) {
+                  if (`$proc) { Get-Process -Name `$proc -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue }
+              }
+          }
+          # --- end close-apps prologue ---
+          "@
+            }
+          }
+          # Merge close-apps prologue into the user-supplied $pre block so the
+          # existing template substitution flow picks it up without restructuring.
+          if ($closeAppsPrologue) {
+            $pre = if ($pre) { $closeAppsPrologue + [Environment]::NewLine + $pre } else { $closeAppsPrologue }
+          }
 
           $installOverride = Decode-B64Utf8 $env:INSTALL_SCRIPT_B64
           if ($installOverride) {
@@ -253,6 +365,70 @@ jobs:
           "@ | Set-Content -Path "detection_script.ps1" -Encoding UTF8
           }
 
+      - name: Sign PSADT scripts and EXE payloads with signtool
+        if: ${{ github.event.inputs.signing_cert_thumbprint != '' }}
+        shell: pwsh
+        env:
+          SIGNING_CERT_PFX_BASE64: ${{ secrets.SIGNING_CERT_PFX_BASE64 }}
+          SIGNING_CERT_PFX_PASSWORD: ${{ secrets.SIGNING_CERT_PFX_PASSWORD }}
+          SIGNING_CERT_THUMBPRINT: ${{ github.event.inputs.signing_cert_thumbprint }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:SIGNING_CERT_PFX_BASE64) {
+            throw "signing_cert_thumbprint '$($env:SIGNING_CERT_THUMBPRINT)' was supplied but SIGNING_CERT_PFX_BASE64 repo secret is missing."
+          }
+          if (-not $env:SIGNING_CERT_PFX_PASSWORD) {
+            throw "SIGNING_CERT_PFX_PASSWORD repo secret is missing."
+          }
+          $signtool = (Get-Command signtool.exe -ErrorAction SilentlyContinue)
+          if (-not $signtool) {
+            # signtool ships with the Windows SDK; the hosted windows-latest runner has it under Program Files (x86).
+            $candidates = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe -ErrorAction SilentlyContinue |
+              Where-Object { $_.FullName -match 'x64\\signtool\.exe$' } |
+              Sort-Object FullName -Descending
+            if (-not $candidates) {
+              throw "signtool.exe not found on the runner."
+            }
+            $signtool = $candidates[0].FullName
+          } else {
+            $signtool = $signtool.Source
+          }
+          $pfxPath = Join-Path $env:RUNNER_TEMP "signing-cert.pfx"
+          [System.IO.File]::WriteAllBytes($pfxPath, [Convert]::FromBase64String($env:SIGNING_CERT_PFX_BASE64))
+          try {
+            $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new(
+              $pfxPath,
+              $env:SIGNING_CERT_PFX_PASSWORD,
+              [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
+            )
+            $actualThumbprint = ($cert.Thumbprint -replace '[^A-Fa-f0-9]', '').ToUpperInvariant()
+            $expectedThumbprint = ($env:SIGNING_CERT_THUMBPRINT -replace '[^A-Fa-f0-9]', '').ToUpperInvariant()
+            if ($expectedThumbprint -and $actualThumbprint -ne $expectedThumbprint) {
+              throw "Signing certificate thumbprint mismatch. Expected $expectedThumbprint but repo secret contains $actualThumbprint."
+            }
+            $targets = New-Object System.Collections.Generic.List[string]
+            foreach ($name in @('install_script.ps1', 'uninstall_script.ps1', 'detection_script.ps1', 'Deploy-Application.ps1')) {
+              if (Test-Path -LiteralPath $name -PathType Leaf) { [void]$targets.Add((Resolve-Path -LiteralPath $name).Path) }
+            }
+            if (Test-Path -LiteralPath 'custom-files' -PathType Container) {
+              Get-ChildItem -LiteralPath 'custom-files' -Recurse -File -Include *.exe, *.ps1, *.dll -ErrorAction SilentlyContinue |
+                ForEach-Object { [void]$targets.Add($_.FullName) }
+            }
+            if ($targets.Count -eq 0) {
+              Write-Host "No files matched the signing target list. Skipping."
+              exit 0
+            }
+            foreach ($target in $targets) {
+              Write-Host "Signing $target"
+              & $signtool sign /fd SHA256 /f $pfxPath /p $env:SIGNING_CERT_PFX_PASSWORD /tr http://timestamp.digicert.com /td SHA256 $target
+              if ($LASTEXITCODE -ne 0) {
+                throw "signtool exit code $LASTEXITCODE while signing $target"
+              }
+            }
+          } finally {
+            if (Test-Path -LiteralPath $pfxPath) { Remove-Item -LiteralPath $pfxPath -Force }
+          }
+
       - name: Create Intune application
         id: create_app
         shell: powershell
@@ -264,6 +440,7 @@ jobs:
             AppDescription = "${{ github.event.inputs.app_description }}"
             Publisher = "${{ github.event.inputs.app_publisher }}"
             Version = "${{ github.event.inputs.app_version }}"
+            AppIconBase64 = "${{ github.event.inputs.app_icon_base64 }}"
             InstallContext = "${{ github.event.inputs.install_context }}"
             UsePSADT = $true
             DryRun = ("${{ github.event.inputs.dry_run }}" -eq "true")
@@ -281,6 +458,60 @@ jobs:
           ASSIGNMENT_JSON: ${{ github.event.inputs.assignment_json }}
         run: |
           ./scripts/common/Assign-IntuneMobileApp.ps1 -AccessToken "${{ steps.get_token.outputs.access_token }}" -AppId "${{ steps.create_app.outputs.app_id }}" -AssignmentJson $env:ASSIGNMENT_JSON -IntuneApiUrl "$env:INTUNE_API_URL"
+
+      - name: Create Update-Only Required companion app
+        id: create_update_only_app
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.update_only_b64 != '' }}
+        shell: powershell
+        env:
+          UPDATE_ONLY_B64: ${{ github.event.inputs.update_only_b64 }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $raw = $env:UPDATE_ONLY_B64
+          if ($raw.Contains(",")) { $raw = $raw.Split(",", 2)[1] }
+          [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -replace 's+', ''))) |
+            Set-Content -Path "detection_script.ps1" -Encoding UTF8
+          $baseName = "${{ github.event.inputs.package_name }}"
+          if (-not $baseName) { $baseName = "${{ steps.create_app.outputs.app_name }}" }
+          if (-not $baseName) { $baseName = "${{ github.event.inputs.package_id }}" }
+          $params = @{
+            AccessToken = "${{ steps.get_token.outputs.access_token }}"
+            PackageId = "${{ github.event.inputs.package_id }}"
+            AppName = "$baseName (Update-Only)"
+            AppDescription = "${{ github.event.inputs.app_description }} (Update-Only Required companion)"
+            Publisher = "${{ github.event.inputs.app_publisher }}"
+            Version = "${{ github.event.inputs.app_version }}"
+            AppIconBase64 = "${{ github.event.inputs.app_icon_base64 }}"
+            InstallContext = "${{ github.event.inputs.install_context }}"
+            UsePSADT = $true
+            DryRun = $false
+            IntuneApiUrl = "$env:INTUNE_API_URL"
+            PackageFilesDirectory = "custom-files"
+            PackageSource = "Custom installer update-only companion"
+            PackageNotes = "Modern Dev Mgmt Update-Only Required companion. Primary Intune app: ${{ steps.create_app.outputs.app_id }}. Release: ${{ github.event.inputs.release_tag }}. Asset: ${{ github.event.inputs.asset_name }}. Workflow: ${{ github.run_id }}."
+          }
+          ./scripts/winget/Create-IntuneApplication.ps1 @params
+
+      - name: Assign Update-Only companion to all devices
+        if: ${{ github.event.inputs.dry_run != 'true' && steps.create_update_only_app.outputs.app_id != '' }}
+        shell: pwsh
+        run: |
+          $assignment = @{
+            mobileAppAssignments = @(
+              @{
+                '@odata.type' = '#microsoft.graph.mobileAppAssignment'
+                intent = 'required'
+                target = @{ '@odata.type' = '#microsoft.graph.allDevicesAssignmentTarget' }
+                settings = @{
+                  '@odata.type' = '#microsoft.graph.win32LobAppAssignmentSettings'
+                  notifications = 'showAll'
+                  restartSettings = $null
+                  deliveryOptimizationPriority = 'notConfigured'
+                }
+              }
+            )
+          } | ConvertTo-Json -Depth 20
+          ./scripts/common/Assign-IntuneMobileApp.ps1 -AccessToken "${{ steps.get_token.outputs.access_token }}" -AppId "${{ steps.create_update_only_app.outputs.app_id }}" -AssignmentJson $assignment -IntuneApiUrl "$env:INTUNE_API_URL"
 
       - name: Persist Modern Dev Mgmt run result
         if: ${{ github.event.inputs.dry_run != 'true' && steps.create_app.outputs.app_id != '' }}
@@ -309,6 +540,7 @@ jobs:
             packageManager = "custom"
             packageId = "${{ github.event.inputs.package_id }}"
             appId = "${{ steps.create_app.outputs.app_id }}"
+            updateOnlyAppId = "${{ steps.create_update_only_app.outputs.app_id }}"
             appName = "${{ steps.create_app.outputs.app_name }}"
             status = "success"
             releaseTag = "${{ github.event.inputs.release_tag }}"
@@ -336,4 +568,7 @@ jobs:
             "✅ Custom installer deployed to Intune." | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
             "App: ${{ steps.create_app.outputs.app_name }}" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
             "Intune app id: ${{ steps.create_app.outputs.app_id }}" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            if ("${{ steps.create_update_only_app.outputs.app_id }}") {
+              "Update-Only companion id: ${{ steps.create_update_only_app.outputs.app_id }}" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+            }
           }
