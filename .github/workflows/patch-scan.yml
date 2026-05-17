@@ -43,12 +43,13 @@ jobs:
             return null;
           }
           for (const a of apps) {
-            const wantOs = a.source === 'winget' ? 'windows' : 'macos';
+            const wantOs = a.source === 'homebrew' ? 'macos' : 'windows';
             if (wantOs !== os) continue;
             let latest = null, notes = null;
             try {
-              if (a.source === 'winget') {
-                const out = execSync('winget show "' + a.package_id + '" --accept-source-agreements', { encoding: 'utf8' });
+              if (a.source === 'winget' || a.source === 'msstore') {
+                const wingetSource = a.source === 'msstore' ? 'msstore' : 'winget';
+                const out = execSync('winget show "' + a.package_id + '" --source ' + wingetSource + ' --accept-source-agreements', { encoding: 'utf8' });
                 const m = out.match(/Version[^:]*:\s*(\S+)/);
                 latest = m ? m[1] : null;
                 const h = out.match(/Homepage[^:]*:\s*(\S+)/);

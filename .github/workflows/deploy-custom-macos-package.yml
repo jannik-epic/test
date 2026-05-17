@@ -31,6 +31,10 @@ on:
         description: 'Application version'
         required: false
         type: string
+      app_icon_base64:
+        description: 'Base64 encoded app icon (optional)'
+        required: false
+        type: string
       bundle_id:
         description: 'Primary bundle id fallback for raw PKG payloads'
         required: false
@@ -186,6 +190,7 @@ jobs:
           APP_DESCRIPTION: '${{ github.event.inputs.app_description }}'
           APP_PUBLISHER: '${{ github.event.inputs.app_publisher }}'
           APP_VERSION: '${{ github.event.inputs.app_version }}'
+          APP_ICON_BASE64: '${{ github.event.inputs.app_icon_base64 }}'
           BUNDLE_ID: '${{ github.event.inputs.bundle_id }}'
           PRE_INSTALL_SCRIPT_B64: '${{ github.event.inputs.pre_install_script_b64 }}'
           POST_INSTALL_SCRIPT_B64: '${{ github.event.inputs.post_install_script_b64 }}'
@@ -203,6 +208,13 @@ jobs:
           if [[ -n "$BUNDLE_ID" ]]; then ARGS+=(--bundle-id "$BUNDLE_ID"); fi
           if [[ -n "$PRE_INSTALL_SCRIPT_B64" ]]; then ARGS+=(--pre-install-script-b64 "$PRE_INSTALL_SCRIPT_B64"); fi
           if [[ -n "$POST_INSTALL_SCRIPT_B64" ]]; then ARGS+=(--post-install-script-b64 "$POST_INSTALL_SCRIPT_B64"); fi
+          ICON_FILE_PATH=""
+          if [[ -n "$APP_ICON_BASE64" ]]; then
+            ICON_FILE_PATH="output/app_icon.png"
+            export APP_ICON_BASE64 ICON_FILE_PATH
+            python3 -c "import base64, os, pathlib, sys; raw = os.environ.get('APP_ICON_BASE64', ''); raw = raw.split(',', 1)[1] if raw.startswith('data:') else raw.strip(); sys.exit('App icon base64 data is empty') if not raw else None; path = pathlib.Path(os.environ['ICON_FILE_PATH']); path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(base64.b64decode(raw))"
+            ARGS+=(--icon-file "$ICON_FILE_PATH")
+          fi
           asset_path_lower="$(printf '%s' "$asset_path" | tr '[:upper:]' '[:lower:]')"
           case "$asset_path_lower" in
             *.pkg) ARGS+=(--pkg-file "$asset_path") ;;

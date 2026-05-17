@@ -6,6 +6,10 @@ param(
     [string]$PackageId,
 
     [Parameter(Mandatory = $false)]
+    [ValidateSet("winget", "msstore")]
+    [string]$PackageSource = "winget",
+
+    [Parameter(Mandatory = $false)]
     [bool]$UsePSADT = $true,
 
     [Parameter(Mandatory = $false)]
@@ -54,6 +58,8 @@ function Decode-Base64Utf8 {
 if (-not $AppName) {
     $AppName = $PackageId.Split('.')[-1]
 }
+
+$PackageSourceArg = "--source $PackageSource"
 
 $installScriptOverride = Decode-Base64Utf8 $InstallScriptBase64
 $uninstallScriptOverride = Decode-Base64Utf8 $UninstallScriptBase64
@@ -108,7 +114,7 @@ Try {
         # __MODERNDEVMGMT_PRE_INSTALL__
 
         [String]`$installPhase = 'Installation'
-        Invoke-Winget -Arguments @("install", "--id", "$PackageId", "--exact", "--silent", "--accept-package-agreements", "--accept-source-agreements")
+        Invoke-Winget -Arguments @("install", "--id", "$PackageId", "--exact", "--source", "$PackageSource", "--silent", "--accept-package-agreements", "--accept-source-agreements")
 
         [String]`$installPhase = 'Post-Installation'
         # __MODERNDEVMGMT_POST_INSTALL__
@@ -157,7 +163,7 @@ catch {
         $installParts += "# Pre-install script"
         $installParts += $preInstallBlock
     }
-    $installParts += "winget install --id $PackageId --silent --accept-package-agreements --accept-source-agreements"
+    $installParts += "winget install --id $PackageId --exact $PackageSourceArg --silent --accept-package-agreements --accept-source-agreements"
     if ($postInstallBlock) {
         $installParts += "# Post-install script"
         $installParts += $postInstallBlock

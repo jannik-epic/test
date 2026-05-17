@@ -7,7 +7,7 @@ This script:
 3. Analyzes installed files and system changes
 4. Uninstalls the app
 5. Checks what files remain
-6. Generates a detailed report similar to Windows Robopack documentation
+6. Generates a detailed deployment footprint report
 """
 
 from __future__ import annotations
@@ -226,7 +226,7 @@ def format_size(size_bytes: int) -> str:
 
 
 def generate_report(footprint: AppFootprint, output_path: Path) -> None:
-    """Generate a detailed text report similar to Robopack documentation."""
+    """Generate a detailed text report for packaging and deployment review."""
     lines = []
 
     # Header

@@ -58,13 +58,21 @@ This repository contains automated workflows for deploying applications to Micro
   - Compares detected apps with Intune managed apps
   - Writes `intune-inventory-coverage.json` for MSP review
 
-### 6. Wave Assignment
+### 7. Wave Assignment
 - **File**: `.github/workflows/apply-wave-assignment.yml`
 - **Purpose**: Apply follow-up deployment-wave assignments for existing Intune apps
 - **Features**:
   - Uses the same Azure federated credential model as deployments
   - Writes auditable run and wave status files under `.modern-dev-mgmt/`
   - Lets the Modern Dev Mgmt web UI monitor rollout progress without doing direct Intune writes
+
+### 8. Directory Provisioning
+- **File**: `.github/workflows/provision-directory-object.yml`
+- **Purpose**: Create or update tenant Entra users and security groups from Modern Dev Mgmt
+- **Features**:
+  - Runs through the tenant repository and federated credential
+  - Supports dry-run planning before writing to Entra ID
+  - Keeps user/group provisioning auditable with GitHub run summaries
 
 ## Usage
 
@@ -102,9 +110,11 @@ The following application permissions are required:
 
 - `DeviceManagementApps.ReadWrite.All` - Read and write Intune applications
 - `DeviceManagementConfiguration.ReadWrite.All` - Read and write Intune configuration
+- `DeviceManagementServiceConfig.Read.All` - Read Intune service configuration, enrollment, and Autopilot reporting
 - `DeviceManagementManagedDevices.Read.All` - Read detected app/device inventory for coverage checks
 - `Directory.Read.All` - Read directory data
 - `Group.ReadWrite.All` - Create assignment backing groups from Modern Dev Mgmt
+- `User.ReadWrite.All` - Create or update users from tenant GitHub workflows
 - `Application.ReadWrite.All` - Manage application registrations
 - `AppRoleAssignment.ReadWrite.All` - Grant/administer application role assignments
 

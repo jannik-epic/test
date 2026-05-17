@@ -3,19 +3,23 @@
 
 param(
     [Parameter(Mandatory = $true)]
-    [string]$PackageId
+    [string]$PackageId,
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("winget", "msstore")]
+    [string]$PackageSource = "winget"
 )
 
-Write-Host "Fetching information for package: $PackageId"
+Write-Host "Fetching information for package: $PackageId from source: $PackageSource"
 
 # Search for the package using winget
-$searchResult = winget search --id $PackageId --exact --accept-source-agreements | Out-String
+$searchResult = winget search --id $PackageId --source $PackageSource --exact --accept-source-agreements | Out-String
 
 if ($searchResult -match $PackageId) {
-    Write-Host "Package found in Winget repository"
+    Write-Host "Package found in source: $PackageSource"
 
     # Get package details
-    $showResult = winget show --id $PackageId --accept-source-agreements | Out-String
+    $showResult = winget show --id $PackageId --source $PackageSource --accept-source-agreements | Out-String
 
     # Extract information
     $publisher = ""

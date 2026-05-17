@@ -1,6 +1,6 @@
 # macOS App Footprint Analyzer
 
-This tool analyzes the complete system footprint of Homebrew cask applications, similar to Windows Robopack documentation.
+This tool analyzes the complete system footprint of Homebrew cask applications and generates deployment-ready documentation.
 
 ## Features
 
@@ -40,7 +40,7 @@ The footprint report is automatically generated when you run the "Deploy Homebre
 
 ## Report Format
 
-The report includes sections similar to Windows Robopack documentation:
+The report includes deployment, detection, and cleanup sections:
 
 ```
 Google Chrome 141.0.7390.77 - macOS App Footprint Report

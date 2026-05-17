@@ -109,7 +109,7 @@ on:
         required: false
         type: string
       update_only_b64:
-        # Dual-app pattern (RoboPack / Scappman parity): when present, a SECOND
+        # Dual-app pattern: when present, a SECOND
         # Intune mobileApp must be created from the same installer with this
         # script as its custom detection rule, intent=required, scope=all
         # devices, display name suffixed with "(Update-Only)". The script

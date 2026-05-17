@@ -7,6 +7,14 @@ on:
         description: 'Winget Package ID (e.g., Microsoft.VisualStudioCode)'
         required: true
         type: string
+      package_source:
+        description: 'WinGet source for this package'
+        required: false
+        type: choice
+        default: 'winget'
+        options:
+          - 'winget'
+          - 'msstore'
       package_name:
         description: 'Package display name (optional compatibility input)'
         required: false
@@ -26,6 +34,10 @@ on:
         type: string
       app_description:
         description: 'App description'
+        required: false
+        type: string
+      app_icon_base64:
+        description: 'Base64 encoded app icon (optional)'
         required: false
         type: string
       install_context:
@@ -82,13 +94,25 @@ on:
         required: false
         type: string
       update_only_b64:
-        # Dual-app pattern (RoboPack / Scappman parity): when present, a SECOND
+        # Dual-app pattern: when present, a SECOND
         # Intune mobileApp must be created with this script as its custom
         # detection rule, intent=required, scope=all devices, display name
         # suffixed with "(Update-Only)". The script reports detected for absent
         # or current installs and not-detected only for outdated installs, so the
         # required companion remediates outdated devices without clean-installing.
         description: 'Base64 encoded PowerShell detection script for the Update-Only Required companion app'
+        required: false
+        type: string
+      wave_set_id:
+        description: 'Modern Dev Mgmt wave set id for this deployment (informational)'
+        required: false
+        type: string
+      wave_id:
+        description: 'Modern Dev Mgmt wave id for this deployment (informational)'
+        required: false
+        type: string
+      wave_name:
+        description: 'Modern Dev Mgmt wave name for this deployment (informational)'
         required: false
         type: string
 
@@ -126,7 +150,7 @@ jobs:
       - name: Fetch Winget Package Information
         id: winget_info
         run: |
-          ./scripts/winget/Fetch-WingetPackageInfo.ps1 -PackageId "${{ github.event.inputs.package_id }}"
+          ./scripts/winget/Fetch-WingetPackageInfo.ps1 -PackageId "${{ github.event.inputs.package_id }}" -PackageSource "${{ github.event.inputs.package_source || 'winget' }}"
         shell: pwsh
 
       - name: Generate Installation Scripts
@@ -140,6 +164,7 @@ jobs:
         run: |
           $params = @{
             PackageId = "${{ github.event.inputs.package_id }}"
+            PackageSource = "${{ github.event.inputs.package_source || 'winget' }}"
             UsePSADT = ("${{ github.event.inputs.use_psadt }}" -eq "true")
             InstallContext = "${{ github.event.inputs.install_context }}"
             Publisher = "${{ steps.winget_info.outputs.publisher }}"
@@ -204,6 +229,8 @@ jobs:
       - name: Create Intune Application
         id: create_app
         run: |
+          $packageSource = "${{ github.event.inputs.package_source || 'winget' }}"
+          $packageSourceLabel = if ($packageSource -eq "msstore") { "Microsoft Store via WinGet" } else { "WinGet" }
           $params = @{
             AccessToken = "${{ steps.get_token.outputs.access_token }}"
             PackageId = "${{ github.event.inputs.package_id }}"
@@ -213,6 +240,7 @@ jobs:
             UsePSADT = ("${{ github.event.inputs.use_psadt }}" -eq "true")
             DryRun = ("${{ github.event.inputs.dry_run }}" -eq "true")
             IntuneApiUrl = "$env:INTUNE_API_URL"
+            PackageSource = $packageSourceLabel
           }
           if ("${{ github.event.inputs.app_name }}") {
             $params.AppName = "${{ github.event.inputs.app_name }}"
@@ -221,6 +249,9 @@ jobs:
             $params.AppDescription = "${{ github.event.inputs.app_description }}"
           } elseif ("${{ steps.winget_info.outputs.description }}") {
             $params.AppDescription = "${{ steps.winget_info.outputs.description }}"
+          }
+          if ("${{ github.event.inputs.app_icon_base64 }}") {
+            $params.AppIconBase64 = "${{ github.event.inputs.app_icon_base64 }}"
           }
           ./scripts/winget/Create-IntuneApplication.ps1 @params
         shell: powershell
@@ -265,6 +296,9 @@ jobs:
             $params.AppDescription = "${{ github.event.inputs.app_description }} (Update-Only Required companion)"
           } elseif ("${{ steps.winget_info.outputs.description }}") {
             $params.AppDescription = "${{ steps.winget_info.outputs.description }} (Update-Only Required companion)"
+          }
+          if ("${{ github.event.inputs.app_icon_base64 }}") {
+            $params.AppIconBase64 = "${{ github.event.inputs.app_icon_base64 }}"
           }
           ./scripts/winget/Create-IntuneApplication.ps1 @params
 
