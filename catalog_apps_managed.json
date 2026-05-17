@@ -45,15 +45,6 @@
     "pin_version": null
   },
   {
-    "id": 4359,
-    "source": "winget",
-    "package_id": "Microsoft.VCRedist.2005.x86",
-    "name": "Microsoft Visual C++ 2005 Redistributable",
-    "os": "windows",
-    "version_deployed": "14.30.30704.0",
-    "pin_version": null
-  },
-  {
     "id": 4387,
     "source": "winget",
     "package_id": "Microsoft.VisualStudioCode",
