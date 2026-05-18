@@ -1,0 +1,28 @@
+{
+  "workflowRunId": "26026740197",
+  "workflow": "apply-wave-assignment.yml",
+  "patchRunId": "codex-smoke-1779098554",
+  "waveRunId": "codex-wave-1779098554",
+  "waveId": "codex-wave",
+  "waveName": "Codex Smoke Pilot",
+  "intuneAppId": "00000000-0000-0000-0000-000000000000",
+  "dryRun": true,
+  "status": "success",
+  "assignmentSummary": {
+    "waves": [
+      {
+        "name": "Smoke Pilot",
+        "intent": "available",
+        "target": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "dryRun": true
+  },
+  "context": {
+    "source": "manual-live-wave-smoke",
+    "dryRun": true,
+    "triggeredBy": "codex",
+    "timestamp": "2026-05-18T10:02:34Z"
+  },
+  "createdAt": "2026-05-18T10:02:52.8022702Z"
+}
