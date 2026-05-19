@@ -130,6 +130,7 @@ jobs:
           $runId = "${{ github.run_id }}"
           $outDir = ".modern-dev-mgmt/restore-runs/$runId"
           New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "out_dir=$outDir"
 
           $GraphBase = $env:GRAPH_BASE.TrimEnd('/')
           $GraphBetaBase = $env:GRAPH_BETA_BASE.TrimEnd('/')
@@ -157,7 +158,7 @@ jobs:
             if ($spec.PSObject.Properties.Match('writePath').Count -gt 0 -and $spec.writePath) {
               $path = $spec.writePath
             }
-            $cleanPath = ($path -split '?')[0]
+            $cleanPath = $path.Split('?')[0]
             $endpointMap[$spec.policyType] = "$base/$cleanPath"
             if ($spec.singleton) { $singletonMap[$spec.policyType] = $true }
             # Default to using {id}/assign for write-back of assignments — matches
@@ -385,7 +386,6 @@ jobs:
           $plan | ConvertTo-Json -Depth 30 | Set-Content -Path (Join-Path $outDir 'plan.json') -Encoding UTF8
           @{ applied = @($applied.ToArray()); skipped = @($skipped.ToArray()); failed = @($failed.ToArray()); warnings = @($warnings.ToArray()) } | ConvertTo-Json -Depth 30 | Set-Content -Path (Join-Path $outDir 'result.json') -Encoding UTF8
 
-          Add-Content -Path $env:GITHUB_OUTPUT -Value "out_dir=$outDir"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "applied=$($applied.Count)"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "skipped=$($skipped.Count)"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "failed=$($failed.Count)"
