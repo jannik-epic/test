@@ -175,7 +175,7 @@ jobs:
               }
               $next = $response.'@odata.nextLink'
             }
-            return @($items)
+            return @($items.ToArray())
           }
 
           function Save-GraphCollection {
@@ -323,7 +323,7 @@ jobs:
         if: always()
         with:
           name: tenant-operation-${{ github.run_id }}
-          path: ${{ steps.collect.outputs.out_dir }}
+          path: .modern-dev-mgmt/tenant-operations/${{ github.run_id }}
           if-no-files-found: warn
 
       - name: Commit operation evidence
