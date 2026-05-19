@@ -119,10 +119,15 @@ jobs:
           foreach ($k in @($includedKeys)) { [void]$includedSet.Add($k.ToLowerInvariant()) }
           $selectedSpecs = @($allSpecs | Where-Object { $includedSet.Contains($_.key.ToLowerInvariant()) })
 
-          $backupId = "${{ github.run_id }}"
+          # GitHub auto-exposes the run id as $env:GITHUB_RUN_ID. Using the
+          # env var instead of a ${{ ... }} expression inside the run block
+          # keeps the workflow under GitHub's 21000-char expression length
+          # limit (see https://github.com/actions/runner/issues/2347).
+          $backupId = $env:GITHUB_RUN_ID
           $tenantId = $env:AZURE_TENANT_ID
           $outDir = ".modern-dev-mgmt/tenant-backups/$tenantId/$backupId"
           New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "snapshot_dir=$outDir"
           New-Item -ItemType Directory -Force -Path (Join-Path $outDir 'assignments') | Out-Null
           New-Item -ItemType Directory -Force -Path (Join-Path $outDir 'groups') | Out-Null
           New-Item -ItemType Directory -Force -Path (Join-Path $outDir 'raw/graph-responses') | Out-Null
@@ -278,8 +283,8 @@ jobs:
             source = 'modern-dev-mgmt'
             tenantId = $tenantId
             backupId = $backupId
-            workflowRunId = '${{ github.run_id }}'
-            repository = '${{ github.repository }}'
+            workflowRunId = $env:GITHUB_RUN_ID
+            repository = $env:GITHUB_REPOSITORY
             scope = $scope
             includedTypes = @($selectedSpecs | ForEach-Object { $_.key })
             label = $env:INPUT_BACKUP_LABEL
@@ -314,7 +319,6 @@ jobs:
             if ($entry.Key -in @('assignments','groups')) { continue }
             $totalPolicies += [int]$entry.Value
           }
-          Add-Content -Path $env:GITHUB_OUTPUT -Value "snapshot_dir=$outDir"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "latest_path=$latestPath"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "backup_id=$backupId"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "policy_count=$totalPolicies"
@@ -326,8 +330,8 @@ jobs:
           $summary = @(
             '# Tenant Policy Backup',
             '',
-            "Backup ID: `$backupId`",
-            "Snapshot path: `$outDir`",
+            "Backup ID: $backupId",
+            "Snapshot path: $outDir",
             "Scope: $scope",
             '',
             '| Object | Count |',
