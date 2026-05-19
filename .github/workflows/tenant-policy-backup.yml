@@ -120,7 +120,7 @@ jobs:
           $selectedSpecs = @($allSpecs | Where-Object { $includedSet.Contains($_.key.ToLowerInvariant()) })
 
           # GitHub auto-exposes the run id as $env:GITHUB_RUN_ID. Using the
-          # env var instead of a ${{ ... }} expression inside the run block
+          # env var instead of an inline GitHub expression inside the run block
           # keeps the workflow under GitHub's 21000-char expression length
           # limit (see https://github.com/actions/runner/issues/2347).
           $backupId = $env:GITHUB_RUN_ID
