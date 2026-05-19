@@ -290,8 +290,8 @@ jobs:
           }
           if ($env:INPUT_REQUEST_CONTEXT_B64) { $manifest.requestContextProvided = $true }
           Save-Json -Name 'manifest.json' -Data $manifest
-          Save-Json -Name 'warnings.json' -Data @($warnings)
-          Save-Json -Name 'limitations.json' -Data @($limitations)
+          Save-Json -Name 'warnings.json' -Data @($warnings.ToArray())
+          Save-Json -Name 'limitations.json' -Data @($limitations.ToArray())
 
           Add-Content -Path $env:GITHUB_OUTPUT -Value "out_dir=$outDir"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "commit_evidence=$commitEvidence"
@@ -314,7 +314,7 @@ jobs:
           if ($warnings.Count) {
             $summary += ''
             $summary += '## Warnings'
-            foreach ($warning in @($warnings | Select-Object -First 20)) { $summary += "- $warning" }
+            foreach ($warning in @($warnings.ToArray() | Select-Object -First 20)) { $summary += "- $warning" }
           }
           $summary | Add-Content -Path $env:GITHUB_STEP_SUMMARY
 
