@@ -292,8 +292,8 @@ jobs:
           }
           if ($env:INPUT_REQUEST_CONTEXT_B64) { $manifest.requestContextProvided = $true }
           Save-Json -Path 'manifest.json' -Data $manifest
-          Save-Json -Path 'warnings.json' -Data @($warnings)
-          Save-Json -Path 'limitations.json' -Data @($limitations)
+          Save-Json -Path 'warnings.json' -Data @($warnings.ToArray())
+          Save-Json -Path 'limitations.json' -Data @($limitations.ToArray())
 
           $latestPath = ".modern-dev-mgmt/tenant-backups/$tenantId/latest.json"
           $latest = [ordered]@{
@@ -337,7 +337,7 @@ jobs:
           if ($warnings.Count) {
             $summary += ''
             $summary += "## Warnings ($($warnings.Count))"
-            foreach ($warning in @($warnings | Select-Object -First 20)) { $summary += "- $warning" }
+            foreach ($warning in @($warnings.ToArray() | Select-Object -First 20)) { $summary += "- $warning" }
           }
           $summary | Add-Content -Path $env:GITHUB_STEP_SUMMARY
 
