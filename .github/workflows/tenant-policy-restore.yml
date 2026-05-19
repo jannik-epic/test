@@ -396,7 +396,7 @@ jobs:
             '# Tenant Policy Restore',
             '',
             "Mode: $mode",
-            "Backup ref: `$backupRef`",
+            "Backup ref: $backupRef",
             "Applied: $($applied.Count) | Skipped: $($skipped.Count) | Failed: $($failed.Count) | Warnings: $($warnings.Count)"
           )
           if ($warnings.Count) {
