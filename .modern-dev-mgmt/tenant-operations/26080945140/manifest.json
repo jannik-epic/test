@@ -1,0 +1,24 @@
+{
+  "source": "modern-dev-mgmt",
+  "workflowRunId": "26080945140",
+  "repository": "jannik-epic/test",
+  "tenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+  "operationKind": "intune_endpoint",
+  "dryRun": true,
+  "commitEvidence": true,
+  "notes": "Verify PackageFlow upload smoke app 863823c7-e4a4-4bc4-8d11-8662e95223d9 after evidence array fixes",
+  "requestedAt": "2026-05-19T06:43:44.4603796Z",
+  "counts": {
+    "mobileApps": 55,
+    "managedDevices": 2,
+    "configPolicies": 14,
+    "deviceConfigurations": 35,
+    "compliancePolicies": 17,
+    "appProtectionPolicies": 5,
+    "autopilotDevices": 0,
+    "enrollmentStatusPages": 0,
+    "assignmentFilters": 27,
+    "remediationScripts": 0,
+    "defenderVulnerabilities": 0
+  }
+}
