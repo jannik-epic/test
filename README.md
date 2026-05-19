@@ -66,13 +66,30 @@ This repository contains automated workflows for deploying applications to Micro
   - Writes auditable run and wave status files under `.modern-dev-mgmt/`
   - Lets the Modern Dev Mgmt web UI monitor rollout progress without doing direct Intune writes
 
-### 8. Directory Provisioning
+### 8. Radar Group Sync
+- **File**: `.github/workflows/sync-dynamic-app-group.yml`
+- **Purpose**: Reconcile per-app dynamic Entra groups for Radar tracking
+- **Features**:
+  - Resolves Intune device IDs to Entra device objects inside the tenant repository
+  - Adds outdated devices and removes devices that reached the target version
+  - Persists auditable Radar sync results under `.modern-dev-mgmt/dynamic-groups/`
+
+### 9. Directory Provisioning
 - **File**: `.github/workflows/provision-directory-object.yml`
 - **Purpose**: Create or update tenant Entra users and security groups from Modern Dev Mgmt
 - **Features**:
   - Runs through the tenant repository and federated credential
   - Supports dry-run planning before writing to Entra ID
   - Keeps user/group provisioning auditable with GitHub run summaries
+
+### 10. Tenant Operation Packs
+- **File**: `.github/workflows/tenant-operation-pack.yml`
+- **Purpose**: Run read-side tenant administration packs from Modern Dev Mgmt while keeping Graph access inside the tenant repository
+- **Features**:
+  - Covers identity, tenant administration, security, Intune, Teams/SharePoint, email/Exchange boundaries and reporting evidence
+  - Writes JSON/CSV evidence under `.modern-dev-mgmt/tenant-operations/`
+  - Uploads the same evidence bundle as a GitHub Actions artifact
+  - Supports optional repository commits for audit trails
 
 ## Usage
 
@@ -112,6 +129,8 @@ The following application permissions are required:
 - `DeviceManagementConfiguration.ReadWrite.All` - Read and write Intune configuration
 - `DeviceManagementServiceConfig.Read.All` - Read Intune service configuration, enrollment, and Autopilot reporting
 - `DeviceManagementManagedDevices.Read.All` - Read detected app/device inventory for coverage checks
+- `DeviceManagementScripts.Read.All` - Read Intune remediation script and assignment evidence
+- `ThreatHunting.Read.All` - Read Defender advanced hunting evidence where available
 - `Directory.Read.All` - Read directory data
 - `Group.ReadWrite.All` - Create assignment backing groups from Modern Dev Mgmt
 - `User.ReadWrite.All` - Create or update users from tenant GitHub workflows
@@ -120,7 +139,7 @@ The following application permissions are required:
 
 ## Workflow Outputs
 
-Both workflows provide detailed outputs including:
+The workflows provide detailed outputs including:
 
 - Application ID in Intune
 - Deployment status
@@ -128,6 +147,7 @@ Both workflows provide detailed outputs including:
 - Links to the created application in Intune admin center
 - Modern Dev Mgmt run state under `.modern-dev-mgmt/runs/`
 - Patch and wave state under `.modern-dev-mgmt/patch-runs/` and `.modern-dev-mgmt/waves/`
+- Tenant operation evidence under `.modern-dev-mgmt/tenant-operations/`
 
 ## Troubleshooting
 

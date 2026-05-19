@@ -36,6 +36,10 @@ on:
         description: 'App description'
         required: false
         type: string
+      app_publisher:
+        description: 'Publisher override for the Intune app'
+        required: false
+        type: string
       app_icon_base64:
         description: 'Base64 encoded app icon (optional)'
         required: false
@@ -115,7 +119,6 @@ on:
         description: 'Modern Dev Mgmt wave name for this deployment (informational)'
         required: false
         type: string
-
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
   AZURE_CLIENT_ID: '7659f226-8344-4731-b758-a4d93238309c'
@@ -161,13 +164,16 @@ jobs:
           UNINSTALL_SCRIPT_B64: ${{ github.event.inputs.uninstall_script_b64 }}
           PRE_INSTALL_SCRIPT_B64: ${{ github.event.inputs.pre_install_script_b64 }}
           POST_INSTALL_SCRIPT_B64: ${{ github.event.inputs.post_install_script_b64 }}
+          APP_PUBLISHER: ${{ github.event.inputs.app_publisher }}
         run: |
+          $publisher = $env:APP_PUBLISHER
+          if (-not $publisher) { $publisher = "${{ steps.winget_info.outputs.publisher }}" }
           $params = @{
             PackageId = "${{ github.event.inputs.package_id }}"
             PackageSource = "${{ github.event.inputs.package_source || 'winget' }}"
             UsePSADT = ("${{ github.event.inputs.use_psadt }}" -eq "true")
             InstallContext = "${{ github.event.inputs.install_context }}"
-            Publisher = "${{ steps.winget_info.outputs.publisher }}"
+            Publisher = $publisher
             Version = "${{ steps.winget_info.outputs.version }}"
           }
           if ("${{ github.event.inputs.app_name }}") {
@@ -228,19 +234,36 @@ jobs:
 
       - name: Create Intune Application
         id: create_app
+        env:
+          APP_PUBLISHER: ${{ github.event.inputs.app_publisher }}
         run: |
           $packageSource = "${{ github.event.inputs.package_source || 'winget' }}"
           $packageSourceLabel = if ($packageSource -eq "msstore") { "Microsoft Store via WinGet" } else { "WinGet" }
+          $publisher = $env:APP_PUBLISHER
+          if (-not $publisher) { $publisher = "${{ steps.winget_info.outputs.publisher }}" }
+          $architecture = "x64"
+          $contextB64 = "${{ github.event.inputs.modern_dev_mgmt_context_b64 }}"
+          if ($contextB64) {
+            try {
+              $rawContext = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($contextB64 -replace '\s+', '')))
+              $context = $rawContext | ConvertFrom-Json
+              if ($context.architecture) { $architecture = [string]$context.architecture }
+              elseif ($context.package -and $context.package.architecture) { $architecture = [string]$context.package.architecture }
+            } catch {
+              Write-Warning "Could not parse Modern Dev Mgmt context architecture, using x64"
+            }
+          }
           $params = @{
             AccessToken = "${{ steps.get_token.outputs.access_token }}"
             PackageId = "${{ github.event.inputs.package_id }}"
-            Publisher = "${{ steps.winget_info.outputs.publisher }}"
+            Publisher = $publisher
             Version = "${{ steps.winget_info.outputs.version }}"
             InstallContext = "${{ github.event.inputs.install_context }}"
             UsePSADT = ("${{ github.event.inputs.use_psadt }}" -eq "true")
             DryRun = ("${{ github.event.inputs.dry_run }}" -eq "true")
             IntuneApiUrl = "$env:INTUNE_API_URL"
             PackageSource = $packageSourceLabel
+            Architecture = $architecture
           }
           if ("${{ github.event.inputs.app_name }}") {
             $params.AppName = "${{ github.event.inputs.app_name }}"
@@ -270,6 +293,7 @@ jobs:
         shell: powershell
         env:
           UPDATE_ONLY_B64: ${{ github.event.inputs.update_only_b64 }}
+          APP_PUBLISHER: ${{ github.event.inputs.app_publisher }}
         run: |
           $ErrorActionPreference = "Stop"
           $raw = $env:UPDATE_ONLY_B64
@@ -279,11 +303,25 @@ jobs:
           $baseName = "${{ github.event.inputs.app_name }}"
           if (-not $baseName) { $baseName = "${{ steps.create_app.outputs.app_name }}" }
           if (-not $baseName) { $baseName = "${{ github.event.inputs.package_id }}" }
+          $publisher = $env:APP_PUBLISHER
+          if (-not $publisher) { $publisher = "${{ steps.winget_info.outputs.publisher }}" }
+          $architecture = "x64"
+          $contextB64 = "${{ github.event.inputs.modern_dev_mgmt_context_b64 }}"
+          if ($contextB64) {
+            try {
+              $rawContext = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($contextB64 -replace '\s+', '')))
+              $context = $rawContext | ConvertFrom-Json
+              if ($context.architecture) { $architecture = [string]$context.architecture }
+              elseif ($context.package -and $context.package.architecture) { $architecture = [string]$context.package.architecture }
+            } catch {
+              Write-Warning "Could not parse Modern Dev Mgmt context architecture, using x64"
+            }
+          }
           $params = @{
             AccessToken = "${{ steps.get_token.outputs.access_token }}"
             PackageId = "${{ github.event.inputs.package_id }}"
             AppName = "$baseName (Update-Only)"
-            Publisher = "${{ steps.winget_info.outputs.publisher }}"
+            Publisher = $publisher
             Version = "${{ steps.winget_info.outputs.version }}"
             InstallContext = "${{ github.event.inputs.install_context }}"
             UsePSADT = ("${{ github.event.inputs.use_psadt }}" -eq "true")
@@ -291,6 +329,7 @@ jobs:
             IntuneApiUrl = "$env:INTUNE_API_URL"
             PackageSource = "Winget update-only companion"
             PackageNotes = "Modern Dev Mgmt Update-Only Required companion. Primary Intune app: ${{ steps.create_app.outputs.app_id }}. Workflow: ${{ github.run_id }}."
+            Architecture = $architecture
           }
           if ("${{ github.event.inputs.app_description }}") {
             $params.AppDescription = "${{ github.event.inputs.app_description }} (Update-Only Required companion)"

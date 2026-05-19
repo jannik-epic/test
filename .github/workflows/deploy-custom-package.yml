@@ -119,7 +119,6 @@ on:
         description: 'Base64 encoded PowerShell detection script for the Update-Only Required companion app'
         required: false
         type: string
-
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
   AZURE_CLIENT_ID: '7659f226-8344-4731-b758-a4d93238309c'
@@ -128,6 +127,9 @@ env:
 permissions:
   id-token: write
   contents: write
+
+# Requires tenant app-registration application permissions:
+# Group.ReadWrite.All and Directory.Read.All
 
 jobs:
   deploy-custom-installer:
@@ -403,6 +405,18 @@ jobs:
         id: create_app
         shell: powershell
         run: |
+          $architecture = "x64"
+          $contextB64 = "${{ github.event.inputs.modern_dev_mgmt_context_b64 }}"
+          if ($contextB64) {
+            try {
+              $rawContext = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($contextB64 -replace '\s+', '')))
+              $context = $rawContext | ConvertFrom-Json
+              if ($context.architecture) { $architecture = [string]$context.architecture }
+              elseif ($context.package -and $context.package.architecture) { $architecture = [string]$context.package.architecture }
+            } catch {
+              Write-Warning "Could not parse Modern Dev Mgmt context architecture, using x64"
+            }
+          }
           $params = @{
             AccessToken = "${{ steps.get_token.outputs.access_token }}"
             PackageId = "${{ github.event.inputs.package_id }}"
@@ -418,6 +432,7 @@ jobs:
             PackageFilesDirectory = "custom-files"
             PackageSource = "Custom installer"
             PackageNotes = "Modern Dev Mgmt custom installer package. Release: ${{ github.event.inputs.release_tag }}. Asset: ${{ github.event.inputs.asset_name }}. Workflow: ${{ github.run_id }}."
+            Architecture = $architecture
           }
           ./scripts/winget/Create-IntuneApplication.ps1 @params
 
@@ -444,6 +459,18 @@ jobs:
           $baseName = "${{ github.event.inputs.package_name }}"
           if (-not $baseName) { $baseName = "${{ steps.create_app.outputs.app_name }}" }
           if (-not $baseName) { $baseName = "${{ github.event.inputs.package_id }}" }
+          $architecture = "x64"
+          $contextB64 = "${{ github.event.inputs.modern_dev_mgmt_context_b64 }}"
+          if ($contextB64) {
+            try {
+              $rawContext = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($contextB64 -replace '\s+', '')))
+              $context = $rawContext | ConvertFrom-Json
+              if ($context.architecture) { $architecture = [string]$context.architecture }
+              elseif ($context.package -and $context.package.architecture) { $architecture = [string]$context.package.architecture }
+            } catch {
+              Write-Warning "Could not parse Modern Dev Mgmt context architecture, using x64"
+            }
+          }
           $params = @{
             AccessToken = "${{ steps.get_token.outputs.access_token }}"
             PackageId = "${{ github.event.inputs.package_id }}"
@@ -459,6 +486,7 @@ jobs:
             PackageFilesDirectory = "custom-files"
             PackageSource = "Custom installer update-only companion"
             PackageNotes = "Modern Dev Mgmt Update-Only Required companion. Primary Intune app: ${{ steps.create_app.outputs.app_id }}. Release: ${{ github.event.inputs.release_tag }}. Asset: ${{ github.event.inputs.asset_name }}. Workflow: ${{ github.run_id }}."
+            Architecture = $architecture
           }
           ./scripts/winget/Create-IntuneApplication.ps1 @params
 
