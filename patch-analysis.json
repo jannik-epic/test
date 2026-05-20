@@ -1,5 +1,5 @@
 {
-  "scannedAt": "2026-05-20T10:31:49.300Z",
+  "scannedAt": "2026-05-20T11:57:10.719Z",
   "results": [
     {
       "appId": 803,
@@ -26,7 +26,7 @@
       "packageManager": "winget",
       "packageId": "Microsoft.Edge",
       "currentDeployedVersion": "133.0.3065.69",
-      "latestUpstreamVersion": "148.0.3967.54",
+      "latestUpstreamVersion": "148.0.3967.70",
       "hasUpdate": true,
       "bumpType": "major",
       "releaseNotesUrl": "https://www.microsoft.com/en-us/edge"
@@ -56,7 +56,7 @@
       "packageManager": "winget",
       "packageId": "Microsoft.VisualStudioCode",
       "currentDeployedVersion": "1.87.2",
-      "latestUpstreamVersion": "1.119.0",
+      "latestUpstreamVersion": "1.121.0",
       "hasUpdate": true,
       "bumpType": "minor",
       "releaseNotesUrl": "https://code.visualstudio.com"
