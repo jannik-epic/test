@@ -1,0 +1,52 @@
+{
+  "workflowRunId": "25934322634",
+  "workflow": "deploy-winget-app.yml",
+  "packageManager": "winget",
+  "packageId": "VinaySajip.PythonLauncher",
+  "appId": "eff12961-5c7d-4df0-9145-27839a1af4ab",
+  "appName": "Python Launcher",
+  "status": "success",
+  "createdAt": "2026-05-15T18:24:36.7004775Z",
+  "context": {
+    "source": "patch.trigger",
+    "patchRunId": 1,
+    "targetTenantId": 1,
+    "targetTenantName": "ModernDevMgmt.onmicrosoft.com",
+    "repo": "jannik-epic/test",
+    "workflowFile": "deploy-winget-app.yml",
+    "catalog": {
+      "catalogAppId": 5933,
+      "source": "winget",
+      "packageId": "VinaySajip.PythonLauncher",
+      "name": "Python Launcher",
+      "fromVersion": "1.0.1.6",
+      "toVersion": "8.11.12"
+    },
+    "wave": {
+      "id": 1,
+      "name": "Pilot",
+      "waveSetId": 1,
+      "waveRunId": 1,
+      "intent": "required",
+      "successThresholdPct": 40,
+      "advanceAfterMinutes": 1440,
+      "requiresManualApproval": true
+    },
+    "runSandbox": false,
+    "appSetting": {
+      "id": 1,
+      "settingName": "1Password Machine-wide",
+      "targetTenantId": 1,
+      "catalogAppId": null,
+      "variables": [
+        "installArgs",
+        "installerPath",
+        "regName",
+        "regValue",
+        "uninstallArgs"
+      ]
+    },
+    "changeNote": "Deployment created from Python Launcher",
+    "createdAt": "2026-05-15T18:23:42.46Z"
+  }
+}
