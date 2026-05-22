@@ -1,10 +1,18 @@
 {
   "slug": "greenshot-greenshot",
-  "displayName": "Modern Dev Mgmt E2E Winget Smoke",
+  "displayName": "Greenshot",
   "versions": [
     {
       "version": "unknown",
       "runs": [
+        {
+          "workflowRunId": "25942528563",
+          "createdAt": "2026-05-15T21:35:29.8754590Z",
+          "intuneAppId": null,
+          "catalogAppId": null,
+          "patchRunId": null,
+          "status": null
+        },
         {
           "workflowRunId": "25925815949",
           "createdAt": "2026-05-15T15:21:10.2404884Z",
@@ -16,5 +24,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-05-22T06:46:50.032Z"
+  "updatedAt": "2026-05-22T06:47:13.337Z"
 }
