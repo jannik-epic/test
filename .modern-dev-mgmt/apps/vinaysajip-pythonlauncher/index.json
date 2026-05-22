@@ -1,0 +1,20 @@
+{
+  "slug": "vinaysajip-pythonlauncher",
+  "displayName": "Python Launcher",
+  "versions": [
+    {
+      "version": "unknown",
+      "runs": [
+        {
+          "workflowRunId": "25934322634",
+          "createdAt": "2026-05-15T18:24:36.7004775Z",
+          "intuneAppId": null,
+          "catalogAppId": null,
+          "patchRunId": null,
+          "status": null
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-05-22T06:47:05.329Z"
+}
