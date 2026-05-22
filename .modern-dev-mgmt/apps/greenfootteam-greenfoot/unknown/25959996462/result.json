@@ -1,0 +1,29 @@
+{
+  "workflowRunId": "25959996462",
+  "workflow": "deploy-winget-app.yml",
+  "packageManager": "winget",
+  "packageId": "GreenfootTeam.Greenfoot",
+  "appId": "8a0df97a-d35b-477b-b379-a057b3ae661f",
+  "appName": "Greenfoot",
+  "status": "success",
+  "createdAt": "2026-05-16T10:48:29.4656162Z",
+  "context": {
+    "source": "catalog.deploy",
+    "targetTenantId": 1,
+    "targetTenantName": "ModernDevMgmt.onmicrosoft.com",
+    "repo": "jannik-epic/test",
+    "workflowFile": "deploy-winget-app.yml",
+    "catalog": {
+      "catalogAppId": 2561,
+      "source": "winget",
+      "packageId": "GreenfootTeam.Greenfoot",
+      "name": "Greenfoot",
+      "version": "3.7.0"
+    },
+    "appSettingId": null,
+    "appSettingVariables": [],
+    "assignmentTemplateId": null,
+    "dryRun": false,
+    "createdAt": "2026-05-16T10:47:41.042Z"
+  }
+}
