@@ -1,0 +1,20 @@
+{
+  "slug": "modern-dev-mgmt-e2e-custom-smoke",
+  "displayName": "Modern Dev Mgmt E2E Custom Smoke",
+  "versions": [
+    {
+      "version": "unknown",
+      "runs": [
+        {
+          "workflowRunId": "25926551084",
+          "createdAt": "2026-05-15T15:39:28.3448968Z",
+          "intuneAppId": null,
+          "catalogAppId": null,
+          "patchRunId": null,
+          "status": null
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-05-22T06:46:57.197Z"
+}
