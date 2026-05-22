@@ -1,0 +1,12 @@
+{
+  "workflowRunId": "26082113789",
+  "workflow": "deploy-winget-app.yml",
+  "packageManager": "winget",
+  "packageId": "7zip.7zip",
+  "appId": "163ef903-77ec-4266-b47b-2a77e4b4953b",
+  "updateOnlyAppId": "",
+  "appName": "PackageFlow Icon Smoke 2026-05-19 0920",
+  "status": "success",
+  "createdAt": "2026-05-19T07:12:31.8031107Z",
+  "context": null
+}
