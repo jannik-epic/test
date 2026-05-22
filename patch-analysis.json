@@ -1,5 +1,5 @@
 {
-  "scannedAt": "2026-05-22T02:18:54.491Z",
+  "scannedAt": "2026-05-22T02:28:11.621Z",
   "results": [
     {
       "appId": 803,
@@ -80,6 +80,26 @@
       "hasUpdate": true,
       "bumpType": null,
       "releaseNotesUrl": "https://gitlab.gnome.org/GNOME/phodav/"
+    },
+    {
+      "appId": 113049,
+      "packageManager": "winget",
+      "packageId": "JetBrains.dotPeek",
+      "currentDeployedVersion": "2024.2.3",
+      "latestUpstreamVersion": "2026.1.2",
+      "hasUpdate": true,
+      "bumpType": "major",
+      "releaseNotesUrl": "https://www.jetbrains.com/profiler/"
+    },
+    {
+      "appId": 114306,
+      "packageManager": "winget",
+      "packageId": "Microsoft.VCRedist.2015+.arm64",
+      "currentDeployedVersion": "14.30.30704.0",
+      "latestUpstreamVersion": "14.51.36231.0",
+      "hasUpdate": true,
+      "bumpType": "minor",
+      "releaseNotesUrl": "https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist"
     }
   ]
 }
