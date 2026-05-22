@@ -70,5 +70,23 @@
     "os": "windows",
     "version_deployed": "2.5.0",
     "pin_version": null
+  },
+  {
+    "id": 113049,
+    "source": "winget",
+    "package_id": "JetBrains.dotPeek",
+    "name": "JetBrains dotPeek",
+    "os": "windows",
+    "version_deployed": "2024.2.3",
+    "pin_version": null
+  },
+  {
+    "id": 114306,
+    "source": "winget",
+    "package_id": "Microsoft.VCRedist.2015+.arm64",
+    "name": "Microsoft Visual C++ 2022 Redistributable (Arm64)",
+    "os": "windows",
+    "version_deployed": "14.30.30704.0",
+    "pin_version": null
   }
 ]
