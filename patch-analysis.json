@@ -1,5 +1,5 @@
 {
-  "scannedAt": "2026-05-24T22:47:25.796Z",
+  "scannedAt": "2026-05-24T23:20:54.119Z",
   "results": [
     {
       "appId": 803,
@@ -26,20 +26,20 @@
       "packageManager": "winget",
       "packageId": "Microsoft.Edge",
       "currentDeployedVersion": "133.0.3065.69",
-      "latestUpstreamVersion": "148.0.3967.70",
-      "hasUpdate": true,
-      "bumpType": "major",
-      "releaseNotesUrl": "https://www.microsoft.com/en-us/edge"
+      "latestUpstreamVersion": null,
+      "hasUpdate": false,
+      "bumpType": null,
+      "releaseNotesUrl": null
     },
     {
       "appId": 4173,
       "packageManager": "winget",
       "packageId": "Microsoft.Edge.Beta",
       "currentDeployedVersion": "134.0.3124.8",
-      "latestUpstreamVersion": "141.0.3537.44",
-      "hasUpdate": true,
-      "bumpType": "major",
-      "releaseNotesUrl": "https://www.microsoft.com/en-us/edge"
+      "latestUpstreamVersion": null,
+      "hasUpdate": false,
+      "bumpType": null,
+      "releaseNotesUrl": null
     },
     {
       "appId": 4191,
