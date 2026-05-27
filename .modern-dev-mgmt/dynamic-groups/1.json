@@ -1,0 +1,28 @@
+{
+  "workflowRunId": "26527118815",
+  "workflow": "sync-dynamic-app-group.yml",
+  "dynamicGroupId": "1",
+  "entraGroupId": "01bb9933-8755-46fe-a2ef-1f66a4f1aa47",
+  "targetVersion": "latest",
+  "dryRun": true,
+  "autoPopulate": true,
+  "autoRemoveOnSuccess": true,
+  "outdatedDeviceCount": 0,
+  "currentDeviceCount": 0,
+  "resolvedOutdatedCount": 0,
+  "resolvedCurrentCount": 0,
+  "addedCount": 0,
+  "removedCount": 0,
+  "skipped": [],
+  "context": {
+    "source": "codex-current-pipeline-audit",
+    "workflow": "sync-dynamic-app-group.yml",
+    "dryRun": true,
+    "targetTenantId": 1,
+    "targetTenantName": "ModernDevMgmt.onmicrosoft.com",
+    "targetAzureTenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "targetAzureClientId": "7659f226-8344-4731-b758-a4d93238309c",
+    "requestedAt": "2026-05-27T17:16:29.145Z"
+  },
+  "createdAt": "2026-05-27T17:21:04.1879046Z"
+}
