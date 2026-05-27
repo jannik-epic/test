@@ -16,13 +16,31 @@ on:
           - 'winget'
           - 'msstore'
       package_name:
-        description: 'Package display name (optional compatibility input)'
+        description: 'Package display name (informational, matches the catalog/Apps name)'
         required: false
         type: string
       version:
         description: 'Requested version or latest'
         required: false
         type: string
+      installer_architecture:
+        description: 'Target CPU architecture for the offline installer download'
+        required: false
+        type: choice
+        default: 'x64'
+        options:
+          - 'x86'
+          - 'x64'
+          - 'arm64'
+      installer_url:
+        description: 'Direct download URL (overrides winget manifest). Pipeline downloads + packages this binary into the .intunewin. Filename + silent args inferred from URL/extension; encode overrides as a single "url|filename|silentArgs" pipe-separated string when needed.'
+        required: false
+        type: string
+      validation_enabled:
+        description: 'Run install/detection/uninstall + footprint diff in the runner before uploading to Intune'
+        required: false
+        type: boolean
+        default: true
       dry_run:
         description: 'Plan only; do not create the Intune app'
         required: false
@@ -57,10 +75,6 @@ on:
         required: true
         type: boolean
         default: true
-      detection_script:
-        description: 'Custom detection script (optional)'
-        required: false
-        type: string
       detection_script_b64:
         description: 'Base64 encoded custom detection script (optional)'
         required: false
@@ -111,14 +125,6 @@ on:
         description: 'Modern Dev Mgmt wave set id for this deployment (informational)'
         required: false
         type: string
-      wave_id:
-        description: 'Modern Dev Mgmt wave id for this deployment (informational)'
-        required: false
-        type: string
-      wave_name:
-        description: 'Modern Dev Mgmt wave name for this deployment (informational)'
-        required: false
-        type: string
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
   AZURE_CLIENT_ID: '7659f226-8344-4731-b758-a4d93238309c'
@@ -134,6 +140,39 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Resolve target Azure tenant from Modern Dev Mgmt context
+        shell: bash
+        env:
+          MODERN_DEVMGMT_CONTEXT_B64: ${{ github.event.inputs.modern_dev_mgmt_context_b64 }}
+        run: |
+          # The desktop app's catalog deploy passes targetAzureTenantId +
+          # targetAzureClientId inside the b64-encoded context blob. When two
+          # tenants share the same GitHub repo this is the only mechanism that
+          # routes OIDC to the right Azure tenant per dispatch — the YAML env
+          # defaults are baked at provisioning time and can only point at one
+          # tenant.
+          if [[ -z "${MODERN_DEVMGMT_CONTEXT_B64:-}" ]]; then
+            echo "no Modern Dev Mgmt context — keeping default AZURE_TENANT_ID/CLIENT_ID"
+            exit 0
+          fi
+          decoded="$(printf '%s' "$MODERN_DEVMGMT_CONTEXT_B64" | base64 --decode 2>/dev/null || true)"
+          if [[ -z "$decoded" ]]; then
+            echo "::warning::could not base64-decode modern_dev_mgmt_context_b64; using YAML defaults"
+            exit 0
+          fi
+          tenant="$(printf '%s' "$decoded" | jq -r '.targetAzureTenantId // ""' 2>/dev/null || true)"
+          client="$(printf '%s' "$decoded" | jq -r '.targetAzureClientId // ""' 2>/dev/null || true)"
+          if [[ -n "$tenant" ]]; then
+            echo "AZURE_TENANT_ID=$tenant" >> "$GITHUB_ENV"
+            echo "INTUNE_TENANT_ID=$tenant" >> "$GITHUB_ENV"
+            echo "resolved AZURE_TENANT_ID=$tenant"
+          fi
+          if [[ -n "$client" ]]; then
+            echo "AZURE_CLIENT_ID=$client" >> "$GITHUB_ENV"
+            echo "INTUNE_CLIENT_ID=$client" >> "$GITHUB_ENV"
+            echo "resolved AZURE_CLIENT_ID=$client"
+          fi
 
       - name: Azure Login using OIDC
         uses: azure/login@v3
@@ -155,6 +194,68 @@ jobs:
         run: |
           ./scripts/winget/Fetch-WingetPackageInfo.ps1 -PackageId "${{ github.event.inputs.package_id }}" -PackageSource "${{ github.event.inputs.package_source || 'winget' }}"
         shell: pwsh
+
+      - name: Resolve and download installer binary (offline package)
+        id: resolve_installer
+        # Resolves the installer binary from one of three sources, in order of
+        # preference: (a) explicit installer_url input (vendor download link
+        # outside winget/msstore), (b) winget manifest, (c) msstore manifest
+        # via 'winget download --source msstore'. Licensed Store apps fail at
+        # the manifest stage; the workflow then falls back to the legacy
+        # winget-client install path so the deploy still completes (just
+        # without VM validation / footprint diff).
+        if: ${{ github.event.inputs.dry_run != 'true' || true }}
+        timeout-minutes: 5
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $arch = "${{ github.event.inputs.installer_architecture }}"
+          if (-not $arch) { $arch = 'x64' }
+          $version = "${{ github.event.inputs.version }}"
+          if (-not $version) { $version = "${{ steps.winget_info.outputs.version }}" }
+          $source = "${{ github.event.inputs.package_source || 'winget' }}"
+          $stagingDir = Join-Path $PWD 'winget-installer-files'
+          $installerUrl = "${{ github.event.inputs.installer_url }}"
+          try {
+            if ($installerUrl) {
+              # URL path: download arbitrary vendor link and produce the same
+              # installer-metadata.json shape so the rest of the offline
+              # pipeline (Generate scripts, VM validation, Intune upload)
+              # runs unchanged. Filename + silent args may be encoded as
+              # "url|filename|silentArgs" pipe-separated string.
+              $urlParts = $installerUrl -split '\|', 3
+              $url = $urlParts[0]
+              $fname = if ($urlParts.Count -ge 2) { $urlParts[1] } else { '' }
+              $silentArgs = if ($urlParts.Count -ge 3) { $urlParts[2] } else { '' }
+              $urlArgs = @{
+                InstallerUrl = $url
+                OutputDirectory = $stagingDir
+                Version = $version
+              }
+              if ($fname)      { $urlArgs.Filename = $fname }
+              if ($silentArgs) { $urlArgs.SilentArgsOverride = $silentArgs }
+              ./scripts/common/Download-InstallerFromUrl.ps1 @urlArgs
+              Add-Content -Path $env:GITHUB_OUTPUT -Value "url_mode=true"
+            } else {
+              ./scripts/winget/Download-WingetInstaller.ps1 `
+                -PackageId "${{ github.event.inputs.package_id }}" `
+                -Version $version `
+                -PackageSource $source `
+                -Architecture $arch `
+                -OutputDirectory $stagingDir
+            }
+            $metadataPath = Join-Path $stagingDir 'installer-metadata.json'
+            if (Test-Path -LiteralPath $metadataPath) {
+              Add-Content -Path $env:GITHUB_OUTPUT -Value "metadata_path=$metadataPath"
+              Add-Content -Path $env:GITHUB_OUTPUT -Value "staging_dir=$stagingDir"
+              Add-Content -Path $env:GITHUB_OUTPUT -Value "offline=true"
+            } else {
+              Write-Host "::warning::Offline installer metadata missing; falling back to runtime install path."
+            }
+          } catch {
+            Write-Host "::warning::Offline installer download failed ($($_.Exception.Message)); falling back to runtime install path."
+          }
 
       - name: Generate Installation Scripts
         id: generate_scripts
@@ -179,9 +280,6 @@ jobs:
           if ("${{ github.event.inputs.app_name }}") {
             $params.AppName = "${{ github.event.inputs.app_name }}"
           }
-          if ("${{ github.event.inputs.detection_script }}") {
-            $params.CustomDetectionScript = "${{ github.event.inputs.detection_script }}"
-          }
           if ($env:DETECTION_SCRIPT_B64) {
             $params.CustomDetectionScriptBase64 = $env:DETECTION_SCRIPT_B64
           }
@@ -197,8 +295,30 @@ jobs:
           if ($env:POST_INSTALL_SCRIPT_B64) {
             $params.PostInstallScriptBase64 = $env:POST_INSTALL_SCRIPT_B64
           }
+          if ("${{ steps.resolve_installer.outputs.metadata_path }}") {
+            $params.InstallerMetadataPath = "${{ steps.resolve_installer.outputs.metadata_path }}"
+          }
           ./scripts/winget/Generate-InstallationScripts.ps1 @params
         shell: pwsh
+
+      - name: Stage PSADT v4 toolkit
+        id: stage_psadt
+        if: ${{ github.event.inputs.use_psadt == 'true' && steps.resolve_installer.outputs.offline == 'true' }}
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $ErrorActionPreference = 'Continue'
+          $stagingDir = "${{ steps.resolve_installer.outputs.staging_dir }}"
+          if (-not $stagingDir -or -not (Test-Path -LiteralPath $stagingDir)) {
+            Write-Host "::warning::No offline staging dir; skipping PSADT toolkit stage."
+            exit 0
+          }
+          try {
+            ./scripts/common/Stage-PSADTv4.ps1 -StagingDir $stagingDir
+            Add-Content -Path $env:GITHUB_OUTPUT -Value "psadt_staged=true"
+          } catch {
+            Write-Host "::warning::PSADT v4 download failed: $($_.Exception.Message). Falling back to plain Start-Process install."
+          }
 
       - name: Inject Show-ADTInstallationWelcome -CloseApps prologue
         if: ${{ github.event.inputs.apps_to_close != '' }}
@@ -231,6 +351,167 @@ jobs:
               Write-Host "Injected close-apps prologue into $target"
             }
           }
+
+      - name: VM validation — baseline snapshot
+        id: validate_baseline
+        if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path .modern-dev-mgmt/validation | Out-Null
+          # ARP-only baseline: a list of currently-installed apps. Fast (no
+          # file system walk). The after-install snapshot will only enumerate
+          # files under the NEW ARP entry's InstallLocation.
+          ./scripts/common/Capture-WindowsFootprint.ps1 -OutputPath .modern-dev-mgmt/validation/before.json -Mode arp
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "baseline_path=.modern-dev-mgmt/validation/before.json"
+
+      - name: VM validation — install (offline package)
+        id: validate_install
+        if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' }}
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $ErrorActionPreference = 'Continue'
+          # Stage scripts + Files/ next to each other so install_script.ps1 can
+          # resolve Files/<installer> via PSScriptRoot — identical to how Intune
+          # lays out the .intunewin on the device.
+          $workspace = $PWD.Path
+          $stageDir = Join-Path $workspace 'validation-stage'
+          $validationDir = Join-Path $workspace '.modern-dev-mgmt/validation'
+          New-Item -ItemType Directory -Force -Path $stageDir | Out-Null
+          New-Item -ItemType Directory -Force -Path $validationDir | Out-Null
+          Copy-Item install_script.ps1   "$stageDir/" -Force
+          Copy-Item uninstall_script.ps1 "$stageDir/" -Force
+          Copy-Item detection_script.ps1 "$stageDir/" -Force
+          $filesSrc = Join-Path "${{ steps.resolve_installer.outputs.staging_dir }}" 'Files'
+          if (Test-Path -LiteralPath $filesSrc) {
+            Copy-Item $filesSrc "$stageDir/" -Recurse -Force
+          }
+          $installLog = Join-Path $validationDir 'install.log'
+          $installScript = Join-Path $stageDir 'install_script.ps1'
+          Start-Transcript -Path $installLog -Force | Out-Null
+          $exit = 0
+          try {
+            & powershell.exe -ExecutionPolicy Bypass -NoProfile -File $installScript
+            $exit = $LASTEXITCODE
+          } catch {
+            $exit = 1
+            Write-Host "Install threw: $($_.Exception.Message)"
+          }
+          Stop-Transcript | Out-Null
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "install_exit_code=$exit"
+
+      - name: VM validation — detection (assert installed)
+        id: validate_detection
+        if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' && steps.validate_install.outcome == 'success' }}
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $detect = Join-Path $PWD.Path 'validation-stage/detection_script.ps1'
+          & powershell.exe -ExecutionPolicy Bypass -NoProfile -File $detect
+          $exit = $LASTEXITCODE
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "detection_exit_code=$exit"
+
+      - name: VM validation — after-install snapshot + footprint diff
+        id: validate_footprint
+        if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' && steps.validate_install.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          # 'full' mode + BaselinePath: enumerates files ONLY under the new
+          # ARP entry's InstallLocation (skip everything that was already on
+          # the runner). Brings post-install snapshot from minutes to seconds.
+          ./scripts/common/Capture-WindowsFootprint.ps1 `
+            -OutputPath .modern-dev-mgmt/validation/after-install.json `
+            -Mode full `
+            -BaselinePath .modern-dev-mgmt/validation/before.json
+          ./scripts/common/Diff-WindowsFootprint.ps1 `
+            -BeforePath .modern-dev-mgmt/validation/before.json `
+            -AfterPath  .modern-dev-mgmt/validation/after-install.json `
+            -OutputPath .modern-dev-mgmt/validation/footprint.json
+
+      - name: VM validation — uninstall
+        id: validate_uninstall
+        if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' && steps.validate_install.outcome == 'success' }}
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $validationDir = Join-Path $PWD.Path '.modern-dev-mgmt/validation'
+          $uninstallLog = Join-Path $validationDir 'uninstall.log'
+          $uninstall = Join-Path $PWD.Path 'validation-stage/uninstall_script.ps1'
+          New-Item -ItemType Directory -Force -Path $validationDir | Out-Null
+          Start-Transcript -Path $uninstallLog -Force | Out-Null
+          $exit = 0
+          try {
+            & powershell.exe -ExecutionPolicy Bypass -NoProfile -File $uninstall
+            $exit = $LASTEXITCODE
+          } catch {
+            $exit = 1
+            Write-Host "Uninstall threw: $($_.Exception.Message)"
+          }
+          Stop-Transcript | Out-Null
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "uninstall_exit_code=$exit"
+
+      - name: VM validation — leftover diff
+        id: validate_leftovers
+        # Run even if uninstall failed so "Left after uninstall" surfaces the
+        # leftover files for the UI (matches Robopack's "0 files, 0 KB - 0%"
+        # vs. "leftover" rows). Only skip if validation was disabled entirely.
+        if: ${{ always() && github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' && steps.validate_install.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          ./scripts/common/Capture-WindowsFootprint.ps1 `
+            -OutputPath .modern-dev-mgmt/validation/after-uninstall.json `
+            -Mode full `
+            -BaselinePath .modern-dev-mgmt/validation/before.json
+          ./scripts/common/Diff-WindowsFootprint.ps1 `
+            -BeforePath .modern-dev-mgmt/validation/before.json `
+            -AfterPath  .modern-dev-mgmt/validation/after-uninstall.json `
+            -OutputPath .modern-dev-mgmt/validation/leftovers.json
+
+      - name: VM validation — assemble report
+        id: validation_report
+        if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' }}
+        shell: pwsh
+        env:
+          INSTALL_EXIT:   ${{ steps.validate_install.outputs.install_exit_code }}
+          DETECT_EXIT:    ${{ steps.validate_detection.outputs.detection_exit_code }}
+          UNINSTALL_EXIT: ${{ steps.validate_uninstall.outputs.uninstall_exit_code }}
+          INSTALL_OUTCOME:   ${{ steps.validate_install.outcome }}
+          DETECT_OUTCOME:    ${{ steps.validate_detection.outcome }}
+          UNINSTALL_OUTCOME: ${{ steps.validate_uninstall.outcome }}
+        run: |
+          function ParseInt($s) { if ($s -and $s -match '^-?\d+$') { return [int]$s } else { return $null } }
+          $report = [ordered]@{
+            installExitCode    = ParseInt $env:INSTALL_EXIT
+            detectionExitCode  = ParseInt $env:DETECT_EXIT
+            uninstallExitCode  = ParseInt $env:UNINSTALL_EXIT
+            installOutcome     = $env:INSTALL_OUTCOME
+            detectionOutcome   = $env:DETECT_OUTCOME
+            uninstallOutcome   = $env:UNINSTALL_OUTCOME
+            footprintAvailable = (Test-Path '.modern-dev-mgmt/validation/footprint.json')
+            leftoversAvailable = (Test-Path '.modern-dev-mgmt/validation/leftovers.json')
+            installLogPath     = '.modern-dev-mgmt/validation/install.log'
+            uninstallLogPath   = '.modern-dev-mgmt/validation/uninstall.log'
+          }
+          $report | ConvertTo-Json -Depth 8 | Set-Content '.modern-dev-mgmt/validation/report.json' -Encoding UTF8
+          # Decide pass/fail: install must succeed. Detection/uninstall failures
+          # are warnings — they get surfaced in the UI but do not block the
+          # Intune upload (the .intunewin is independent of the runner's ability
+          # to uninstall a single-user installer).
+          if ($env:INSTALL_OUTCOME -ne 'success') {
+            Write-Host "::error::Install step failed in validation runner — aborting Intune upload."
+            exit 1
+          }
+          Write-Host "✅ Validation report assembled at .modern-dev-mgmt/validation/report.json"
+
+      - name: VM validation — upload artifacts
+        if: ${{ always() && github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: validation-${{ github.run_id }}
+          path: .modern-dev-mgmt/validation/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Create Intune Application
         id: create_app
@@ -275,6 +556,12 @@ jobs:
           }
           if ("${{ github.event.inputs.app_icon_base64 }}") {
             $params.AppIconBase64 = "${{ github.event.inputs.app_icon_base64 }}"
+          }
+          if ("${{ steps.resolve_installer.outputs.staging_dir }}") {
+            $params.PackageFilesDirectory = "${{ steps.resolve_installer.outputs.staging_dir }}"
+          }
+          if ("${{ steps.resolve_installer.outputs.metadata_path }}") {
+            $params.InstallerMetadataPath = "${{ steps.resolve_installer.outputs.metadata_path }}"
           }
           ./scripts/winget/Create-IntuneApplication.ps1 @params
         shell: powershell
@@ -414,6 +701,48 @@ jobs:
               Write-Warning "Could not decode Modern Dev Mgmt context: $($_.Exception.Message)"
             }
           }
+          # Pull validation artifacts into the persisted run result so the
+          # desktop UI can render the Robopack-style App Documentation page
+          # (files added, registry values added, leftovers, install/uninstall
+          # exit codes, raw logs).
+          $validation = $null
+          $validationReportPath = ".modern-dev-mgmt/validation/report.json"
+          if (Test-Path -LiteralPath $validationReportPath) {
+            try {
+              $validation = Get-Content -LiteralPath $validationReportPath -Raw | ConvertFrom-Json
+            } catch {
+              Write-Warning "Could not parse validation report: $($_.Exception.Message)"
+            }
+          }
+          # Capture last 200 lines of each transcript so the UI can show what
+          # actually went wrong without forcing the user to download artifacts.
+          function Get-LogTail([string]$Path, [int]$N = 200) {
+            if (-not (Test-Path -LiteralPath $Path)) { return $null }
+            try {
+              $lines = Get-Content -LiteralPath $Path -Tail $N -ErrorAction Stop
+              return ($lines -join [Environment]::NewLine)
+            } catch { return $null }
+          }
+          if ($validation) {
+            $validation | Add-Member -NotePropertyName installLogTail   -NotePropertyValue (Get-LogTail '.modern-dev-mgmt/validation/install.log')   -Force
+            $validation | Add-Member -NotePropertyName uninstallLogTail -NotePropertyValue (Get-LogTail '.modern-dev-mgmt/validation/uninstall.log') -Force
+          }
+          $footprint = $null
+          if (Test-Path -LiteralPath ".modern-dev-mgmt/validation/footprint.json") {
+            try { $footprint = Get-Content -LiteralPath ".modern-dev-mgmt/validation/footprint.json" -Raw | ConvertFrom-Json } catch {}
+          }
+          $leftovers = $null
+          if (Test-Path -LiteralPath ".modern-dev-mgmt/validation/leftovers.json") {
+            try { $leftovers = Get-Content -LiteralPath ".modern-dev-mgmt/validation/leftovers.json" -Raw | ConvertFrom-Json } catch {}
+          }
+          # Pull installer manifest metadata too so the UI's App Documentation
+          # tab can show real install/uninstall commands + product code.
+          $installerMeta = $null
+          if (Test-Path -LiteralPath "winget-installer-files/installer-metadata.json") {
+            try {
+              $installerMeta = Get-Content -LiteralPath "winget-installer-files/installer-metadata.json" -Raw | ConvertFrom-Json
+            } catch {}
+          }
           $result = [ordered]@{
             workflowRunId = "${{ github.run_id }}"
             workflow = "deploy-winget-app.yml"
@@ -425,19 +754,166 @@ jobs:
             status = "success"
             createdAt = (Get-Date).ToUniversalTime().ToString("o")
             context = $context
+            validation = $validation
+            footprint = $footprint
+            leftovers = $leftovers
+            installer = $installerMeta
           }
-          $result | ConvertTo-Json -Depth 5 | Set-Content -Path "$runDir/${{ github.run_id }}.json" -Encoding UTF8
+          $resultJson = $result | ConvertTo-Json -Depth 12
+          $resultJson | Set-Content -Path "$runDir/${{ github.run_id }}.json" -Encoding UTF8
           git add "$runDir/${{ github.run_id }}.json"
           if ($context -and $context.patchRunId) {
             $patchDir = ".modern-dev-mgmt/patch-runs"
             New-Item -ItemType Directory -Force -Path $patchDir | Out-Null
             $patchPath = "$patchDir/$($context.patchRunId).json"
-            $result | ConvertTo-Json -Depth 8 | Set-Content -Path $patchPath -Encoding UTF8
+            $resultJson | Set-Content -Path $patchPath -Encoding UTF8
             git add $patchPath
           }
+          # ---- Per-app docs layout (mirrors app-docs-layout.ts) ----
+          function _Slugify([string]$Value) {
+            if ([string]::IsNullOrWhiteSpace($Value)) { return '_unknown' }
+            $lower = $Value.ToLowerInvariant()
+            $dashed = [System.Text.RegularExpressions.Regex]::Replace($lower, '[^a-z0-9]+', '-')
+            $trimmed = $dashed.Trim('-')
+            if ([string]::IsNullOrEmpty($trimmed)) { return '_unknown' }
+            return $trimmed
+          }
+          function _NormalizeVersion([string]$Value) {
+            if ([string]::IsNullOrWhiteSpace($Value)) { return 'unknown' }
+            $cleaned = [System.Text.RegularExpressions.Regex]::Replace($Value.Trim(), '[^A-Za-z0-9._-]+', '-').Trim('-')
+            if ([string]::IsNullOrEmpty($cleaned)) { return 'unknown' }
+            return $cleaned
+          }
+          $slugCandidates = @(
+            $result.packageId,
+            $result.appName,
+            $(if ($context) { $context.packageId } else { $null }),
+            $(if ($context) { $context.appName } else { $null }),
+            $(if ($installerMeta) { $installerMeta.fileName } else { $null })
+          )
+          $appSlug = '_unknown'
+          foreach ($cand in $slugCandidates) {
+            if ($cand) {
+              $candidate = _Slugify ([string]$cand)
+              if ($candidate -ne '_unknown') { $appSlug = $candidate; break }
+            }
+          }
+          $versionCandidates = @(
+            $(if ($installerMeta) { $installerMeta.version } else { $null }),
+            $(if ($installerMeta) { $installerMeta.displayVersion } else { $null }),
+            $(if ($context) { $context.targetVersion } else { $null }),
+            $(if ($context) { $context.version } else { $null }),
+            $result.version,
+            $result.appVersion
+          )
+          $appVersion = 'unknown'
+          foreach ($cand in $versionCandidates) {
+            if ($cand) {
+              $candidate = _NormalizeVersion ([string]$cand)
+              if ($candidate -ne 'unknown') { $appVersion = $candidate; break }
+            }
+          }
+          $runIdRaw = "${{ github.run_id }}"
+          $safeRunId = [System.Text.RegularExpressions.Regex]::Replace($runIdRaw, '[^A-Za-z0-9._-]+', '')
+          $appDir = ".modern-dev-mgmt/apps/$appSlug"
+          $versionDir = "$appDir/$appVersion"
+          $perRunDir = "$versionDir/$safeRunId"
+          New-Item -ItemType Directory -Force -Path $perRunDir | Out-Null
+          $resultJson | Set-Content -Path "$perRunDir/result.json" -Encoding UTF8
+          foreach ($pair in @(
+            @{ src = '.modern-dev-mgmt/validation/install.log';   dst = "$perRunDir/install.log" },
+            @{ src = '.modern-dev-mgmt/validation/uninstall.log'; dst = "$perRunDir/uninstall.log" },
+            @{ src = '.modern-dev-mgmt/validation/footprint.json';dst = "$perRunDir/footprint.json" },
+            @{ src = '.modern-dev-mgmt/validation/leftovers.json';dst = "$perRunDir/leftovers.json" },
+            @{ src = '.modern-dev-mgmt/validation/report.json';   dst = "$perRunDir/report.json" }
+          )) {
+            if (Test-Path -LiteralPath $pair.src) {
+              Copy-Item -LiteralPath $pair.src -Destination $pair.dst -Force
+            }
+          }
+          $createdAt = $result.createdAt
+          $intuneAppId = $result.appId
+          $catalogAppId = $null
+          $patchRunId = $null
+          if ($context) {
+            if ($context.PSObject.Properties.Match('catalogAppId').Count -gt 0) { $catalogAppId = $context.catalogAppId }
+            if ($context.PSObject.Properties.Match('patchRunId').Count -gt 0) { $patchRunId = $context.patchRunId }
+          }
+          $latestPointer = [ordered]@{
+            workflowRunId = $safeRunId
+            createdAt     = $createdAt
+            intuneAppId   = $intuneAppId
+            catalogAppId  = $catalogAppId
+          }
+          ($latestPointer | ConvertTo-Json -Depth 4) | Set-Content -Path "$versionDir/latest.json" -Encoding UTF8
+          $displayName = $result.appName
+          $indexPath = "$appDir/index.json"
+          $index = $null
+          if (Test-Path -LiteralPath $indexPath) {
+            try { $index = Get-Content -LiteralPath $indexPath -Raw | ConvertFrom-Json } catch { $index = $null }
+          }
+          $indexVersions = @()
+          if ($index -and $index.versions) {
+            foreach ($v in $index.versions) {
+              $runsCopy = @()
+              if ($v.runs) {
+                foreach ($r in $v.runs) {
+                  $runsCopy += [ordered]@{
+                    workflowRunId = [string]$r.workflowRunId
+                    createdAt     = $r.createdAt
+                    intuneAppId   = $r.intuneAppId
+                    catalogAppId  = $r.catalogAppId
+                    patchRunId    = $r.patchRunId
+                    status        = $r.status
+                  }
+                }
+              }
+              $indexVersions += [ordered]@{ version = [string]$v.version; runs = $runsCopy }
+            }
+          }
+          $newRunEntry = [ordered]@{
+            workflowRunId = $safeRunId
+            createdAt     = $createdAt
+            intuneAppId   = $intuneAppId
+            catalogAppId  = $catalogAppId
+            patchRunId    = $patchRunId
+            status        = $result.status
+          }
+          $found = $false
+          for ($i = 0; $i -lt $indexVersions.Count; $i++) {
+            if ($indexVersions[$i].version -eq $appVersion) {
+              $found = $true
+              $filteredRuns = @()
+              foreach ($r in $indexVersions[$i].runs) {
+                if ([string]$r.workflowRunId -ne $safeRunId) { $filteredRuns += $r }
+              }
+              $filteredRuns += $newRunEntry
+              $indexVersions[$i].runs = $filteredRuns
+              break
+            }
+          }
+          if (-not $found) {
+            $indexVersions += [ordered]@{ version = $appVersion; runs = @($newRunEntry) }
+          }
+          # Sort versions by their newest run's createdAt (desc); fall back to version name desc.
+          $sortedVersions = $indexVersions | Sort-Object @{ Expression = {
+            $maxCreated = ''
+            foreach ($r in $_.runs) {
+              if ($r.createdAt -and ([string]$r.createdAt) -gt $maxCreated) { $maxCreated = [string]$r.createdAt }
+            }
+            $maxCreated
+          }; Descending = $true }, @{ Expression = { $_.version }; Descending = $true }
+          $indexOut = [ordered]@{
+            slug        = $appSlug
+            displayName = $displayName
+            versions    = @($sortedVersions)
+            updatedAt   = (Get-Date).ToUniversalTime().ToString('o')
+          }
+          ($indexOut | ConvertTo-Json -Depth 10) | Set-Content -Path $indexPath -Encoding UTF8
+          git add $appDir
           git diff --cached --quiet
           if ($LASTEXITCODE -ne 0) {
-            git commit -m "chore: record Modern Dev Mgmt run ${{ github.run_id }}"
+            git commit -m "chore: record Modern Dev Mgmt run ${{ github.run_id }} (per-app docs)"
             git pull --rebase origin "${{ github.ref_name }}"
             git push
           } else {
