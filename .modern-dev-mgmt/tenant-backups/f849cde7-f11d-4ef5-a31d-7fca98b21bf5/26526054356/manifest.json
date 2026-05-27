@@ -1,0 +1,550 @@
+{
+  "schemaVersion": 1,
+  "source": "modern-dev-mgmt",
+  "tenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+  "backupId": "26526054356",
+  "workflowRunId": "26526054356",
+  "repository": "jannik-epic/test",
+  "scope": "custom",
+  "includedTypes": [
+    "mobile-apps"
+  ],
+  "label": "Codex pipeline audit mobile-app restore source after workflow refresh",
+  "includeAssignments": false,
+  "includeGroups": false,
+  "createdAt": "2026-05-27T17:00:43.1080294Z",
+  "graphBase": "https://graph.microsoft.com/v1.0",
+  "graphBetaBase": "https://graph.microsoft.com/beta",
+  "counts": {
+    "conditional-access-policies": 0,
+    "named-locations": 0,
+    "authentication-strengths": 0,
+    "authentication-contexts": 0,
+    "authorization-policy": 0,
+    "device-registration-policy": 0,
+    "entra-organization": 0,
+    "entra-domains": 0,
+    "entra-users": 0,
+    "entra-groups": 0,
+    "entra-devices": 0,
+    "entra-administrative-units": 0,
+    "entra-applications": 0,
+    "entra-oauth2-permission-grants": 0,
+    "app-management-policies": 0,
+    "entra-directory-roles": 0,
+    "entra-directory-role-definitions": 0,
+    "entra-directory-role-assignments": 0,
+    "authentication-methods-policy": 0,
+    "defender-secure-score-control-profiles": 0,
+    "defender-secure-scores": 0,
+    "configuration-policies": 0,
+    "device-configurations": 0,
+    "group-policy-configurations": 0,
+    "device-management-intents": 0,
+    "compliance-policies": 0,
+    "mobile-apps": 68,
+    "managed-app-policies": 0,
+    "targeted-managed-app-configurations": 0,
+    "policy-sets": 0,
+    "device-management-scripts": 0,
+    "device-health-scripts": 0,
+    "device-compliance-scripts": 0,
+    "enrollment-configurations": 0,
+    "autopilot-deployment-profiles": 0,
+    "assignment-filters": 0,
+    "feature-update-profiles": 0,
+    "driver-update-profiles": 0,
+    "device-categories": 0,
+    "role-definitions": 0,
+    "terms-and-conditions": 0,
+    "notification-message-templates": 0,
+    "intune-branding-profiles": 0,
+    "cloud-pc-provisioning-policies": 0,
+    "cloud-pc-on-premises-connections": 0,
+    "cloud-pc-device-images": 0,
+    "service-principals": 0,
+    "assignments": 0,
+    "groups": 0
+  },
+  "warningCount": 0,
+  "limitationCount": 1,
+  "policies": [
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/d0ed65fe-3adb-4252-b536-5ba6dd243652.json",
+      "backupPolicyId": "d0ed65fe-3adb-4252-b536-5ba6dd243652",
+      "displayName": "!Dice",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/53c2aba1-76f6-4490-a572-5d6d72957a12.json",
+      "backupPolicyId": "53c2aba1-76f6-4490-a572-5d6d72957a12",
+      "displayName": "!Dice",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/254b1f7e-5b06-4c7c-ad09-84b4567f4b71.json",
+      "backupPolicyId": "254b1f7e-5b06-4c7c-ad09-84b4567f4b71",
+      "displayName": "Adobe Acrobat Reader PDF Maker",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/045eb3d9-b48b-4187-a284-4d6a05ad8f8d.json",
+      "backupPolicyId": "045eb3d9-b48b-4187-a284-4d6a05ad8f8d",
+      "displayName": "ApiTester",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/b284befd-0e0e-4bb7-83c6-e40ad4b752be.json",
+      "backupPolicyId": "b284befd-0e0e-4bb7-83c6-e40ad4b752be",
+      "displayName": "Azure Virtual Desktop Preview",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/2282836b-bd33-4c9e-9448-10efc355441c.json",
+      "backupPolicyId": "2282836b-bd33-4c9e-9448-10efc355441c",
+      "displayName": "Bitwarden",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/64cfb478-fe63-427e-9ab8-23a70d39aaee.json",
+      "backupPolicyId": "64cfb478-fe63-427e-9ab8-23a70d39aaee",
+      "displayName": "Canva",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/02cf5146-0ef1-445c-ae6b-cd761a63de09.json",
+      "backupPolicyId": "02cf5146-0ef1-445c-ae6b-cd761a63de09",
+      "displayName": "Chocolatey",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/63c79dda-5c21-4120-99b0-2aa1e84d474a.json",
+      "backupPolicyId": "63c79dda-5c21-4120-99b0-2aa1e84d474a",
+      "displayName": "Chrome 141.0.7390.77",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/63e333ed-8a67-49cd-9789-c7b066a65b0d.json",
+      "backupPolicyId": "63e333ed-8a67-49cd-9789-c7b066a65b0d",
+      "displayName": "Chrome 141.0.7390.77",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/e598bbfa-e92e-4a70-ac91-1886a10c664e.json",
+      "backupPolicyId": "e598bbfa-e92e-4a70-ac91-1886a10c664e",
+      "displayName": "Claude Code",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/c7af1c15-7737-435f-9e37-68c79302a323.json",
+      "backupPolicyId": "c7af1c15-7737-435f-9e37-68c79302a323",
+      "displayName": "Cmtrace",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/4f8a0664-189a-4e09-872c-37e6ffe8682c.json",
+      "backupPolicyId": "4f8a0664-189a-4e09-872c-37e6ffe8682c",
+      "displayName": "Compact Log Viewer",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/1e5cef5c-c572-418d-8c29-1fa2ef915f8d.json",
+      "backupPolicyId": "1e5cef5c-c572-418d-8c29-1fa2ef915f8d",
+      "displayName": "Company Portal",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/37c6554c-6cda-4580-9f32-d013a4b34e4b.json",
+      "backupPolicyId": "37c6554c-6cda-4580-9f32-d013a4b34e4b",
+      "displayName": "Company Portal System Tray",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/284e619f-6d66-4371-8dcb-295b9dae7908.json",
+      "backupPolicyId": "284e619f-6d66-4371-8dcb-295b9dae7908",
+      "displayName": "Fully Kiosk Browser & Lockdown",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/a9ce136c-e204-4fc8-b0f1-2f4434065b9c.json",
+      "backupPolicyId": "a9ce136c-e204-4fc8-b0f1-2f4434065b9c",
+      "displayName": "Gemini 2.9.11,399,1696867671",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/b6504e78-3460-4bad-9180-1ac1ecf63b88.json",
+      "backupPolicyId": "b6504e78-3460-4bad-9180-1ac1ecf63b88",
+      "displayName": "Google Chrome",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/fe847945-ddcc-40a6-ba5b-b87c30f93ced.json",
+      "backupPolicyId": "fe847945-ddcc-40a6-ba5b-b87c30f93ced",
+      "displayName": "Google Chrome",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/05b8d3ea-2c5a-46f3-a5ab-ca6c4af069f5.json",
+      "backupPolicyId": "05b8d3ea-2c5a-46f3-a5ab-ca6c4af069f5",
+      "displayName": "Google Chrome",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/dfcf9b77-26a7-4519-a08c-e48abc0e557a.json",
+      "backupPolicyId": "dfcf9b77-26a7-4519-a08c-e48abc0e557a",
+      "displayName": "Google Chrome 141.0.7390.77",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/7d56c272-8291-45c5-9d73-906fa794fdab.json",
+      "backupPolicyId": "7d56c272-8291-45c5-9d73-906fa794fdab",
+      "displayName": "Green Health",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/8a0df97a-d35b-477b-b379-a057b3ae661f.json",
+      "backupPolicyId": "8a0df97a-d35b-477b-b379-a057b3ae661f",
+      "displayName": "Greenfoot",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/f7da4a83-91a4-48c9-bf10-42fda56e3df9.json",
+      "backupPolicyId": "f7da4a83-91a4-48c9-bf10-42fda56e3df9",
+      "displayName": "Greenshot",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/15541b1e-3ab7-4515-bd5b-98ce8540ec64.json",
+      "backupPolicyId": "15541b1e-3ab7-4515-bd5b-98ce8540ec64",
+      "displayName": "Greenshot",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/862af12b-0bd9-4037-84d6-a307e5987320.json",
+      "backupPolicyId": "862af12b-0bd9-4037-84d6-a307e5987320",
+      "displayName": "Greenshot",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/1f4b0209-e744-4de6-810e-b716e2e4c1b9.json",
+      "backupPolicyId": "1f4b0209-e744-4de6-810e-b716e2e4c1b9",
+      "displayName": "Greenshot",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/26e5c083-a133-4937-9b95-d42f1b521bbd.json",
+      "backupPolicyId": "26e5c083-a133-4937-9b95-d42f1b521bbd",
+      "displayName": "Greenshot",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/df3f4297-a39a-4cb6-90bf-5913780d63d5.json",
+      "backupPolicyId": "df3f4297-a39a-4cb6-90bf-5913780d63d5",
+      "displayName": "Intune Company Portal",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/52ea5947-b313-49b2-bd5d-0f16c5c9c6e3.json",
+      "backupPolicyId": "52ea5947-b313-49b2-bd5d-0f16c5c9c6e3",
+      "displayName": "Little Green Button",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/ad120224-966c-42e8-ac57-0da59b0587ae.json",
+      "backupPolicyId": "ad120224-966c-42e8-ac57-0da59b0587ae",
+      "displayName": "Managed Home Screen",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/65de16c7-ad23-4d06-8cdb-e12e27ba9636.json",
+      "backupPolicyId": "65de16c7-ad23-4d06-8cdb-e12e27ba9636",
+      "displayName": "Microsoft 365 Apps for Windows 10 and later",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/8872a56b-6ac3-4071-83cb-e3eca9abfe69.json",
+      "backupPolicyId": "8872a56b-6ac3-4071-83cb-e3eca9abfe69",
+      "displayName": "Microsoft Authenticator",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/c41cc6a9-1563-49d9-9b8f-cf1f12bb488d.json",
+      "backupPolicyId": "c41cc6a9-1563-49d9-9b8f-cf1f12bb488d",
+      "displayName": "Microsoft Defender for Endpoint (macOS)",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/5a20825c-281f-4ba0-b730-507013da1128.json",
+      "backupPolicyId": "5a20825c-281f-4ba0-b730-507013da1128",
+      "displayName": "Microsoft Edge",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/ad1a673b-c136-4f95-a761-18b36cb089fe.json",
+      "backupPolicyId": "ad1a673b-c136-4f95-a761-18b36cb089fe",
+      "displayName": "Microsoft Edge for Windows 10 and later",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/829ba40f-096a-4b17-8457-f5d9e7ccc2c6.json",
+      "backupPolicyId": "829ba40f-096a-4b17-8457-f5d9e7ccc2c6",
+      "displayName": "Microsoft Edge: Web Browser",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/10eb6c8e-cf0b-4afd-b6a9-071fdf91081f.json",
+      "backupPolicyId": "10eb6c8e-cf0b-4afd-b6a9-071fdf91081f",
+      "displayName": "Microsoft Excel",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/8a7e23ce-0b7a-4c9a-a349-fd9d1f4e9e27.json",
+      "backupPolicyId": "8a7e23ce-0b7a-4c9a-a349-fd9d1f4e9e27",
+      "displayName": "Microsoft Intune",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/39976a10-0506-421a-a4a0-d7611c1b0ce4.json",
+      "backupPolicyId": "39976a10-0506-421a-a4a0-d7611c1b0ce4",
+      "displayName": "Microsoft Launcher",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/a178c27f-16f0-4aa6-94cc-637fde284d8a.json",
+      "backupPolicyId": "a178c27f-16f0-4aa6-94cc-637fde284d8a",
+      "displayName": "Microsoft Office",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/316a1547-1659-437a-a565-03a50166dc14.json",
+      "backupPolicyId": "316a1547-1659-437a-a565-03a50166dc14",
+      "displayName": "Microsoft OneDrive",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/198e00fb-fad4-4a17-a11e-03390385bbaa.json",
+      "backupPolicyId": "198e00fb-fad4-4a17-a11e-03390385bbaa",
+      "displayName": "Microsoft Outlook",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/3e839a16-eba4-4646-9e83-a379674aefbb.json",
+      "backupPolicyId": "3e839a16-eba4-4646-9e83-a379674aefbb",
+      "displayName": "Microsoft PowerPoint",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/3ec6a5cd-8589-4070-8c34-032b1d327344.json",
+      "backupPolicyId": "3ec6a5cd-8589-4070-8c34-032b1d327344",
+      "displayName": "Microsoft Teams",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/a01c4958-85ae-44ea-9f45-94bea6a1be48.json",
+      "backupPolicyId": "a01c4958-85ae-44ea-9f45-94bea6a1be48",
+      "displayName": "Microsoft Visio Viewer",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/6954153a-81dd-4be6-8457-ec3b722d4c06.json",
+      "backupPolicyId": "6954153a-81dd-4be6-8457-ec3b722d4c06",
+      "displayName": "Microsoft Word",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/158728f4-bd49-47c3-ac86-779498f3e712.json",
+      "backupPolicyId": "158728f4-bd49-47c3-ac86-779498f3e712",
+      "displayName": "Modern Dev Mgmt E2E - VS Code",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/1a237f9d-d28f-4101-800a-676411e66d0e.json",
+      "backupPolicyId": "1a237f9d-d28f-4101-800a-676411e66d0e",
+      "displayName": "Modern Dev Mgmt E2E Custom Smoke",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/e9ecaaa0-3bb0-448d-959e-84559bb845f8.json",
+      "backupPolicyId": "e9ecaaa0-3bb0-448d-959e-84559bb845f8",
+      "displayName": "Modern Dev Mgmt E2E Winget Smoke",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/ab2aacbb-052e-4b57-bbf4-3395c3b3730f.json",
+      "backupPolicyId": "ab2aacbb-052e-4b57-bbf4-3395c3b3730f",
+      "displayName": "Notepad++",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/08b54140-d61b-443e-a80d-212bd58f7881.json",
+      "backupPolicyId": "08b54140-d61b-443e-a80d-212bd58f7881",
+      "displayName": "Notion Calendar",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/87f128df-af63-4587-bb73-58fe0fcad65f.json",
+      "backupPolicyId": "87f128df-af63-4587-bb73-58fe0fcad65f",
+      "displayName": "Notion Calendar",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/77303633-6195-44ed-a0f7-1460ec886a72.json",
+      "backupPolicyId": "77303633-6195-44ed-a0f7-1460ec886a72",
+      "displayName": "Notion Calendar 1.133.0",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/6bc68207-172f-4f69-9214-5ff10892637b.json",
+      "backupPolicyId": "6bc68207-172f-4f69-9214-5ff10892637b",
+      "displayName": "Notion Calendar 1.133.0",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/e0a49ab2-7e30-4472-8d0c-789545c9699d.json",
+      "backupPolicyId": "e0a49ab2-7e30-4472-8d0c-789545c9699d",
+      "displayName": "Notion Calendar 1.133.0",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/6ff7de3f-d69b-495f-b593-facb1e69a922.json",
+      "backupPolicyId": "6ff7de3f-d69b-495f-b593-facb1e69a922",
+      "displayName": "Notion Calendar 1.133.0",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/163ef903-77ec-4266-b47b-2a77e4b4953b.json",
+      "backupPolicyId": "163ef903-77ec-4266-b47b-2a77e4b4953b",
+      "displayName": "PackageFlow Icon Smoke 2026-05-19 0920",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/863823c7-e4a4-4bc4-8d11-8662e95223d9.json",
+      "backupPolicyId": "863823c7-e4a4-4bc4-8d11-8662e95223d9",
+      "displayName": "PackageFlow Upload Smoke 2026-05-19 0815",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/89c7eff3-711f-4655-a27f-245132d45a8a.json",
+      "backupPolicyId": "89c7eff3-711f-4655-a27f-245132d45a8a",
+      "displayName": "Patch-my-pc",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/80606c51-206c-4fee-aa63-00e3bee0a2d7.json",
+      "backupPolicyId": "80606c51-206c-4fee-aa63-00e3bee0a2d7",
+      "displayName": "Power BI",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/48e175f1-6fbc-4d5e-af4e-da4ed76e65e3.json",
+      "backupPolicyId": "48e175f1-6fbc-4d5e-af4e-da4ed76e65e3",
+      "displayName": "Python 3.11 (x64)",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/eff12961-5c7d-4df0-9145-27839a1af4ab.json",
+      "backupPolicyId": "eff12961-5c7d-4df0-9145-27839a1af4ab",
+      "displayName": "Python Launcher",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/916da66d-05f1-45b8-876c-e1e322a44e66.json",
+      "backupPolicyId": "916da66d-05f1-45b8-876c-e1e322a44e66",
+      "displayName": "Snagit 2025",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/5166d85f-1ce3-4100-b47f-6f64b6c3d32b.json",
+      "backupPolicyId": "5166d85f-1ce3-4100-b47f-6f64b6c3d32b",
+      "displayName": "Visual Studio Code",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/a2c08461-f33a-45d0-ab4c-e65ec0b19e27.json",
+      "backupPolicyId": "a2c08461-f33a-45d0-ab4c-e65ec0b19e27",
+      "displayName": "Visual Studio Code (URL) 1.95.0",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/67a96006-0bbb-4420-b07b-db0b99fce54b.json",
+      "backupPolicyId": "67a96006-0bbb-4420-b07b-db0b99fce54b",
+      "displayName": "Visual Studio Code (x64)",
+      "restorable": true
+    },
+    {
+      "policyType": "MobileApp",
+      "path": "policies/intune/mobile-apps/d99d6938-fbb3-408f-bf9b-78285258bacd.json",
+      "backupPolicyId": "d99d6938-fbb3-408f-bf9b-78285258bacd",
+      "displayName": "Web Company Portal",
+      "restorable": true
+    }
+  ],
+  "requestContextProvided": true
+}
