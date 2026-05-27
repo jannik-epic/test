@@ -1,0 +1,24 @@
+{
+  "workflowRunId": "26524023414",
+  "workflow": "sync-dynamic-app-group.yml",
+  "dynamicGroupId": "codex-audit-dynamic-group",
+  "entraGroupId": "01bb9933-8755-46fe-a2ef-1f66a4f1aa47",
+  "targetVersion": "25.00",
+  "dryRun": true,
+  "autoPopulate": true,
+  "autoRemoveOnSuccess": true,
+  "outdatedDeviceCount": 0,
+  "currentDeviceCount": 0,
+  "resolvedOutdatedCount": 0,
+  "resolvedCurrentCount": 0,
+  "addedCount": 0,
+  "removedCount": 0,
+  "skipped": [],
+  "context": {
+    "source": "codex-pipeline-audit",
+    "triggeredBy": "codex",
+    "dryRun": true,
+    "timestamp": "2026-05-27T16:22:37.857Z"
+  },
+  "createdAt": "2026-05-27T16:23:00.3216870Z"
+}
