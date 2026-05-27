@@ -1,0 +1,27 @@
+{
+  "workflowRunId": "26526983375",
+  "workflow": "apply-wave-assignment.yml",
+  "patchRunId": "codex-current-audit-patch-2",
+  "waveRunId": "codex-current-audit-wave-2",
+  "waveId": "1",
+  "waveName": "Codex current audit wave",
+  "intuneAppId": "d0ed65fe-3adb-4252-b536-5ba6dd243652",
+  "dryRun": true,
+  "status": "success",
+  "assignmentSummary": {
+    "mode": "codex-current-audit",
+    "assignmentCount": 0,
+    "target": "none/dry-run"
+  },
+  "context": {
+    "source": "codex-current-pipeline-audit",
+    "workflow": "apply-wave-assignment.yml",
+    "dryRun": true,
+    "targetTenantId": 1,
+    "targetTenantName": "ModernDevMgmt.onmicrosoft.com",
+    "targetAzureTenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "targetAzureClientId": "7659f226-8344-4731-b758-a4d93238309c",
+    "requestedAt": "2026-05-27T17:16:29.145Z"
+  },
+  "createdAt": "2026-05-27T17:18:28.6252471Z"
+}
