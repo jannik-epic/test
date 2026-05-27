@@ -1,0 +1,23 @@
+{
+  "workflowRunId": "26523730682",
+  "workflow": "apply-wave-assignment.yml",
+  "patchRunId": "codex-audit-patch-run",
+  "waveRunId": "codex-audit-wave-run",
+  "waveId": "codex-audit-wave",
+  "waveName": "Codex audit dry-run wave",
+  "intuneAppId": "dry-run-intune-app-id",
+  "dryRun": true,
+  "status": "success",
+  "assignmentSummary": {
+    "intent": "required",
+    "targets": [],
+    "source": "codex-pipeline-audit"
+  },
+  "context": {
+    "source": "codex-pipeline-audit",
+    "triggeredBy": "codex",
+    "dryRun": true,
+    "timestamp": "2026-05-27T16:14:28.98Z"
+  },
+  "createdAt": "2026-05-27T16:17:32.4547188Z"
+}
