@@ -305,7 +305,7 @@ jobs:
           if (-not (Test-Path -LiteralPath `$installerPath -PathType Leaf)) { throw "Installer not found: `$installerPath" }
           $pre
           if ('$escapedEngine' -eq 'msi') {
-            `$arguments = "/i `"`$installerPath`" $escapedArgs"
+            `$arguments = ('/i "{0}" {1}' -f `$installerPath, '$escapedArgs').Trim()
             `$process = Start-Process -FilePath 'msiexec.exe' -ArgumentList `$arguments -Wait -PassThru -WindowStyle Hidden
           } else {
             `$process = Start-Process -FilePath `$installerPath -ArgumentList '$escapedArgs' -Wait -PassThru -WindowStyle Hidden
