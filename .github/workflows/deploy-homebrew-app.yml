@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       package_id:
-        description: 'Homebrew Cask token (e.g., google-chrome)'
-        required: true
+        description: 'Homebrew Cask token (e.g., google-chrome) — required unless installer_url is set'
+        required: false
+        type: string
+      installer_url:
+        description: 'Direct macOS download URL (.dmg or .pkg). Overrides brew install path — pipeline downloads + uploads the binary directly. Optional pipe form: "url|filename".'
+        required: false
         type: string
       package_name:
         description: 'Package display name (optional compatibility input)'
@@ -85,6 +89,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Resolve target Azure tenant from Modern Dev Mgmt context
+        shell: bash
+        env:
+          MODERN_DEVMGMT_CONTEXT_B64: ${{ github.event.inputs.modern_dev_mgmt_context_b64 }}
+        run: |
+          # The desktop app's catalog deploy passes targetAzureTenantId +
+          # targetAzureClientId inside the b64-encoded context blob. When two
+          # tenants share the same GitHub repo this is the only mechanism that
+          # routes OIDC to the right Azure tenant per dispatch — the YAML env
+          # defaults are baked at provisioning time and can only point at one
+          # tenant.
+          if [[ -z "${MODERN_DEVMGMT_CONTEXT_B64:-}" ]]; then
+            echo "no Modern Dev Mgmt context — keeping default AZURE_TENANT_ID/CLIENT_ID"
+            exit 0
+          fi
+          decoded="$(printf '%s' "$MODERN_DEVMGMT_CONTEXT_B64" | base64 --decode 2>/dev/null || true)"
+          if [[ -z "$decoded" ]]; then
+            echo "::warning::could not base64-decode modern_dev_mgmt_context_b64; using YAML defaults"
+            exit 0
+          fi
+          tenant="$(printf '%s' "$decoded" | jq -r '.targetAzureTenantId // ""' 2>/dev/null || true)"
+          client="$(printf '%s' "$decoded" | jq -r '.targetAzureClientId // ""' 2>/dev/null || true)"
+          if [[ -n "$tenant" ]]; then
+            echo "AZURE_TENANT_ID=$tenant" >> "$GITHUB_ENV"
+            echo "INTUNE_TENANT_ID=$tenant" >> "$GITHUB_ENV"
+            echo "resolved AZURE_TENANT_ID=$tenant"
+          fi
+          if [[ -n "$client" ]]; then
+            echo "AZURE_CLIENT_ID=$client" >> "$GITHUB_ENV"
+            echo "INTUNE_CLIENT_ID=$client" >> "$GITHUB_ENV"
+            echo "resolved AZURE_CLIENT_ID=$client"
+          fi
+
       - name: Azure Login using OIDC
         uses: azure/login@v3
         with:
@@ -121,6 +158,7 @@ jobs:
         run: chmod +x tools/intune_packager.py
 
       - name: Prepare Homebrew environment
+        if: ${{ github.event.inputs.installer_url == '' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -136,16 +174,96 @@ jobs:
           brew update || true
           brew doctor || true
 
+      - name: Download installer from URL (direct vendor link)
+        id: url_download
+        if: ${{ github.event.inputs.installer_url != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL_INPUT="${{ github.event.inputs.installer_url }}"
+          # Optional pipe form: "url|filename"
+          URL="${URL_INPUT%%|*}"
+          FNAME_PART="${URL_INPUT#*|}"
+          if [[ "$FNAME_PART" == "$URL_INPUT" ]]; then FNAME_PART=""; fi
+          # Infer filename from URL if not provided.
+          if [[ -z "$FNAME_PART" ]]; then FNAME_PART="$(basename "${URL%%\?*}")"; fi
+          mkdir -p custom-files
+          echo "Downloading $URL → custom-files/$FNAME_PART"
+          curl -L -o "custom-files/$FNAME_PART" "$URL"
+          ls -la custom-files/
+          # Persist for downstream steps
+          echo "filename=$FNAME_PART" >> "$GITHUB_OUTPUT"
+          echo "filepath=custom-files/$FNAME_PART" >> "$GITHUB_OUTPUT"
+          # If DMG, mount + locate inner .pkg or .app.
+          EXT="${FNAME_PART##*.}"
+          if [[ "$EXT" == "dmg" ]]; then
+            # -plist gives parseable output even with -quiet suppressed. Pull
+            # the first system-entity mount-point (the volume root).
+            MOUNT_POINT="$(hdiutil attach "custom-files/$FNAME_PART" -nobrowse -noverify -noautoopen -plist | python3 -c "import plistlib,sys; d=plistlib.loads(sys.stdin.buffer.read()); print(next((e['mount-point'] for e in d.get('system-entities',[]) if 'mount-point' in e), ''))")"
+            if [[ -z "$MOUNT_POINT" || ! -d "$MOUNT_POINT" ]]; then
+              echo "::error::DMG attach failed (mount point not detected)"
+              exit 1
+            fi
+            echo "DMG mounted at $MOUNT_POINT"
+            ls -la "$MOUNT_POINT"
+            # Prefer .pkg, fall back to .app.
+            INNER_PKG="$(find "$MOUNT_POINT" -maxdepth 2 -name '*.pkg' | head -n 1 || true)"
+            INNER_APP="$(find "$MOUNT_POINT" -maxdepth 2 -name '*.app' | head -n 1 || true)"
+            if [[ -n "$INNER_PKG" ]]; then
+              cp -R "$INNER_PKG" custom-files/
+              echo "extracted_pkg=custom-files/$(basename "$INNER_PKG")" >> "$GITHUB_OUTPUT"
+            elif [[ -n "$INNER_APP" ]]; then
+              cp -R "$INNER_APP" custom-files/
+              echo "extracted_app=custom-files/$(basename "$INNER_APP")" >> "$GITHUB_OUTPUT"
+              # Build a temporary .pkg around the .app. Use a sanitised, no-space
+              # output filename so downstream steps (intune_packager, upload)
+              # don't have to deal with quoting issues.
+              APP_NAME="$(basename "$INNER_APP" .app)"
+              SAFE_NAME="$(echo "$APP_NAME" | tr ' ' '-')"
+              IDENTIFIER="com.modern-dev-mgmt.$(echo "$APP_NAME" | tr '[:upper:] ' '[:lower:]-')"
+              PKG_OUT="$PWD/custom-files/${SAFE_NAME}.pkg"
+              pkgbuild --component "custom-files/$(basename "$INNER_APP")" \
+                       --identifier "$IDENTIFIER" \
+                       --version "${{ github.event.inputs.version }}" \
+                       --install-location "/Applications" \
+                       "$PKG_OUT"
+              ls -la "$PKG_OUT"
+              echo "extracted_pkg=$PKG_OUT" >> "$GITHUB_OUTPUT"
+            fi
+            hdiutil detach "$MOUNT_POINT" -quiet || true
+          fi
+
       - name: Generate App Footprint Report
-        if: ${{ github.event.inputs.dry_run != 'true' }}
-        timeout-minutes: 20
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.installer_url == '' }}
+        timeout-minutes: 7
         shell: bash
         run: |
           set -euo pipefail
           echo "📊 Generating app footprint analysis..."
-          python3 tools/analyze_app_footprint.py \
-            --cask "${{ github.event.inputs.package_id }}" \
-            --output "output/${{ github.event.inputs.package_id }}_footprint_report.txt" || true
+          python3 - <<'PY'
+          import subprocess
+          import sys
+
+          cmd = [
+              sys.executable,
+              "tools/analyze_app_footprint.py",
+              "--cask",
+              "${{ github.event.inputs.package_id }}",
+              "--output",
+              "output/${{ github.event.inputs.package_id }}_footprint_report.txt",
+              "--json-output",
+              ".modern-dev-mgmt/validation/footprint.json",
+          ]
+          try:
+              # Larger cap to accommodate big macOS apps: Notion Calendar's
+              # snapshot+install+uninstall cycle took ~5 minutes alone. 900s
+              # is safe for apps up to ~5000 files.
+              completed = subprocess.run(cmd, timeout=900)
+              if completed.returncode != 0:
+                  print(f"::warning::Footprint report exited with code {completed.returncode}; continuing with packaging.")
+          except subprocess.TimeoutExpired:
+              print("::warning::Footprint report timed out after 900 seconds; continuing with packaging.")
+          PY
 
           if [ -f "output/${{ github.event.inputs.package_id }}_footprint_report.txt" ]; then
             echo "✅ Footprint report generated successfully"
@@ -173,16 +291,52 @@ jobs:
           fi
 
       - name: Validate Homebrew cask metadata
-        if: ${{ github.event.inputs.dry_run == 'true' }}
+        if: ${{ github.event.inputs.dry_run == 'true' && github.event.inputs.installer_url == '' }}
         shell: bash
         run: |
           set -euo pipefail
           export HOMEBREW_NO_AUTO_UPDATE=1
           brew info --cask --json=v2 "${{ github.event.inputs.package_id }}" | python3 -c "import json,sys; data=json.load(sys.stdin); casks=data.get('casks') or []; sys.exit('No Homebrew cask metadata returned') if not casks else print('Validated cask:', casks[0].get('token') or casks[0].get('full_token') or '${{ github.event.inputs.package_id }}')"
 
+      - name: Upload URL-downloaded package to Intune
+        id: url_upload
+        if: ${{ github.event.inputs.installer_url != '' && github.event.inputs.dry_run != 'true' }}
+        shell: bash
+        env:
+          INTUNE_TENANT_ID: '${{ env.INTUNE_TENANT_ID }}'
+          INTUNE_CLIENT_ID: '${{ env.INTUNE_CLIENT_ID }}'
+          INTUNE_ACCESS_TOKEN: '${{ env.INTUNE_ACCESS_TOKEN }}'
+          INTUNE_CLIENT_SECRET: '${{ secrets.INTUNE_CLIENT_SECRET }}'
+          APP_NAME: '${{ github.event.inputs.app_name }}'
+          APP_DESCRIPTION: '${{ github.event.inputs.app_description }}'
+          APP_PUBLISHER: '${{ github.event.inputs.app_publisher }}'
+          VERSION: '${{ github.event.inputs.version }}'
+        run: |
+          set -euo pipefail
+          # Pick the .pkg if the DMG-mount step extracted one; else use the
+          # downloaded file directly (for vendor .pkg URLs).
+          PKG_PATH=""
+          if [[ -n "${{ steps.url_download.outputs.extracted_pkg }}" ]]; then
+            PKG_PATH="${{ steps.url_download.outputs.extracted_pkg }}"
+          else
+            PKG_PATH="${{ steps.url_download.outputs.filepath }}"
+          fi
+          if [[ ! -f "$PKG_PATH" ]]; then
+            echo "::error::No .pkg found to upload (got '$PKG_PATH')" >&2
+            exit 1
+          fi
+          mkdir -p output
+          ARGS=(--pkg-file "$PKG_PATH" --output-dir output)
+          if [[ -n "$APP_NAME" ]]; then ARGS+=(--display-name "$APP_NAME"); fi
+          if [[ -n "$APP_DESCRIPTION" ]]; then ARGS+=(--description "$APP_DESCRIPTION"); fi
+          if [[ -n "$APP_PUBLISHER" ]]; then ARGS+=(--publisher "$APP_PUBLISHER"); fi
+          # intune_packager exposes --app-version (not --version) for custom packages.
+          if [[ -n "$VERSION" ]]; then ARGS+=(--app-version "$VERSION"); fi
+          python3 tools/intune_packager.py "${ARGS[@]}"
+
       - name: Package and upload to Intune
         id: package_upload
-        if: ${{ github.event.inputs.dry_run != 'true' }}
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.installer_url == '' }}
         shell: bash
         env:
           INTUNE_TENANT_ID: '${{ env.INTUNE_TENANT_ID }}'
@@ -269,10 +423,26 @@ jobs:
           set -euo pipefail
           git config user.email "actions@github.com"
           git config user.name "github-actions[bot]"
+          # Cache validation artifacts before git stash so the persist step's
+          # JS body can still read them after stash + rebase. analyze_app_footprint
+          # writes untracked files under .modern-dev-mgmt/validation/ that
+          # the stash --include-untracked otherwise removes.
+          if [[ -d .modern-dev-mgmt/validation ]]; then
+            mkdir -p /tmp/validation-cache
+            cp -r .modern-dev-mgmt/validation/. /tmp/validation-cache/ || true
+          fi
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git stash push --include-untracked --message "workflow artifacts before persistence" >/dev/null || true
+          fi
           git pull --rebase
+          if [[ -d /tmp/validation-cache ]]; then
+            mkdir -p .modern-dev-mgmt/validation
+            cp -r /tmp/validation-cache/. .modern-dev-mgmt/validation/ || true
+          fi
           mkdir -p .modern-dev-mgmt/runs
           node - <<'NODE'
           const fs = require('fs');
+          const path = require('path');
           const runId = process.env.GITHUB_RUN_ID;
           let context = null;
           if (process.env.MODERN_DEVMGMT_CONTEXT_B64) {
@@ -281,6 +451,15 @@ jobs:
             } catch (error) {
               console.warn('Could not decode Modern Dev Mgmt context:', error.message);
             }
+          }
+          let footprint = null;
+          try {
+            const fpPath = '.modern-dev-mgmt/validation/footprint.json';
+            if (fs.existsSync(fpPath)) {
+              footprint = JSON.parse(fs.readFileSync(fpPath, 'utf8'));
+            }
+          } catch (err) {
+            console.warn('Could not load homebrew footprint JSON:', err.message);
           }
           const result = {
             workflowRunId: runId,
@@ -292,18 +471,132 @@ jobs:
             status: 'success',
             createdAt: new Date().toISOString(),
             context,
+            footprint,
           };
-          fs.writeFileSync(`.modern-dev-mgmt/runs/${runId}.json`, JSON.stringify(result, null, 2));
+          const resultJson = JSON.stringify(result, null, 2);
+          fs.writeFileSync(`.modern-dev-mgmt/runs/${runId}.json`, resultJson);
           if (context && context.patchRunId) {
             fs.mkdirSync('.modern-dev-mgmt/patch-runs', { recursive: true });
-            fs.writeFileSync(`.modern-dev-mgmt/patch-runs/${context.patchRunId}.json`, JSON.stringify(result, null, 2));
+            fs.writeFileSync(`.modern-dev-mgmt/patch-runs/${context.patchRunId}.json`, resultJson);
           }
+          // ---- Per-app docs layout (mirrors app-docs-layout.ts) ----
+          function slugifyApp(value) {
+            if (!value) return '_unknown';
+            const lowered = String(value).normalize('NFKD').toLowerCase();
+            const ascii = lowered.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            return ascii || '_unknown';
+          }
+          function normalizeVersion(value) {
+            if (!value) return 'unknown';
+            const cleaned = String(value).trim().replace(/[^A-Za-z0-9._\-]+/g, '-').replace(/^-+|-+$/g, '');
+            return cleaned || 'unknown';
+          }
+          const slugCandidates = [
+            result.packageId,
+            result.appName,
+            context && context.packageId,
+            context && context.appName,
+          ];
+          let appSlug = '_unknown';
+          for (const c of slugCandidates) {
+            const s = slugifyApp(c);
+            if (s !== '_unknown') { appSlug = s; break; }
+          }
+          const versionCandidates = [
+            context && context.targetVersion,
+            context && context.version,
+            result.version,
+            result.appVersion,
+            footprint && footprint.version,
+          ];
+          let appVersion = 'unknown';
+          for (const c of versionCandidates) {
+            const v = normalizeVersion(c);
+            if (v !== 'unknown') { appVersion = v; break; }
+          }
+          const safeRunId = String(runId).replace(/[^A-Za-z0-9._-]+/g, '');
+          const appDir = `.modern-dev-mgmt/apps/${appSlug}`;
+          const versionDir = `${appDir}/${appVersion}`;
+          const perRunDir = `${versionDir}/${safeRunId}`;
+          fs.mkdirSync(perRunDir, { recursive: true });
+          fs.writeFileSync(`${perRunDir}/result.json`, resultJson);
+          const copies = [
+            ['.modern-dev-mgmt/validation/install.log',    `${perRunDir}/install.log`],
+            ['.modern-dev-mgmt/validation/uninstall.log',  `${perRunDir}/uninstall.log`],
+            ['.modern-dev-mgmt/validation/footprint.json', `${perRunDir}/footprint.json`],
+            ['.modern-dev-mgmt/validation/leftovers.json', `${perRunDir}/leftovers.json`],
+            ['.modern-dev-mgmt/validation/report.json',    `${perRunDir}/report.json`],
+          ];
+          for (const [src, dst] of copies) {
+            try { if (fs.existsSync(src)) fs.copyFileSync(src, dst); } catch (e) { /* ignore */ }
+          }
+          const createdAt = result.createdAt;
+          const intuneAppId = result.appId || null;
+          const catalogAppId = (context && context.catalogAppId != null) ? context.catalogAppId : null;
+          const patchRunId = (context && context.patchRunId != null) ? context.patchRunId : null;
+          const latestPointer = {
+            workflowRunId: safeRunId,
+            createdAt,
+            intuneAppId,
+            catalogAppId,
+          };
+          fs.writeFileSync(`${versionDir}/latest.json`, JSON.stringify(latestPointer, null, 2));
+          const indexPath = `${appDir}/index.json`;
+          let index = null;
+          if (fs.existsSync(indexPath)) {
+            try { index = JSON.parse(fs.readFileSync(indexPath, 'utf8')); } catch (e) { index = null; }
+          }
+          const versions = (index && Array.isArray(index.versions)) ? index.versions.map(function (v) { return ({
+            version: String(v.version),
+            runs: Array.isArray(v.runs) ? v.runs.map(function (r) { return ({
+              workflowRunId: String(r.workflowRunId),
+              createdAt: r.createdAt || null,
+              intuneAppId: r.intuneAppId || null,
+              catalogAppId: r.catalogAppId != null ? r.catalogAppId : null,
+              patchRunId: r.patchRunId != null ? r.patchRunId : null,
+              status: r.status || null,
+            }); }) : [],
+          }); }) : [];
+          const newRun = {
+            workflowRunId: safeRunId,
+            createdAt,
+            intuneAppId,
+            catalogAppId,
+            patchRunId,
+            status: result.status || null,
+          };
+          let target = versions.find(function (v) { return v.version === appVersion; });
+          if (!target) {
+            target = { version: appVersion, runs: [] };
+            versions.push(target);
+          }
+          target.runs = target.runs.filter(function (r) { return r.workflowRunId !== safeRunId; });
+          target.runs.push(newRun);
+          versions.sort(function (a, b) {
+            const aMax = a.runs.reduce(function (acc, r) { return (r.createdAt && r.createdAt > acc) ? r.createdAt : acc; }, '');
+            const bMax = b.runs.reduce(function (acc, r) { return (r.createdAt && r.createdAt > acc) ? r.createdAt : acc; }, '');
+            if (aMax !== bMax) return bMax.localeCompare(aMax);
+            return b.version.localeCompare(a.version);
+          });
+          const indexOut = {
+            slug: appSlug,
+            displayName: result.appName || null,
+            versions,
+            updatedAt: new Date().toISOString(),
+          };
+          fs.writeFileSync(indexPath, JSON.stringify(indexOut, null, 2));
           NODE
-          git add ".modern-dev-mgmt/runs/${GITHUB_RUN_ID}.json" .modern-dev-mgmt/patch-runs || true
+          git add ".modern-dev-mgmt/runs/${GITHUB_RUN_ID}.json"
+          if [ -d .modern-dev-mgmt/patch-runs ]; then
+            git add .modern-dev-mgmt/patch-runs
+          fi
+          if [ -d .modern-dev-mgmt/apps ]; then
+            git add .modern-dev-mgmt/apps
+          fi
           if git diff --cached --quiet; then
             echo "no changes"
           else
-            git commit -m "chore: record Modern Dev Mgmt run ${GITHUB_RUN_ID}"
+            git commit -m "chore: record Modern Dev Mgmt run ${GITHUB_RUN_ID} (per-app docs)"
             git pull --rebase origin "${GITHUB_REF_NAME:-main}"
             git push
           fi
