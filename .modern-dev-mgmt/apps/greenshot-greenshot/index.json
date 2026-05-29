@@ -7,7 +7,7 @@
       "runs": [
         {
           "workflowRunId": "25942528563",
-          "createdAt": "2026-05-15T21:35:29.8754590Z",
+          "createdAt": "2026-05-15T21:35:29.875459Z",
           "intuneAppId": null,
           "catalogAppId": null,
           "patchRunId": null,
@@ -20,9 +20,17 @@
           "catalogAppId": null,
           "patchRunId": null,
           "status": null
+        },
+        {
+          "workflowRunId": "26626940966",
+          "createdAt": "2026-05-29T08:31:32.9773677Z",
+          "intuneAppId": "7b8258bb-79eb-4a16-81ef-f7f5a0fd98b9",
+          "catalogAppId": null,
+          "patchRunId": 25,
+          "status": "success"
         }
       ]
     }
   ],
-  "updatedAt": "2026-05-22T06:47:13.337Z"
+  "updatedAt": "2026-05-29T08:31:33.2168063Z"
 }
