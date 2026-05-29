@@ -1,0 +1,20 @@
+{
+  "slug": "microsoft-vcredist-2015-arm64",
+  "displayName": "Microsoft Visual C++ 2022 Redistributable (Arm64)",
+  "versions": [
+    {
+      "version": "unknown",
+      "runs": [
+        {
+          "workflowRunId": "26628485923",
+          "createdAt": "2026-05-29T09:06:11.5365356Z",
+          "intuneAppId": "6bbf9c40-79c8-439f-bbc4-de36323f6d60",
+          "catalogAppId": null,
+          "patchRunId": 38,
+          "status": "success"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-05-29T09:06:11.8065566Z"
+}

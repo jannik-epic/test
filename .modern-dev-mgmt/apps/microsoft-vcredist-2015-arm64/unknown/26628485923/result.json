@@ -1,0 +1,42 @@
+{
+  "workflowRunId": "26628485923",
+  "workflow": "deploy-winget-app.yml",
+  "packageManager": "winget",
+  "packageId": "Microsoft.VCRedist.2015+.arm64",
+  "appId": "6bbf9c40-79c8-439f-bbc4-de36323f6d60",
+  "updateOnlyAppId": "",
+  "appName": "Microsoft Visual C++ 2022 Redistributable (Arm64)",
+  "status": "success",
+  "createdAt": "2026-05-29T09:06:11.5365356Z",
+  "context": {
+    "source": "patch.trigger",
+    "patchRunId": 38,
+    "targetTenantId": 1,
+    "targetTenantName": "ModernDevMgmt.onmicrosoft.com",
+    "targetAzureTenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "targetAzureClientId": "7659f226-8344-4731-b758-a4d93238309c",
+    "repo": "jannik-epic/test",
+    "workflowFile": "deploy-winget-app.yml",
+    "catalog": {
+      "catalogAppId": 114306,
+      "source": "winget",
+      "packageId": "Microsoft.VCRedist.2015+.arm64",
+      "name": "Microsoft Visual C++ 2022 Redistributable (Arm64)",
+      "publisher": "microsoft",
+      "fromVersion": "14.51.36231.0",
+      "toVersion": "14.51.36231.0"
+    },
+    "architecture": "x64",
+    "wave": null,
+    "runSandbox": false,
+    "dryRun": false,
+    "assignmentTemplate": null,
+    "appSetting": null,
+    "changeNote": "Auto patch detected by catalog-scan: 14.30.30704.0 -> 14.51.36231.0",
+    "createdAt": "2026-05-29T09:05:23.709Z"
+  },
+  "validation": null,
+  "footprint": null,
+  "leftovers": null,
+  "installer": null
+}
