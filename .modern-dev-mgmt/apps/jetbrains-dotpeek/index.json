@@ -1,0 +1,20 @@
+{
+  "slug": "jetbrains-dotpeek",
+  "displayName": "JetBrains dotPeek",
+  "versions": [
+    {
+      "version": "unknown",
+      "runs": [
+        {
+          "workflowRunId": "26626944181",
+          "createdAt": "2026-05-29T08:31:40.1350791Z",
+          "intuneAppId": "a690af3a-4ba6-4bcc-815c-4abd15dfacdd",
+          "catalogAppId": null,
+          "patchRunId": 26,
+          "status": "success"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-05-29T08:31:40.3408124Z"
+}
