@@ -1,0 +1,48 @@
+{
+  "workflowRunId": "27071100387",
+  "workflow": "deploy-winget-app.yml",
+  "packageManager": "winget",
+  "packageId": "Microsoft.OneDrive",
+  "appId": "b333220c-0fff-4190-8911-a5e9bacd7b4e",
+  "updateOnlyAppId": "",
+  "appName": "Microsoft OneDrive",
+  "status": "success",
+  "createdAt": "2026-06-06T19:01:31.9747219Z",
+  "context": {
+    "source": "patch.trigger",
+    "patchRunId": 58,
+    "targetTenantId": 1,
+    "targetTenantName": "ModernDevMgmt.onmicrosoft.com",
+    "targetAzureTenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "targetAzureClientId": "7659f226-8344-4731-b758-a4d93238309c",
+    "repo": "jannik-epic/test",
+    "workflowFile": "deploy-winget-app.yml",
+    "catalog": {
+      "catalogAppId": 4191,
+      "source": "winget",
+      "packageId": "Microsoft.OneDrive",
+      "name": "Microsoft OneDrive",
+      "publisher": "Microsoft Corporation",
+      "fromVersion": "22.131.0619.0001",
+      "toVersion": "26.088.0510.0004"
+    },
+    "architecture": "x64",
+    "wave": null,
+    "runSandbox": false,
+    "dryRun": false,
+    "assignmentTemplate": null,
+    "appSetting": {
+      "id": 1,
+      "settingName": "1Password Machine-wide",
+      "targetTenantId": 1,
+      "catalogAppId": null,
+      "variables": []
+    },
+    "changeNote": "Auto patch detected by catalog-scan: 24.221.1103.0003 -> 26.088.0510.0004",
+    "createdAt": "2026-06-06T19:00:35.77Z"
+  },
+  "validation": null,
+  "footprint": null,
+  "leftovers": null,
+  "installer": null
+}
