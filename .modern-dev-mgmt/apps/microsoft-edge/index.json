@@ -1,0 +1,20 @@
+{
+  "slug": "microsoft-edge",
+  "displayName": "Microsoft Edge",
+  "versions": [
+    {
+      "version": "unknown",
+      "runs": [
+        {
+          "workflowRunId": "27069751717",
+          "createdAt": "2026-06-06T18:00:49.1126474Z",
+          "intuneAppId": "0c3b0e77-053c-4554-b6d9-c2435ddc96c4",
+          "catalogAppId": null,
+          "patchRunId": 57,
+          "status": "success"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-06-06T18:00:49.4027103Z"
+}
