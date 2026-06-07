@@ -1,16 +1,8 @@
 {
-  "generatedAt": "2026-06-06T05:35:36.741Z",
+  "generatedAt": "2026-06-07T04:01:31.113Z",
   "detectedInScope": 12,
-  "managedCovered": 8,
+  "managedCovered": 9,
   "unmanaged": [
-    {
-      "id": "0000563a2d7ae813b2bfa8b4147a3a7f7ca90000ffff",
-      "displayName": "Microsoft Edge Beta",
-      "publisher": "Microsoft Corporation",
-      "version": "134.0.3124.8",
-      "platform": "windows",
-      "deviceCount": 1
-    },
     {
       "id": "0000b58087597ff1d073067a88733472ed9000000904",
       "displayName": "Microsoft Intune Management Extension",
@@ -79,6 +71,17 @@
       "deviceCount": 1,
       "managedIntuneAppId": "829ba40f-096a-4b17-8457-f5d9e7ccc2c6",
       "managedDisplayName": "Microsoft Edge: Web Browser",
+      "confidence": 1.1
+    },
+    {
+      "id": "0000563a2d7ae813b2bfa8b4147a3a7f7ca90000ffff",
+      "displayName": "Microsoft Edge Beta",
+      "version": "134.0.3124.8",
+      "publisher": "Microsoft Corporation",
+      "platform": "windows",
+      "deviceCount": 1,
+      "managedIntuneAppId": "0c3b0e77-053c-4554-b6d9-c2435ddc96c4",
+      "managedDisplayName": "Microsoft Edge",
       "confidence": 1.1
     },
     {
