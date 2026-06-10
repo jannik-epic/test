@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-09T05:39:39.827Z",
+  "generatedAt": "2026-06-10T04:01:17.936Z",
   "detectedInScope": 12,
   "managedCovered": 9,
   "unmanaged": [
@@ -102,7 +102,7 @@
       "publisher": "Microsoft Corporation",
       "platform": "windows",
       "deviceCount": 1,
-      "managedIntuneAppId": "6bbf9c40-79c8-439f-bbc4-de36323f6d60",
+      "managedIntuneAppId": "13ab35e3-f706-4ba9-a63d-82f65ab99dbd",
       "managedDisplayName": "Microsoft Visual C++ 2022 Redistributable (Arm64)",
       "confidence": 0.9
     },
