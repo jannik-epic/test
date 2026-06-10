@@ -1,0 +1,48 @@
+{
+  "workflowRunId": "27263622055",
+  "workflow": "deploy-winget-app.yml",
+  "packageManager": "winget",
+  "packageId": "Microsoft.VisualStudioCode",
+  "appId": "706c54a2-95d2-419a-b0fd-ad78a3cf0f32",
+  "updateOnlyAppId": "",
+  "appName": "Microsoft Visual Studio Code",
+  "status": "success",
+  "createdAt": "2026-06-10T08:31:22.7532102Z",
+  "context": {
+    "source": "patch.trigger",
+    "patchRunId": 61,
+    "targetTenantId": 1,
+    "targetTenantName": "ModernDevMgmt.onmicrosoft.com",
+    "targetAzureTenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "targetAzureClientId": "7659f226-8344-4731-b758-a4d93238309c",
+    "repo": "jannik-epic/test",
+    "workflowFile": "deploy-winget-app.yml",
+    "catalog": {
+      "catalogAppId": 4387,
+      "source": "winget",
+      "packageId": "Microsoft.VisualStudioCode",
+      "name": "Microsoft Visual Studio Code",
+      "publisher": "Microsoft Corporation",
+      "fromVersion": "1.76.2",
+      "toVersion": "1.123.1"
+    },
+    "architecture": "x64",
+    "wave": null,
+    "runSandbox": false,
+    "dryRun": false,
+    "assignmentTemplate": null,
+    "appSetting": {
+      "id": 1,
+      "settingName": "1Password Machine-wide",
+      "targetTenantId": 1,
+      "catalogAppId": null,
+      "variables": []
+    },
+    "changeNote": "Auto patch detected by catalog-scan: 1.87.2 -> 1.123.1",
+    "createdAt": "2026-06-10T08:30:36.468Z"
+  },
+  "validation": null,
+  "footprint": null,
+  "leftovers": null,
+  "installer": null
+}
