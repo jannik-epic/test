@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T05:47:29.325Z",
+  "generatedAt": "2026-06-11T04:01:31.210Z",
   "detectedInScope": 12,
   "managedCovered": 9,
   "unmanaged": [
@@ -80,7 +80,7 @@
       "publisher": "Microsoft Corporation",
       "platform": "windows",
       "deviceCount": 1,
-      "managedIntuneAppId": "0c3b0e77-053c-4554-b6d9-c2435ddc96c4",
+      "managedIntuneAppId": "1d2f4e2e-01ce-4407-8544-360fdc758106",
       "managedDisplayName": "Microsoft Edge",
       "confidence": 1.1
     },
@@ -113,9 +113,9 @@
       "publisher": "Microsoft Corporation",
       "platform": "windows",
       "deviceCount": 1,
-      "managedIntuneAppId": "5166d85f-1ce3-4100-b47f-6f64b6c3d32b",
-      "managedDisplayName": "Visual Studio Code",
-      "confidence": 0.9
+      "managedIntuneAppId": "706c54a2-95d2-419a-b0fd-ad78a3cf0f32",
+      "managedDisplayName": "Microsoft Visual Studio Code",
+      "confidence": 1
     },
     {
       "id": "0000e7387a04d8dd77217062900a6109109300000904",
