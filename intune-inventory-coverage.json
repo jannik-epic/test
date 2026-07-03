@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T05:36:35.943Z",
+  "generatedAt": "2026-07-03T05:33:57.725Z",
   "detectedInScope": 12,
   "managedCovered": 9,
   "unmanaged": [
@@ -36,7 +36,7 @@
       "publisher": "Canva Pty Ltd",
       "platform": "windows",
       "deviceCount": 1,
-      "managedIntuneAppId": "7c1ad6c3-5be6-4cc1-bac7-58bcde244d55",
+      "managedIntuneAppId": "94ee32e1-c66d-45ab-b23f-3ed5f0feee3e",
       "managedDisplayName": "Canva",
       "confidence": 1
     },
@@ -58,9 +58,9 @@
       "publisher": "JetBrains s.r.o.",
       "platform": "windows",
       "deviceCount": 1,
-      "managedIntuneAppId": "a690af3a-4ba6-4bcc-815c-4abd15dfacdd",
+      "managedIntuneAppId": "be67d23d-be42-467a-9101-2d8a5f30b2cc",
       "managedDisplayName": "JetBrains dotPeek",
-      "confidence": 0.9
+      "confidence": 1.1
     },
     {
       "id": "0000000eae80474011f801ca0a8eee90fd350000ffff",
