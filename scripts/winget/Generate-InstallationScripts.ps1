@@ -209,6 +209,21 @@ try {
             if (`$props.DisplayName -like "*$AppName*" -and (`$props.Publisher -like "*$Publisher*" -or -not '$Publisher')) {
                 `$cmd = if (`$props.QuietUninstallString) { `$props.QuietUninstallString } else { `$props.UninstallString }
                 if (`$cmd) {
+                    # Some Inno installers start the application after setup.
+                    # Stop only processes whose executable lives below this
+                    # exact ARP entry's install root before invoking uninstall.
+                    `$installRoot = [Environment]::ExpandEnvironmentVariables([string]`$props.InstallLocation).Trim().Trim('"').TrimEnd('\')
+                    if (`$installRoot -and (Test-Path -LiteralPath `$installRoot -PathType Container)) {
+                        Get-Process -ErrorAction SilentlyContinue | ForEach-Object {
+                            try {
+                                if (`$_.Path -and `$_.Path.StartsWith(`$installRoot, [StringComparison]::OrdinalIgnoreCase)) {
+                                    Stop-Process -Id `$_.Id -Force -ErrorAction SilentlyContinue
+                                }
+                            } catch {
+                                # Protected/system processes may deny Path access.
+                            }
+                        }
+                    }
                     cmd.exe /c `$cmd '$silentUninstallArgs' | Out-Null
                     `$rc = `$LASTEXITCODE
                     if (`$rc -eq 0) { Remove-Item -Path '$markerKeyPath' -Recurse -Force -ErrorAction SilentlyContinue }

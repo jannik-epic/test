@@ -1,4 +1,4 @@
-# vanguard-template-version: 2026-07-20.8
+# vanguard-template-version: 2026-07-20.9
 name: Check Intune inventory coverage
 
 on:
