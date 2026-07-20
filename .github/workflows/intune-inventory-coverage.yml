@@ -1,3 +1,4 @@
+# vanguard-template-version: 2026-07-20.1
 name: Check Intune inventory coverage
 
 on:
@@ -7,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
@@ -15,6 +17,7 @@ env:
 jobs:
   coverage:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
         with:
