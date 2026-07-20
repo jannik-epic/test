@@ -255,7 +255,11 @@ function Invoke-VanguardLogic
     # Child process so the logic script's `$PSScriptRoot resolves to the
     # package root and an `exit` inside it cannot bypass Close-ADTSession.
     `$psExe = Join-Path `$env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-    `$proc = Start-Process -FilePath `$psExe -ArgumentList @('-ExecutionPolicy', 'Bypass', '-NoProfile', '-NonInteractive', '-File', `$logicPath) -Wait -PassThru -WindowStyle Hidden
+    `$proc = Start-Process -FilePath `$psExe -ArgumentList @('-ExecutionPolicy', 'Bypass', '-NoProfile', '-NonInteractive', '-File', `$logicPath) -PassThru -WindowStyle Hidden
+    # Wait only for the helper PowerShell process. Start-Process -Wait follows
+    # its complete descendant tree on Windows and can otherwise hang after a
+    # successful installer launches a long-running app or browser.
+    `$proc.WaitForExit()
     return [System.Int32]`$proc.ExitCode
 }
 

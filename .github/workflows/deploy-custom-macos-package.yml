@@ -1,4 +1,4 @@
-# vanguard-template-version: 2026-07-20.7
+# vanguard-template-version: 2026-07-20.8
 name: Deploy Custom macOS Package to Intune
 run-name: "Vanguard · ${{ inputs.package_id }} · ${{ inputs.app_version }} · ${{ inputs.dispatch_correlation_id }}"
 
