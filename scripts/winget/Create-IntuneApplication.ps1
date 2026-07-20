@@ -434,6 +434,10 @@ if ($InstallerMetadataPath -and (Test-Path -LiteralPath $InstallerMetadataPath -
     try {
         $offlineMetadata = Get-Content -LiteralPath $InstallerMetadataPath -Raw | ConvertFrom-Json
         Write-Host "Loaded offline installer metadata from $InstallerMetadataPath ($($offlineMetadata.installerType), productCode=$($offlineMetadata.productCode))"
+        if ([string]$offlineMetadata.scope -eq 'user' -and $InstallContext -ne 'user') {
+            Write-Warning "Installer metadata requires user scope; overriding install context '$InstallContext' with 'user'."
+            $InstallContext = 'user'
+        }
     } catch {
         Write-Warning "Could not parse installer metadata at $InstallerMetadataPath -- falling back to script-rule detection: $($_.Exception.Message)"
         $offlineMetadata = $null
@@ -483,10 +487,11 @@ try {
             productVersionOperator = 'notConfigured'
         }
     } elseif ($offlineMetadata -and $Version -and (-not $ciIsMsi) -and (-not $ciIsMsix)) {
+        $ciRegistryRoot = if ($InstallContext -eq 'user') { 'HKEY_CURRENT_USER' } else { 'HKEY_LOCAL_MACHINE' }
         $detectionRule = @{
             '@odata.type' = '#microsoft.graph.win32LobAppRegistryRule'
             ruleType = 'detection'
-            keyPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Vanguard\Detection\$ciMarkerLeaf"
+            keyPath = "$ciRegistryRoot\SOFTWARE\Vanguard\Detection\$ciMarkerLeaf"
             valueName = 'Version'
             operationType = 'version'
             operator = 'greaterThanOrEqual'
