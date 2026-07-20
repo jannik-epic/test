@@ -44,13 +44,13 @@ on:
         type: boolean
         default: true
       request_context_b64:
-        description: 'Base64 encoded Modern Dev Mgmt request context'
+        description: 'Base64 encoded Vanguard request context'
         required: false
         type: string
 
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
-  AZURE_BACKUP_CLIENT_ID: '7659f226-8344-4731-b758-a4d93238309c'
+  AZURE_BACKUP_CLIENT_ID: 'a34f2806-b6f7-4d11-98f6-b32894396ca8'
   GRAPH_BASE: 'https://graph.microsoft.com/v1.0'
   GRAPH_BETA_BASE: 'https://graph.microsoft.com/beta'
 
@@ -65,6 +65,38 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Resolve destination Azure tenant from Vanguard context
+        shell: bash
+        env:
+          REQUEST_CONTEXT_B64: ${{ github.event.inputs.request_context_b64 }}
+        run: |
+          # Cross-tenant restore: a backup taken in one tenant can be restored
+          # into a different tenant that shares this same GitHub backup store.
+          # The desktop app passes targetAzureTenantId + targetAzureClientId in
+          # the request context so OIDC logs into the *destination* tenant via
+          # its own backup app registration. The YAML env defaults are baked at
+          # provisioning time and only point at the source tenant; without this
+          # override a cross-tenant restore would write into the wrong tenant.
+          if [[ -z "${REQUEST_CONTEXT_B64:-}" ]]; then
+            echo "no Vanguard context — keeping default AZURE_TENANT_ID/CLIENT_ID"
+            exit 0
+          fi
+          decoded="$(printf '%s' "$REQUEST_CONTEXT_B64" | base64 --decode 2>/dev/null || true)"
+          if [[ -z "$decoded" ]]; then
+            echo "::warning::could not base64-decode request_context_b64; using YAML defaults"
+            exit 0
+          fi
+          tenant="$(printf '%s' "$decoded" | jq -r '.targetAzureTenantId // ""' 2>/dev/null || true)"
+          client="$(printf '%s' "$decoded" | jq -r '.targetAzureClientId // ""' 2>/dev/null || true)"
+          if [[ -n "$tenant" ]]; then
+            echo "AZURE_TENANT_ID=$tenant" >> "$GITHUB_ENV"
+            echo "resolved AZURE_TENANT_ID=$tenant"
+          fi
+          if [[ -n "$client" ]]; then
+            echo "AZURE_BACKUP_CLIENT_ID=$client" >> "$GITHUB_ENV"
+            echo "resolved AZURE_BACKUP_CLIENT_ID=$client"
+          fi
 
       - name: Azure Login (backup app reg, OIDC)
         uses: azure/login@v3
@@ -127,7 +159,11 @@ jobs:
           $plan = $planJson | ConvertFrom-Json
           if (-not $plan.policies) { throw 'Restore plan has no policies array.' }
 
-          $runId = "${{ github.run_id }}"
+          # Env vars instead of inline GitHub expressions: any expression
+          # syntax inside this large run block would count it against GitHub's
+          # 21000-char expression length limit (actions/runner#2347) and break
+          # workflow parsing with HTTP 422 on dispatch.
+          $runId = $env:GITHUB_RUN_ID
           $outDir = ".modern-dev-mgmt/restore-runs/$runId"
           New-Item -ItemType Directory -Force -Path $outDir | Out-Null
           Add-Content -Path $env:GITHUB_OUTPUT -Value "out_dir=$outDir"
@@ -163,9 +199,9 @@ jobs:
             $endpointMap[$spec.policyType] = "$base/$cleanPath"
             if ($spec.singleton) { $singletonMap[$spec.policyType] = $true }
             $restorableMap[$spec.policyType] = if ($spec.PSObject.Properties.Match('restorable').Count -gt 0) { [bool]$spec.restorable } else { $true }
-            # Default to using {id}/assign for write-back of assignments — matches
-            # softwareCentral's default. Specific types can override per-spec.
-            $assignViaAssignMap[$spec.policyType] = $true
+            # Default to {id}/assign for write-back of assignments; a spec can
+            # opt out via assignsViaAssign=false to POST {id}/assignments rows.
+            $assignViaAssignMap[$spec.policyType] = if ($spec.PSObject.Properties.Match('assignsViaAssign').Count -gt 0) { [bool]$spec.assignsViaAssign } else { $true }
           }
           function Endpoint-For {
             param([string]$Type)
@@ -176,7 +212,10 @@ jobs:
           function Normalize-Policy {
             param([object]$Raw, [string]$Type)
             $copy = $Raw | ConvertTo-Json -Depth 40 | ConvertFrom-Json
-            foreach ($prop in @('id','createdDateTime','lastModifiedDateTime','version','modifiedDateTime','@odata.context','@odata.id','@odata.type','@odata.etag','isAssigned','roleScopeTagIds','assignmentStatus','deviceStatusOverview','userStatusOverview','platformType')) {
+            # NOTE: '@odata.type' is deliberately KEPT — POSTs to abstract Graph
+            # collections (deviceConfigurations, deviceCompliancePolicies,
+            # mobileApps, …) fail without the concrete type discriminator.
+            foreach ($prop in @('id','createdDateTime','lastModifiedDateTime','version','modifiedDateTime','@odata.context','@odata.id','@odata.etag','isAssigned','roleScopeTagIds','assignmentStatus','deviceStatusOverview','userStatusOverview','platformType','settingCount','supportsScopeTags','priorityMetaData','creationSource','assignments')) {
               if ($null -ne $copy.PSObject.Properties[$prop]) {
                 try { $copy.PSObject.Properties.Remove($prop) | Out-Null } catch {}
               }
@@ -193,6 +232,28 @@ jobs:
             return $copy
           }
 
+          # Mirrors the backup workflow's Sanitize-Id (truncate + hash) so
+          # snapshot file lookups line up; Resolve-SnapshotFile also accepts the
+          # pre-truncation legacy names of older snapshots.
+          function Get-SafeFileName {
+            param([string]$Value)
+            if (-not $Value) { return 'unknown' }
+            $safe = ($Value -replace '[^a-zA-Z0-9._-]','_')
+            if ($safe.Length -le 80) { return $safe }
+            $sha = [System.Security.Cryptography.SHA256]::Create()
+            $hashHex = -join ($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($Value)) | ForEach-Object { $_.ToString('x2') })
+            return $safe.Substring(0, 64) + '-' + $hashHex.Substring(0, 10)
+          }
+
+          function Resolve-SnapshotFile {
+            param([string]$Dir, [string]$RawId, [string]$Suffix)
+            $primary = Join-Path $Dir ((Get-SafeFileName $RawId) + $Suffix)
+            if (Test-Path $primary) { return $primary }
+            $legacy = Join-Path $Dir (($RawId -replace '[^a-zA-Z0-9._-]','_') + $Suffix)
+            if (Test-Path $legacy) { return $legacy }
+            return $primary
+          }
+
           function Find-Existing-ByName {
             param([string]$Endpoint, [string]$DisplayName)
             if (-not $DisplayName) { return $null }
@@ -200,6 +261,26 @@ jobs:
               $escaped = $DisplayName.Replace("'", "''")
               $resp = Invoke-RestMethod -Method GET -Uri "$Endpoint?$filter=displayName eq '$escaped'&$top=1" -Headers $headers -TimeoutSec 60
               if ($resp.value -and @($resp.value).Count -gt 0) { return $resp.value[0] }
+              return $null
+            } catch {}
+            # Many beta endpoints reject $filter on displayName (and settings
+            # catalog uses 'name'). Fall back to a client-side scan so
+            # skip_existing cannot silently degrade into create-duplicate.
+            try {
+              $next = $Endpoint
+              $wanted = $DisplayName.Trim().ToLowerInvariant()
+              $pages = 0
+              while ($next -and $pages -lt 50) {
+                $resp = Invoke-RestMethod -Method GET -Uri $next -Headers $headers -TimeoutSec 120
+                foreach ($row in @($resp.value)) {
+                  $candidate = $null
+                  if ($row.PSObject.Properties['displayName'] -and $row.displayName) { $candidate = [string]$row.displayName }
+                  elseif ($row.PSObject.Properties['name'] -and $row.name) { $candidate = [string]$row.name }
+                  if ($candidate -and $candidate.Trim().ToLowerInvariant() -eq $wanted) { return $row }
+                }
+                $next = $resp.'@odata.nextLink'
+                $pages++
+              }
             } catch {}
             return $null
           }
@@ -216,7 +297,7 @@ jobs:
               }
             } catch {}
 
-            $groupPath = Join-Path $backupRef "groups/$($OriginalId -replace '[^a-zA-Z0-9._-]','_').json"
+            $groupPath = Resolve-SnapshotFile -Dir (Join-Path $backupRef 'groups') -RawId $OriginalId -Suffix '.json'
             if (-not (Test-Path $groupPath)) {
               $warnings.Add("Group $OriginalId referenced by an assignment is not in the snapshot. Skipping.") | Out-Null
               $groupMapping[$OriginalId] = $null
@@ -244,6 +325,21 @@ jobs:
             try {
               $created = Invoke-RestMethod -Method POST -Uri "$GraphBase/groups" -Headers $headers -Body ($createBody | ConvertTo-Json -Depth 10) -TimeoutSec 60
               $groupMapping[$OriginalId] = $created.id
+              # Re-add the members captured at backup time — an assignment
+              # pointing at an empty recreated group would silently deploy to
+              # nobody. Members that no longer exist in the destination tenant
+              # are skipped with a warning.
+              $memberFails = 0
+              foreach ($mid in @($groupRecord.memberIds)) {
+                if (-not $mid) { continue }
+                try {
+                  $refBody = @{ '@odata.id' = ("$GraphBase/directoryObjects/" + $mid) } | ConvertTo-Json
+                  Invoke-RestMethod -Method POST -Uri ("$GraphBase/groups/" + $created.id + '/members/$ref') -Headers $headers -Body $refBody -TimeoutSec 60 | Out-Null
+                } catch { $memberFails++ }
+              }
+              if ($memberFails -gt 0) {
+                $warnings.Add("Recreated group $($groupRecord.name): $memberFails of $(@($groupRecord.memberIds).Count) members could not be re-added (missing in destination tenant?).") | Out-Null
+              }
               return $created.id
             } catch {
               $warnings.Add("Failed to recreate group $OriginalId ($($groupRecord.name)): $($_.Exception.Message)") | Out-Null
@@ -252,6 +348,10 @@ jobs:
             }
           }
 
+          # Non-Graph objects (Purview SCC / Exchange Online) are restored by a
+          # dedicated app-only PowerShell step that runs after this one. Collect
+          # them here so that step has a precise plan to act on.
+          $nonGraphDeferred = New-Object System.Collections.Generic.List[object]
           foreach ($entry in @($plan.policies)) {
             $policyType = [string]$entry.policyType
             $endpoint = Endpoint-For -Type $policyType
@@ -263,6 +363,13 @@ jobs:
               status = 'pending'
             }
 
+            if ($policyType -like 'Purview*' -or $policyType -like 'Exchange*' -or $policyType -like 'Teams*' -or $policyType -like 'SharePoint*') {
+              $logEntry.status = 'deferred'
+              $logEntry.reason = 'Routed to the non-Graph (SCC/EXO/Teams/PnP) restore step.'
+              $logEntry.displayName = [string]$entry.displayName
+              $nonGraphDeferred.Add($logEntry) | Out-Null
+              continue
+            }
             if (-not $endpoint) {
               $logEntry.status = 'skipped'
               $logEntry.reason = "PolicyType '$policyType' is not yet supported by the restore engine."
@@ -285,11 +392,12 @@ jobs:
             $raw = Get-Content -Path $fullPath -Raw | ConvertFrom-Json
             $normalized = Normalize-Policy -Raw $raw -Type $policyType
 
+            $conflictName = if ($normalized.PSObject.Properties['displayName'] -and $normalized.displayName) { [string]$normalized.displayName } elseif ($normalized.PSObject.Properties['name'] -and $normalized.name) { [string]$normalized.name } else { $null }
             if ($conflict -eq 'skip_existing') {
-              $duplicate = Find-Existing-ByName -Endpoint $endpoint -DisplayName $normalized.displayName
+              $duplicate = Find-Existing-ByName -Endpoint $endpoint -DisplayName $conflictName
               if ($duplicate) {
                 $logEntry.status = 'skipped'
-                $logEntry.reason = "Existing object with displayName '$($normalized.displayName)' already exists in target tenant (id $($duplicate.id))."
+                $logEntry.reason = "Existing object with displayName '$conflictName' already exists in target tenant (id $($duplicate.id))."
                 $logEntry.targetId = $duplicate.id
                 $skipped.Add($logEntry) | Out-Null
                 continue
@@ -316,7 +424,57 @@ jobs:
                 $applied.Add($logEntry) | Out-Null
                 continue
               }
-              $created = Invoke-RestMethod -Method POST -Uri $endpoint -Headers $headers -Body ($normalized | ConvertTo-Json -Depth 40) -TimeoutSec 120
+              $created = $null
+              if ($policyType -eq 'DeviceManagementConfigurationPolicy') {
+                # Settings catalog: the POST body carries the full settings
+                # array captured at backup; per-setting read ids must go.
+                foreach ($s in @($normalized.settings)) {
+                  if ($s -and $null -ne $s.PSObject.Properties['id']) { try { $s.PSObject.Properties.Remove('id') | Out-Null } catch {} }
+                }
+                $created = Invoke-RestMethod -Method POST -Uri $endpoint -Headers $headers -Body ($normalized | ConvertTo-Json -Depth 40) -TimeoutSec 120
+              } elseif ($policyType -eq 'DeviceManagementIntent') {
+                # Endpoint security intents must be created from their template
+                # via createInstance — a bare POST to /intents yields a shell.
+                $templateId = [string]$raw.templateId
+                if (-not $templateId) { throw 'Intent snapshot has no templateId; cannot restore via createInstance.' }
+                $delta = New-Object System.Collections.Generic.List[object]
+                foreach ($s in @($raw.settingsDelta)) {
+                  if ($null -eq $s) { continue }
+                  $sc = $s | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+                  if ($null -ne $sc.PSObject.Properties['id']) { try { $sc.PSObject.Properties.Remove('id') | Out-Null } catch {} }
+                  $delta.Add($sc) | Out-Null
+                }
+                $instBody = @{ displayName = $normalized.displayName; description = $normalized.description; settingsDelta = @($delta.ToArray()) }
+                $created = Invoke-RestMethod -Method POST -Uri ("$GraphBetaBase/deviceManagement/templates/" + $templateId + '/createInstance') -Headers $headers -Body ($instBody | ConvertTo-Json -Depth 40) -TimeoutSec 120
+              } elseif ($policyType -eq 'GroupPolicyConfiguration') {
+                # ADMX: create the shell, then replay every definitionValue with
+                # its presentation values via @odata.bind references.
+                $dvs = @($normalized.definitionValues)
+                if ($null -ne $normalized.PSObject.Properties['definitionValues']) { try { $normalized.PSObject.Properties.Remove('definitionValues') | Out-Null } catch {} }
+                $created = Invoke-RestMethod -Method POST -Uri $endpoint -Headers $headers -Body ($normalized | ConvertTo-Json -Depth 40) -TimeoutSec 120
+                $dvFails = 0
+                foreach ($dv in $dvs) {
+                  if ($null -eq $dv -or -not $dv.definition -or -not $dv.definition.id) { continue }
+                  $defId = [string]$dv.definition.id
+                  $pvs = New-Object System.Collections.Generic.List[object]
+                  foreach ($pv in @($dv.presentationValues)) {
+                    if ($null -eq $pv -or -not $pv.presentation -or -not $pv.presentation.id) { continue }
+                    $pvc = $pv | ConvertTo-Json -Depth 30 | ConvertFrom-Json
+                    foreach ($p in @('id','createdDateTime','lastModifiedDateTime','presentation','definitionValue')) {
+                      if ($null -ne $pvc.PSObject.Properties[$p]) { try { $pvc.PSObject.Properties.Remove($p) | Out-Null } catch {} }
+                    }
+                    $pvc | Add-Member -NotePropertyName 'presentation@odata.bind' -NotePropertyValue ("$GraphBetaBase/deviceManagement/groupPolicyDefinitions('" + $defId + "')/presentations('" + $pv.presentation.id + "')") -Force
+                    $pvs.Add($pvc) | Out-Null
+                  }
+                  $dvBody = @{ enabled = [bool]$dv.enabled; 'definition@odata.bind' = ("$GraphBetaBase/deviceManagement/groupPolicyDefinitions('" + $defId + "')"); presentationValues = @($pvs.ToArray()) }
+                  try {
+                    Invoke-RestMethod -Method POST -Uri ($endpoint + '/' + $created.id + '/definitionValues') -Headers $headers -Body ($dvBody | ConvertTo-Json -Depth 40) -TimeoutSec 120 | Out-Null
+                  } catch { $dvFails++ }
+                }
+                if ($dvFails -gt 0) { $warnings.Add("GroupPolicyConfiguration '$conflictName': $dvFails definition value(s) failed to restore.") | Out-Null }
+              } else {
+                $created = Invoke-RestMethod -Method POST -Uri $endpoint -Headers $headers -Body ($normalized | ConvertTo-Json -Depth 40) -TimeoutSec 120
+              }
               $logEntry.status = 'applied'
               $logEntry.targetId = $created.id
               $logEntry.targetEndpoint = $endpoint
@@ -326,7 +484,7 @@ jobs:
               $applied.Add($logEntry) | Out-Null
 
               if ($includeAssignments) {
-                $assignmentsPath = Join-Path $backupRef ("assignments/" + ($entry.backupPolicyId -replace '[^a-zA-Z0-9._-]','_') + '.assignments.json')
+                $assignmentsPath = Resolve-SnapshotFile -Dir (Join-Path $backupRef 'assignments') -RawId ([string]$entry.backupPolicyId) -Suffix '.assignments.json'
                 if (Test-Path $assignmentsPath) {
                   $assignments = Get-Content -Path $assignmentsPath -Raw | ConvertFrom-Json
                   $remapped = New-Object System.Collections.Generic.List[object]
@@ -379,7 +537,7 @@ jobs:
             includeGroups = $includeGroups
             startedAt = (Get-Date).ToUniversalTime().ToString('o')
             workflowRunId = $runId
-            repository = '${{ github.repository }}'
+            repository = $env:GITHUB_REPOSITORY
             counts = [ordered]@{
               total = @($plan.policies).Count
               applied = $applied.Count
@@ -392,7 +550,10 @@ jobs:
 
           $manifest | ConvertTo-Json -Depth 30 | Set-Content -Path (Join-Path $outDir 'manifest.json') -Encoding UTF8
           $plan | ConvertTo-Json -Depth 30 | Set-Content -Path (Join-Path $outDir 'plan.json') -Encoding UTF8
-          @{ applied = @($applied.ToArray()); skipped = @($skipped.ToArray()); failed = @($failed.ToArray()); warnings = @($warnings.ToArray()) } | ConvertTo-Json -Depth 30 | Set-Content -Path (Join-Path $outDir 'result.json') -Encoding UTF8
+          @{ applied = @($applied.ToArray()); skipped = @($skipped.ToArray()); failed = @($failed.ToArray()); warnings = @($warnings.ToArray()); deferred = @($nonGraphDeferred.ToArray()) } | ConvertTo-Json -Depth 30 | Set-Content -Path (Join-Path $outDir 'result.json') -Encoding UTF8
+          # Hand the non-Graph (Purview/Exchange) items to the SCC/EXO restore step.
+          @{ mode = $mode; conflict = $conflict; backupRef = $backupRef; policies = @($nonGraphDeferred.ToArray()) } | ConvertTo-Json -Depth 30 | Set-Content -Path (Join-Path $outDir 'nongraph-plan.json') -Encoding UTF8
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "deferred=$($nonGraphDeferred.Count)"
 
           Add-Content -Path $env:GITHUB_OUTPUT -Value "applied=$($applied.Count)"
           Add-Content -Path $env:GITHUB_OUTPUT -Value "skipped=$($skipped.Count)"
@@ -422,6 +583,174 @@ jobs:
           if ($failed.Count -gt 0 -and $mode -ne 'dry_run') {
             throw "$($failed.Count) policy restore operations failed; see result.json"
           }
+
+      - name: Apply non-Graph restore (Purview/Exchange SCC/EXO)
+        if: ${{ always() && steps.restore.outputs.deferred != '0' && steps.restore.outputs.deferred != '' }}
+        shell: pwsh
+        env:
+          SCC_CERT_PFX_B64: ${{ secrets.PURVIEW_CONNECTOR_PFX_B64 }}
+          SCC_CERT_PWD: ${{ secrets.PURVIEW_CONNECTOR_PFX_PWD }}
+          OUT_DIR: ${{ steps.restore.outputs.out_dir }}
+          TENANT_GUID: ${{ env.AZURE_TENANT_ID }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # Connector identity from the committed onboarding file (same as backup).
+          $appId = ''; $org = ''
+          if (Test-Path 'scripts/purview-connector.json') {
+            $cfg = Get-Content 'scripts/purview-connector.json' -Raw | ConvertFrom-Json
+            $appId = [string]$cfg.appId; $org = [string]$cfg.org
+          }
+          $planPath = Join-Path $env:OUT_DIR 'nongraph-plan.json'
+          if (-not (Test-Path $planPath)) { Write-Host 'No non-Graph restore plan.'; exit 0 }
+          $ng = Get-Content $planPath -Raw | ConvertFrom-Json
+          $items = @($ng.policies)
+          if ($items.Count -eq 0) { Write-Host 'No non-Graph items to restore.'; exit 0 }
+          $mode = [string]$ng.mode
+          $backupRef = [string]$ng.backupRef
+          $results = New-Object System.Collections.Generic.List[object]
+
+          if (-not $env:SCC_CERT_PFX_B64 -or -not $appId -or -not $org) {
+            foreach ($p in $items) { $results.Add([ordered]@{ policyType=[string]$p.policyType; backupPolicyId=$p.backupPolicyId; displayName=$p.displayName; status='skipped'; reason='Purview/Exchange connector not onboarded (cert/appId/org missing).' }) | Out-Null }
+            $results | ConvertTo-Json -Depth 10 | Set-Content -Path (Join-Path $env:OUT_DIR 'nongraph-result.json') -Encoding UTF8
+            Write-Host 'Connector not onboarded - non-Graph restore reported as skipped.'
+            exit 0
+          }
+
+          # policyType -> restore cmdlets. Types not listed are reported as
+          # "manual restore required" (no safe automated mapping yet).
+          $spec = @{
+            'PurviewDlpCompliancePolicy'        = @{ c='scc'; set='Set-DlpCompliancePolicy';        new='New-DlpCompliancePolicy' }
+            'PurviewDlpComplianceRule'          = @{ c='scc'; set='Set-DlpComplianceRule';          new='New-DlpComplianceRule' }
+            'PurviewRetentionCompliancePolicy'  = @{ c='scc'; set='Set-RetentionCompliancePolicy';  new='New-RetentionCompliancePolicy' }
+            'PurviewRetentionComplianceRule'    = @{ c='scc'; set='Set-RetentionComplianceRule';    new='New-RetentionComplianceRule' }
+            'PurviewComplianceTag'              = @{ c='scc'; set='Set-ComplianceTag';              new='New-ComplianceTag' }
+            'PurviewSensitivityLabel'           = @{ c='scc'; set='Set-Label';                      new='New-Label' }
+            'PurviewLabelPolicy'                = @{ c='scc'; set='Set-LabelPolicy';                new='New-LabelPolicy' }
+            'PurviewAutoSensitivityLabelPolicy' = @{ c='scc'; set='Set-AutoSensitivityLabelPolicy'; new='New-AutoSensitivityLabelPolicy' }
+            'PurviewAutoSensitivityLabelRule'   = @{ c='scc'; set='Set-AutoSensitivityLabelRule';   new='New-AutoSensitivityLabelRule' }
+            'PurviewInformationBarrierPolicy'   = @{ c='scc'; set='Set-InformationBarrierPolicy';   new='New-InformationBarrierPolicy' }
+            'PurviewAdaptiveScope'              = @{ c='scc'; set='Set-AdaptiveScope';              new='New-AdaptiveScope' }
+            'ExchangeTransportRule'             = @{ c='exo'; set='Set-TransportRule';              new='New-TransportRule' }
+            'ExchangeTransportConfig'           = @{ c='exo'; set='Set-TransportConfig';            singleton=$true }
+            'ExchangeInboundConnector'          = @{ c='exo'; set='Set-InboundConnector';           new='New-InboundConnector' }
+            'ExchangeOutboundConnector'         = @{ c='exo'; set='Set-OutboundConnector';          new='New-OutboundConnector' }
+            'ExchangeRemoteDomain'              = @{ c='exo'; set='Set-RemoteDomain';               new='New-RemoteDomain' }
+            'ExchangeOrganizationConfig'        = @{ c='exo'; set='Set-OrganizationConfig';         singleton=$true }
+            'ExchangeOwaMailboxPolicy'          = @{ c='exo'; set='Set-OwaMailboxPolicy';           new='New-OwaMailboxPolicy' }
+            'ExchangeMobileDeviceMailboxPolicy' = @{ c='exo'; set='Set-MobileDeviceMailboxPolicy';  new='New-MobileDeviceMailboxPolicy' }
+            'ExchangeRetentionPolicy'           = @{ c='exo'; set='Set-RetentionPolicy';            new='New-RetentionPolicy' }
+            'ExchangeRetentionPolicyTag'        = @{ c='exo'; set='Set-RetentionPolicyTag';         new='New-RetentionPolicyTag' }
+            'ExchangeSharingPolicy'             = @{ c='exo'; set='Set-SharingPolicy';              new='New-SharingPolicy' }
+            'ExchangeOrganizationRelationship'  = @{ c='exo'; set='Set-OrganizationRelationship';   new='New-OrganizationRelationship' }
+            'ExchangeAddressList'               = @{ c='exo'; set='Set-AddressList';                new='New-AddressList' }
+            'ExchangeDkimSigningConfig'         = @{ c='exo'; set='Set-DkimSigningConfig';          new='New-DkimSigningConfig' }
+            'ExchangeRoleGroup'                 = @{ c='exo'; set='Set-RoleGroup';                  new='New-RoleGroup' }
+            'ExchangeManagementScope'           = @{ c='exo'; set='Set-ManagementScope';            new='New-ManagementScope' }
+            'ExchangeAuthenticationPolicy'      = @{ c='exo'; set='Set-AuthenticationPolicy';       new='New-AuthenticationPolicy' }
+            'ExchangeJournalRule'               = @{ c='exo'; set='Set-JournalRule';                new='New-JournalRule' }
+            'TeamsMeetingPolicy'                = @{ c='teams'; set='Set-CsTeamsMeetingPolicy';          new='New-CsTeamsMeetingPolicy' }
+            'TeamsMessagingPolicy'              = @{ c='teams'; set='Set-CsTeamsMessagingPolicy';        new='New-CsTeamsMessagingPolicy' }
+            'TeamsAppPermissionPolicy'          = @{ c='teams'; set='Set-CsTeamsAppPermissionPolicy';    new='New-CsTeamsAppPermissionPolicy' }
+            'TeamsAppSetupPolicy'               = @{ c='teams'; set='Set-CsTeamsAppSetupPolicy';         new='New-CsTeamsAppSetupPolicy' }
+            'TeamsCallingPolicy'                = @{ c='teams'; set='Set-CsTeamsCallingPolicy';          new='New-CsTeamsCallingPolicy' }
+            'TeamsChannelsPolicy'               = @{ c='teams'; set='Set-CsTeamsChannelsPolicy';         new='New-CsTeamsChannelsPolicy' }
+            'TeamsMeetingBroadcastPolicy'       = @{ c='teams'; set='Set-CsTeamsMeetingBroadcastPolicy'; new='New-CsTeamsMeetingBroadcastPolicy' }
+            'TeamsUpdateManagementPolicy'       = @{ c='teams'; set='Set-CsTeamsUpdateManagementPolicy'; new='New-CsTeamsUpdateManagementPolicy' }
+            'TeamsExternalAccessPolicy'         = @{ c='teams'; set='Set-CsExternalAccessPolicy';        new='New-CsExternalAccessPolicy' }
+            'TeamsFederationConfiguration'      = @{ c='teams'; set='Set-CsTenantFederationConfiguration'; singleton=$true }
+            'TeamsClientConfiguration'          = @{ c='teams'; set='Set-CsTeamsClientConfiguration';    singleton=$true }
+            'TeamsGuestMessagingConfiguration'  = @{ c='teams'; set='Set-CsTeamsGuestMessagingConfiguration'; singleton=$true }
+            'SharePointTenantSettings'          = @{ c='pnp'; set='Set-PnPTenant';                       singleton=$true }
+          }
+          $readonly = @('Identity','Guid','ObjectId','Id','WhenCreated','WhenChanged','WhenChangedUTC','WhenCreatedUTC','OrganizationId','ExchangeVersion','ExchangeObjectId','DistinguishedName','ObjectCategory','ObjectClass','OriginatingServer','ExoErrorObject','RunspaceId','PSComputerName','PSShowComputerName','ImmutableId','ExternalDirectoryObjectId','IsValid','Success','ChangeType')
+
+          $needScc = $false; $needExo = $false; $needTeams = $false; $needPnp = $false
+          foreach ($p in $items) { $s=$spec[[string]$p.policyType]; if ($s){ switch ($s.c) { 'scc' {$needScc=$true} 'exo' {$needExo=$true} 'teams' {$needTeams=$true} 'pnp' {$needPnp=$true} } } }
+          if ($mode -ne 'dry_run') {
+            $ProgressPreference='SilentlyContinue'
+            $bytes = [Convert]::FromBase64String($env:SCC_CERT_PFX_B64)
+            $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new($bytes, $env:SCC_CERT_PWD)
+            if ($needScc -or $needExo) {
+              Install-Module ExchangeOnlineManagement -RequiredVersion 3.5.0 -Scope CurrentUser -Force -AllowClobber
+              Import-Module ExchangeOnlineManagement
+              if ($needScc) { try { Connect-IPPSSession -AppId $appId -Certificate $cert -Organization $org -ShowBanner:$false } catch { Write-Host ('SCC connect WARN: ' + $_.Exception.Message) } }
+              if ($needExo) { try { Connect-ExchangeOnline -AppId $appId -Certificate $cert -Organization $org -ShowBanner:$false } catch { Write-Host ('EXO connect WARN: ' + $_.Exception.Message) } }
+            }
+            if ($needTeams) {
+              try { Install-Module MicrosoftTeams -RequiredVersion 6.5.0 -Scope CurrentUser -Force -AllowClobber; Import-Module MicrosoftTeams; Connect-MicrosoftTeams -ApplicationId $appId -Certificate $cert -TenantId $env:TENANT_GUID | Out-Null } catch { Write-Host ('Teams connect WARN: ' + $_.Exception.Message) }
+            }
+            if ($needPnp) {
+              try { Install-Module PnP.PowerShell -RequiredVersion 2.12.0 -Scope CurrentUser -Force -AllowClobber; Import-Module PnP.PowerShell; $spTenant=$org.Split('.')[0]; $pwd=ConvertTo-SecureString $env:SCC_CERT_PWD -AsPlainText -Force; Connect-PnPOnline -Url ('https://'+$spTenant+'-admin.sharepoint.com') -ClientId $appId -Tenant $org -CertificateBase64Encoded $env:SCC_CERT_PFX_B64 -CertificatePassword $pwd | Out-Null } catch { Write-Host ('PnP connect WARN: ' + $_.Exception.Message) } }
+          }
+
+          function Build-Splat { param($obj, $validKeys, $ro)
+            $splat = @{}
+            $pairs = if ($obj -is [System.Collections.IDictionary]) {
+              $obj.GetEnumerator() | ForEach-Object { [pscustomobject]@{ Name = $_.Key; Value = $_.Value } }
+            } else { $obj.PSObject.Properties }
+            foreach ($prop in $pairs) {
+              if ($prop.Name -in $ro) { continue }
+              if ($validKeys -notcontains $prop.Name) { continue }
+              if ($null -eq $prop.Value) { continue }
+              $splat[$prop.Name] = $prop.Value
+            }
+            return $splat
+          }
+
+          foreach ($p in $items) {
+            $pt = [string]$p.policyType
+            $r = [ordered]@{ policyType=$pt; backupPolicyId=$p.backupPolicyId; displayName=$p.displayName; status='pending' }
+            $s = $spec[$pt]
+            if (-not $s) { $r.status='skipped'; $r.reason='No automated restore mapping for this type yet (manual restore required).'; $results.Add($r)|Out-Null; continue }
+            $fp = Join-Path $backupRef ([string]$p.path)
+            if (-not (Test-Path $fp)) { $r.status='failed'; $r.reason="Snapshot file not found: $($p.path)"; $results.Add($r)|Out-Null; continue }
+            $id = [string]$p.backupPolicyId
+            $setCmd = [string]$s.set
+            if ($mode -eq 'dry_run') {
+              # Preview only — no parse/connect/write. Safe and cannot fail on
+              # objects with case-variant duplicate JSON keys.
+              $r.status='planned'; $r.cmdlet=$setCmd; $r.singleton=[bool]$s.singleton; $results.Add($r)|Out-Null; continue
+            }
+            $obj = $null
+            try { $obj = Get-Content $fp -Raw | ConvertFrom-Json -ErrorAction Stop }
+            catch {
+              try { $obj = Get-Content $fp -Raw | ConvertFrom-Json -AsHashtable -ErrorAction Stop }
+              catch { $r.status='failed'; $r.reason="Could not parse snapshot: $($_.Exception.Message)"; $results.Add($r)|Out-Null; continue }
+            }
+            $valid = @()
+            try { $valid = (Get-Command $setCmd -ErrorAction Stop).Parameters.Keys } catch { $r.status='skipped'; $r.reason="Cmdlet $setCmd unavailable (insufficient role or module)."; $results.Add($r)|Out-Null; continue }
+            $splat = Build-Splat -obj $obj -validKeys $valid -ro $readonly
+            try {
+              if ($s.singleton) { & $setCmd @splat -ErrorAction Stop | Out-Null }
+              else { & $setCmd -Identity $id @splat -ErrorAction Stop | Out-Null }
+              $r.status='applied'; $r.cmdlet=$setCmd; $r.paramCount=$splat.Keys.Count; $results.Add($r)|Out-Null
+            } catch {
+              $newCmd = [string]$s.new
+              if ($newCmd) {
+                try {
+                  $nvalid = (Get-Command $newCmd -ErrorAction Stop).Parameters.Keys
+                  $nsplat = Build-Splat -obj $obj -validKeys $nvalid -ro $readonly
+                  if ($nvalid -contains 'Name' -and -not $nsplat.ContainsKey('Name')) { $nsplat['Name'] = [string]$p.displayName }
+                  # Cmdlets like New-CsTeams*Policy / New-DlpCompliancePolicy take -Identity (not -Name).
+                  if ($nvalid -contains 'Identity') { & $newCmd -Identity $id @nsplat -ErrorAction Stop | Out-Null }
+                  else { & $newCmd @nsplat -ErrorAction Stop | Out-Null }
+                  $r.status='applied'; $r.cmdlet=$newCmd; $r.created=$true; $results.Add($r)|Out-Null
+                } catch { $r.status='failed'; $r.reason=$_.Exception.Message; $results.Add($r)|Out-Null }
+              } else { $r.status='failed'; $r.reason=$_.Exception.Message; $results.Add($r)|Out-Null }
+            }
+          }
+          if ($mode -ne 'dry_run') {
+            try { Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue } catch {}
+            if ($needTeams) { try { Disconnect-MicrosoftTeams -ErrorAction SilentlyContinue } catch {} }
+            if ($needPnp) { try { Disconnect-PnPOnline -ErrorAction SilentlyContinue } catch {} }
+          }
+          $results | ConvertTo-Json -Depth 12 | Set-Content -Path (Join-Path $env:OUT_DIR 'nongraph-result.json') -Encoding UTF8
+          $ap=@($results | Where-Object { $_.status -eq 'applied' }).Count
+          $pl=@($results | Where-Object { $_.status -eq 'planned' }).Count
+          $sk=@($results | Where-Object { $_.status -eq 'skipped' }).Count
+          $fa=@($results | Where-Object { $_.status -eq 'failed' }).Count
+          Write-Host ("== Non-Graph restore ($mode): applied=$ap planned=$pl skipped=$sk failed=$fa ==")
+          @('', "## Non-Graph restore (Purview/Exchange) - $mode", "applied=$ap planned=$pl skipped=$sk failed=$fa") | Add-Content -Path $env:GITHUB_STEP_SUMMARY
 
       - name: Upload restore evidence
         if: always()
