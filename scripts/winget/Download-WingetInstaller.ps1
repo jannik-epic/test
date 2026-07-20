@@ -258,7 +258,16 @@ $baseSilentArgs = if ($silentArg) { $silentArg } elseif ($silentWithProgress) { 
 # scope-specific arguments (for example /CURRENTUSER or /ALLUSERS). Omitting
 # them can turn an otherwise silent installer into an interactive, hanging
 # validation. Keep them on install only; uninstall has its own switch block.
-$silentArgs = @($baseSilentArgs, $customInstallArg) |
+$packageInstallArgs = @()
+if ($PackageId -ieq 'Greenshot.Greenshot' -and $installerTypeLc -eq 'inno') {
+    # Greenshot's Inno [Run] entry launches Greenshot even during /VERYSILENT
+    # installs. PowerShell Start-Process -Wait then waits for that long-running
+    # child process and the otherwise successful deployment hits its hard
+    # timeout. Greenshot explicitly supports --no-run and forwards it to the
+    # spawned app, which exits immediately after setup.
+    $packageInstallArgs += '--no-run'
+}
+$silentArgs = @($baseSilentArgs, $customInstallArg, $packageInstallArgs) |
     Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
     ForEach-Object { ([string]$_).Trim() } |
     Select-Object -Unique

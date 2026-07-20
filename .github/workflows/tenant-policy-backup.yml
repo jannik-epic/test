@@ -1,4 +1,4 @@
-# vanguard-template-version: 2026-07-20.5
+# vanguard-template-version: 2026-07-20.6
 name: Tenant Policy Backup
 
 on:
