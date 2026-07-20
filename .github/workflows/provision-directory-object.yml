@@ -1,4 +1,4 @@
-# vanguard-template-version: 2026-07-20.6
+# vanguard-template-version: 2026-07-20.7
 name: Provision Entra User or Group
 
 on:

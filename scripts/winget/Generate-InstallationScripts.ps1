@@ -140,13 +140,27 @@ if ($offlineMetadata -and $offlineMetadata.fileName) {
     } else {
         # EXE-family (nullsoft/inno/wix/burn-as-exe/generic): run the binary
         # with the manifest-resolved silent switch.
+        $exeProcessInvocation = if ($installerTypeLc -eq 'inno') {
+            @"
+    `$process = Start-Process -FilePath `$installerPath -ArgumentList `$exeArgs -PassThru -WindowStyle Hidden
+    # Start-Process -Wait follows the complete child-process tree on Windows.
+    # Inno packages may launch a browser or the installed app after setup, so
+    # wait only for the actual setup process; detection is the authoritative
+    # postcondition in the following validation step.
+    `$process.WaitForExit()
+"@
+        } else {
+            @"
+    `$process = Start-Process -FilePath `$installerPath -ArgumentList `$exeArgs -Wait -PassThru -WindowStyle Hidden
+"@
+        }
         @"
     `$installerPath = Join-Path `$PSScriptRoot 'Files\$installerFile'
     if (-not (Test-Path -LiteralPath `$installerPath -PathType Leaf)) {
         throw "Installer binary missing at `$installerPath"
     }
     `$exeArgs = ('$silentArgs' -split ' ' | Where-Object { `$_ })
-    `$process = Start-Process -FilePath `$installerPath -ArgumentList `$exeArgs -Wait -PassThru -WindowStyle Hidden
+$exeProcessInvocation
     if (`$process.ExitCode -notin @(0,1641,3010)) {
         throw "Installer exited with code `$(`$process.ExitCode)"
     }
