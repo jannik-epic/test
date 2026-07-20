@@ -1,10 +1,10 @@
-name: Sync Modern Dev Mgmt Radar Group
+name: Sync Vanguard Radar Group
 
 on:
   workflow_dispatch:
     inputs:
       dynamic_group_id:
-        description: 'Modern Dev Mgmt dynamic app group id'
+        description: 'Vanguard dynamic app group id'
         required: true
         type: string
       entra_group_id:
@@ -12,7 +12,7 @@ on:
         required: true
         type: string
       target_version:
-        description: 'Version considered current by Modern Dev Mgmt'
+        description: 'Version considered current by Vanguard'
         required: false
         type: string
       outdated_device_ids_json:
@@ -41,13 +41,13 @@ on:
         type: boolean
         default: false
       modern_dev_mgmt_context_b64:
-        description: 'Base64 encoded Modern Dev Mgmt Radar sync context'
+        description: 'Base64 encoded Vanguard Radar sync context'
         required: false
         type: string
 
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
-  AZURE_CLIENT_ID: '7659f226-8344-4731-b758-a4d93238309c'
+  AZURE_CLIENT_ID: 'a34f2806-b6f7-4d11-98f6-b32894396ca8'
   GRAPH_BASE: 'https://graph.microsoft.com/v1.0'
   REQUIRED_GRAPH_PERMISSIONS: 'Group.ReadWrite.All,Directory.Read.All'
 
@@ -62,7 +62,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Resolve target Azure tenant from Modern Dev Mgmt context
+      - name: Resolve target Azure tenant from Vanguard context
         shell: bash
         env:
           MODERN_DEVMGMT_CONTEXT_B64: ${{ github.event.inputs.modern_dev_mgmt_context_b64 }}
@@ -74,7 +74,7 @@ jobs:
           # defaults are baked at provisioning time and can only point at one
           # tenant.
           if [[ -z "${MODERN_DEVMGMT_CONTEXT_B64:-}" ]]; then
-            echo "no Modern Dev Mgmt context — keeping default AZURE_TENANT_ID/CLIENT_ID"
+            echo "no Vanguard context — keeping default AZURE_TENANT_ID/CLIENT_ID"
             exit 0
           fi
           decoded="$(printf '%s' "$MODERN_DEVMGMT_CONTEXT_B64" | base64 --decode 2>/dev/null || true)"
@@ -85,6 +85,9 @@ jobs:
           tenant="$(printf '%s' "$decoded" | jq -r '.targetAzureTenantId // ""' 2>/dev/null || true)"
           client="$(printf '%s' "$decoded" | jq -r '.targetAzureClientId // ""' 2>/dev/null || true)"
           if [[ -n "$tenant" ]]; then
+            # Mask the tenant id for the rest of the job so it never appears in
+            # the clear in workflow logs (trust-by-design; logs may be exported).
+            echo "::add-mask::$tenant"
             echo "AZURE_TENANT_ID=$tenant" >> "$GITHUB_ENV"
             echo "INTUNE_TENANT_ID=$tenant" >> "$GITHUB_ENV"
             echo "resolved AZURE_TENANT_ID=$tenant"
@@ -294,7 +297,7 @@ jobs:
               $contextJson = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($env:MODERN_DEVMGMT_CONTEXT_B64))
               $context = $contextJson | ConvertFrom-Json
             } catch {
-              Write-Warning "Could not decode Modern Dev Mgmt context: $($_.Exception.Message)"
+              Write-Warning "Could not decode Vanguard context: $($_.Exception.Message)"
             }
           }
 
@@ -332,7 +335,7 @@ jobs:
           git add $resultPath $runPath
           git diff --cached --quiet
           if ($LASTEXITCODE -ne 0) {
-            git commit -m "chore: record Modern Dev Mgmt Radar sync ${{ github.run_id }}"
+            git commit -m "chore: record Vanguard Radar sync ${{ github.run_id }}"
             git pull --rebase origin "${{ github.ref_name }}"
             git push
           } else {
