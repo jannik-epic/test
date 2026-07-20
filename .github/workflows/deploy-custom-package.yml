@@ -1,4 +1,4 @@
-# vanguard-template-version: 2026-07-20.1
+# vanguard-template-version: 2026-07-20.3
 name: Deploy Custom Installer to Intune
 run-name: "Vanguard · ${{ inputs.package_id }} · ${{ inputs.app_version }} · ${{ inputs.dispatch_correlation_id }}"
 
