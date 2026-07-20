@@ -1,6 +1,6 @@
 [
   {
-    "id": 803,
+    "id": 8059,
     "source": "winget",
     "package_id": "Canva.Canva",
     "name": "Canva",
@@ -9,7 +9,7 @@
     "pin_version": null
   },
   {
-    "id": 2564,
+    "id": 8870,
     "source": "winget",
     "package_id": "Greenshot.Greenshot",
     "name": "Greenshot",
@@ -18,7 +18,7 @@
     "pin_version": null
   },
   {
-    "id": 4171,
+    "id": 9544,
     "source": "winget",
     "package_id": "Microsoft.Edge",
     "name": "Microsoft Edge",
@@ -27,7 +27,7 @@
     "pin_version": null
   },
   {
-    "id": 4173,
+    "id": 9545,
     "source": "winget",
     "package_id": "Microsoft.Edge.Beta",
     "name": "Microsoft Edge Beta",
@@ -36,7 +36,7 @@
     "pin_version": null
   },
   {
-    "id": 4191,
+    "id": 9555,
     "source": "winget",
     "package_id": "Microsoft.OneDrive",
     "name": "Microsoft OneDrive",
@@ -45,7 +45,7 @@
     "pin_version": null
   },
   {
-    "id": 4387,
+    "id": 9592,
     "source": "winget",
     "package_id": "Microsoft.VisualStudioCode",
     "name": "Microsoft Visual Studio Code",
@@ -54,7 +54,7 @@
     "pin_version": null
   },
   {
-    "id": 5933,
+    "id": 10205,
     "source": "winget",
     "package_id": "VinaySajip.PythonLauncher",
     "name": "Python Launcher",
@@ -63,30 +63,12 @@
     "pin_version": null
   },
   {
-    "id": 6991,
+    "id": 10639,
     "source": "winget",
     "package_id": "Spice.SpiceWebDAVd",
     "name": "Spice webdavd",
     "os": "windows",
     "version_deployed": "2.5.0",
-    "pin_version": null
-  },
-  {
-    "id": 113049,
-    "source": "winget",
-    "package_id": "JetBrains.dotPeek",
-    "name": "JetBrains dotPeek",
-    "os": "windows",
-    "version_deployed": "2024.2.3",
-    "pin_version": null
-  },
-  {
-    "id": 114306,
-    "source": "winget",
-    "package_id": "Microsoft.VCRedist.2015+.arm64",
-    "name": "Microsoft Visual C++ 2022 Redistributable (Arm64)",
-    "os": "windows",
-    "version_deployed": "14.30.30704.0",
     "pin_version": null
   }
 ]
