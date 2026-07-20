@@ -42,6 +42,10 @@ param(
     [ValidateSet("x86", "x64", "arm64")]
     [string]$Architecture = "x64",
 
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("system", "user")]
+    [string]$InstallContext = "system",
+
     [Parameter(Mandatory = $true)]
     [string]$OutputDirectory
 )
@@ -76,6 +80,10 @@ $downloadArgs = @(
     "--accept-source-agreements",
     "--architecture", $Architecture
 )
+$requestedScope = if ($InstallContext -eq 'user') { 'user' } else { 'machine' }
+if ($PackageSource -eq 'winget') {
+    $downloadArgs += @("--scope", $requestedScope)
+}
 if ($Version -and $Version -notin @('latest','Latest','LATEST','')) {
     # 'latest' is not a real winget version selector — passing it as
     # --version causes winget to literally search for a version called
@@ -160,18 +168,31 @@ function Read-YamlScalar {
 
 # Find the per-installer block whose Architecture matches; fall back to whole doc.
 function Read-InstallerBlock {
-    param([string]$Text, [string]$Arch)
+    param([string]$Text, [string]$Arch, [string]$Scope)
     if (-not $Text) { return "" }
-    $marker = "(?ms)^\s*-\s*(Architecture:\s*${Arch}\b.*?)(?=^\s*-\s*Architecture:|\Z)"
-    $m = [regex]::Match($Text, $marker)
-    if ($m.Success) { return $m.Groups[1].Value }
-    # Any installer.
-    $m = [regex]::Match($Text, "(?ms)^\s*-\s*(Architecture:.*?)(?=^\s*-\s*Architecture:|\Z)")
-    if ($m.Success) { return $m.Groups[1].Value }
+    $matches = [regex]::Matches($Text, "(?ms)^\s*-\s*(Architecture:.*?)(?=^\s*-\s*Architecture:|\Z)")
+    $blocks = @($matches | ForEach-Object { $_.Groups[1].Value })
+    # Prefer the operator-requested architecture and scope. If winget had to
+    # fall back to another architecture, keep the requested scope before
+    # considering an architecture-only match; otherwise a user installer may
+    # silently win over the requested machine installer (or vice versa).
+    foreach ($block in $blocks) {
+        if ((Read-YamlScalar $block 'Architecture') -eq $Arch -and
+            (Read-YamlScalar $block 'Scope') -eq $Scope) {
+            return $block
+        }
+    }
+    foreach ($block in $blocks) {
+        if ((Read-YamlScalar $block 'Scope') -eq $Scope) { return $block }
+    }
+    foreach ($block in $blocks) {
+        if ((Read-YamlScalar $block 'Architecture') -eq $Arch) { return $block }
+    }
+    if ($blocks.Count -gt 0) { return $blocks[0] }
     return $Text
 }
 
-$installerBlock = Read-InstallerBlock -Text $manifestText -Arch $Architecture
+$installerBlock = Read-InstallerBlock -Text $manifestText -Arch $Architecture -Scope $requestedScope
 $resolvedArchitecture = Read-YamlScalar $installerBlock 'Architecture'
 if (-not $resolvedArchitecture) { $resolvedArchitecture = $Architecture }
 
