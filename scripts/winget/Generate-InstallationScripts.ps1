@@ -93,6 +93,10 @@ if ($offlineMetadata -and $offlineMetadata.fileName) {
     $silentUninstallArgs = [string]$offlineMetadata.silentUninstallArgs
     $productCode = [string]$offlineMetadata.productCode
     $resolvedScope = [string]$offlineMetadata.scope
+    if ($resolvedScope -eq 'user' -and $InstallContext -ne 'user') {
+        Write-Warning "Installer metadata requires user scope; overriding install context '$InstallContext' with 'user'."
+        $InstallContext = 'user'
+    }
 
     $isMsi    = ($installerTypeLc -eq 'msi') -or ($installerTypeLc -eq 'wix') -or ($installerTypeLc -eq 'burn')
     $isMsix   = ($installerTypeLc -eq 'msix') -or ($installerTypeLc -eq 'appx')
@@ -106,7 +110,8 @@ if ($offlineMetadata -and $offlineMetadata.fileName) {
     # win32LobAppRegistryRule for the same key/value.
     $useMarkerDetection = (-not $isMsi) -and (-not $isMsix)
     $markerLeaf = ($PackageId -replace '[^A-Za-z0-9_.-]', '_')
-    $markerKeyPath = "HKLM:\SOFTWARE\Vanguard\Detection\$markerLeaf"
+    $markerHive = if ($InstallContext -eq 'user') { 'HKCU:' } else { 'HKLM:' }
+    $markerKeyPath = "$markerHive\SOFTWARE\Vanguard\Detection\$markerLeaf"
     $markerVersion = if ($Version) { $Version } elseif ($offlineMetadata.version) { [string]$offlineMetadata.version } else { '0.0.0' }
 
     # The Intune client extracts the .intunewin into a working directory and
