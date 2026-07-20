@@ -181,7 +181,8 @@ try {
 try {
     `$uninstallKeys = @(
         'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall',
-        'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
+        'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall',
+        'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall'
     )
     foreach (`$key in `$uninstallKeys) {
         Get-ChildItem -Path `$key -ErrorAction SilentlyContinue | ForEach-Object {
