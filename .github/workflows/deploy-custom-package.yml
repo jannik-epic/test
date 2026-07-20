@@ -1,3 +1,4 @@
+# vanguard-template-version: 2026-07-20.1
 name: Deploy Custom Installer to Intune
 run-name: "Vanguard · ${{ inputs.package_id }} · ${{ inputs.app_version }} · ${{ inputs.dispatch_correlation_id }}"
 
@@ -135,6 +136,7 @@ permissions:
 jobs:
   validate-custom-installer:
     runs-on: windows-latest
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -447,6 +449,7 @@ jobs:
       - name: VM validation — install (custom package)
         id: validate_install
         shell: pwsh
+        timeout-minutes: 10
         continue-on-error: true
         env:
           ACTIONS_ID_TOKEN_REQUEST_URL: ''
@@ -518,6 +521,7 @@ jobs:
         id: validate_uninstall
         if: ${{ steps.validate_install.outcome == 'success' }}
         shell: pwsh
+        timeout-minutes: 10
         continue-on-error: true
         env:
           ACTIONS_ID_TOKEN_REQUEST_URL: ''
@@ -625,6 +629,7 @@ jobs:
   deploy-custom-installer:
     needs: validate-custom-installer
     runs-on: windows-latest
+    timeout-minutes: 30
     permissions:
       id-token: write
       contents: write
