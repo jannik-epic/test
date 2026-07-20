@@ -1,3 +1,4 @@
+# vanguard-template-version: 2026-07-20.1
 name: Deploy Winget App to Intune
 run-name: "Vanguard · ${{ inputs.package_id }} · ${{ inputs.version }} · ${{ inputs.dispatch_correlation_id }}"
 
@@ -134,6 +135,7 @@ env:
 jobs:
   validate_winget_app:
     runs-on: windows-latest
+    timeout-minutes: 35
     permissions:
       id-token: none
       contents: read
@@ -462,6 +464,7 @@ jobs:
         id: validate_install
         if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' }}
         shell: pwsh
+        timeout-minutes: 10
         continue-on-error: true
         run: |
           $ErrorActionPreference = 'Continue'
@@ -529,6 +532,7 @@ jobs:
         id: validate_uninstall
         if: ${{ github.event.inputs.validation_enabled != 'false' && steps.resolve_installer.outputs.offline == 'true' && steps.validate_install.outcome == 'success' }}
         shell: pwsh
+        timeout-minutes: 10
         continue-on-error: true
         run: |
           $validationDir = Join-Path $PWD.Path '.modern-dev-mgmt/validation'
@@ -644,6 +648,7 @@ jobs:
   deploy-winget-app:
     needs: validate_winget_app
     runs-on: windows-latest
+    timeout-minutes: 30
     permissions:
       id-token: write
       contents: write
