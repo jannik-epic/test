@@ -87,7 +87,31 @@ Write-Host "Running: winget $($downloadArgs -join ' ')"
 $wingetOutput = & winget.exe @downloadArgs 2>&1 | Out-String
 Write-Host $wingetOutput
 if ($LASTEXITCODE -ne 0) {
-    throw "winget download failed (exit $LASTEXITCODE) for $PackageId. Output: $wingetOutput"
+    $firstExitCode = $LASTEXITCODE
+    # Some manifests only publish x86 or neutral installers. A hard x64
+    # selector makes winget report "No applicable installer found" even
+    # though the package is deployable. Retry once without the selector and
+    # let the downloaded manifest describe the actual architecture.
+    $retryArgs = New-Object System.Collections.Generic.List[string]
+    for ($i = 0; $i -lt $downloadArgs.Count; $i++) {
+        if ($downloadArgs[$i] -eq "--architecture") {
+            $i++
+            continue
+        }
+        $retryArgs.Add([string]$downloadArgs[$i])
+    }
+    # A failed winget attempt may leave a partial manifest or payload behind.
+    # Never let that stale file win the post-download selection.
+    Remove-Item -LiteralPath $downloadDir -Recurse -Force -ErrorAction SilentlyContinue
+    New-Item -ItemType Directory -Force -Path $downloadDir | Out-Null
+    Write-Warning "winget download with architecture '$Architecture' failed (exit $firstExitCode); retrying with the package's compatible architecture."
+    Write-Host "Running: winget $($retryArgs -join ' ')"
+    $retryArgsArray = $retryArgs.ToArray()
+    $wingetOutput = & winget.exe @retryArgsArray 2>&1 | Out-String
+    Write-Host $wingetOutput
+    if ($LASTEXITCODE -ne 0) {
+        throw "winget download failed (exit $LASTEXITCODE) for $PackageId after the compatible-architecture retry. Output: $wingetOutput"
+    }
 }
 
 # winget download writes: <PackageId>.<ext> (installer) + <PackageId>.yaml (merged manifest).
@@ -148,6 +172,8 @@ function Read-InstallerBlock {
 }
 
 $installerBlock = Read-InstallerBlock -Text $manifestText -Arch $Architecture
+$resolvedArchitecture = Read-YamlScalar $installerBlock 'Architecture'
+if (-not $resolvedArchitecture) { $resolvedArchitecture = $Architecture }
 
 function Choose {
     param([string]$First, [string]$Second)
@@ -241,7 +267,7 @@ $metadata = [ordered]@{
     installerType        = $installerTypeLc
     nestedInstallerType  = $nestedTypeLc
     installerLocale      = $installerLocale
-    architecture         = $Architecture
+    architecture         = $resolvedArchitecture
     scope                = $scope
     silentArgs           = $silentArgs
     silentUninstallArgs  = $silentUninstallArgs
