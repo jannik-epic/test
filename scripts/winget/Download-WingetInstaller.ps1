@@ -216,6 +216,7 @@ function Read-Switch {
 
 $silentArg   = Choose (Read-Switch $installerBlock 'Silent') (Read-Switch $manifestText 'Silent')
 $silentWithProgress = Choose (Read-Switch $installerBlock 'SilentWithProgress') (Read-Switch $manifestText 'SilentWithProgress')
+$customInstallArg = Choose (Read-Switch $installerBlock 'Custom') (Read-Switch $manifestText 'Custom')
 
 # Compute final silent args by installer type, preferring manifest hints.
 $defaultSilent = switch ($installerTypeLc) {
@@ -231,7 +232,16 @@ $defaultSilent = switch ($installerTypeLc) {
         if ($installerFile.Extension -ieq '.msi') { '/qn /norestart' } else { '/S' }
     }
 }
-$silentArgs = if ($silentArg) { $silentArg } elseif ($silentWithProgress) { $silentWithProgress } else { $defaultSilent }
+$baseSilentArgs = if ($silentArg) { $silentArg } elseif ($silentWithProgress) { $silentWithProgress } else { $defaultSilent }
+# WinGet manifests use InstallerSwitches.Custom for required vendor- or
+# scope-specific arguments (for example /CURRENTUSER or /ALLUSERS). Omitting
+# them can turn an otherwise silent installer into an interactive, hanging
+# validation. Keep them on install only; uninstall has its own switch block.
+$silentArgs = @($baseSilentArgs, $customInstallArg) |
+    Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
+    ForEach-Object { ([string]$_).Trim() } |
+    Select-Object -Unique
+$silentArgs = ($silentArgs -join ' ').Trim()
 
 # Uninstall switches mirror install switches in winget manifests; fall back to type defaults.
 function Read-Block-Switch {
@@ -245,7 +255,7 @@ function Read-Block-Switch {
 $silentUninstallArg = Choose `
     (Read-Block-Switch $installerBlock 'UninstallSwitches' 'Silent') `
     (Read-Block-Switch $manifestText 'UninstallSwitches' 'Silent')
-$silentUninstallArgs = if ($silentUninstallArg) { $silentUninstallArg } else { $silentArgs }
+$silentUninstallArgs = if ($silentUninstallArg) { $silentUninstallArg } else { $baseSilentArgs }
 
 # Success codes: manifest lists numeric exit codes that should be treated as success.
 $successCodes = New-Object System.Collections.Generic.List[int]
