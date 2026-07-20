@@ -1,4 +1,4 @@
-# vanguard-template-version: 2026-07-20.1
+# vanguard-template-version: 2026-07-20.3
 name: Check Intune inventory coverage
 
 on:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 env:
