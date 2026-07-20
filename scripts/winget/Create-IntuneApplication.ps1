@@ -52,11 +52,46 @@ param(
     [string]$PackageNotes,
 
     [Parameter(Mandatory = $false)]
-    [ValidateSet('x86','x64','arm64','x64-arm64','x86-x64-arm64')]
+    [ValidateSet('x86','x64','arm64','x86-x64','x64-arm64','x86-x64-arm64')]
     [string]$Architecture = 'x64',
 
     [Parameter(Mandatory = $false)]
-    [string]$InstallerMetadataPath
+    [string]$InstallerMetadataPath,
+
+    [Parameter(Mandatory = $false)]
+    [string]$Developer,
+
+    [Parameter(Mandatory = $false)]
+    [string]$Owner,
+
+    [Parameter(Mandatory = $false)]
+    [string]$InformationUrl,
+
+    [Parameter(Mandatory = $false)]
+    [string]$PrivacyInformationUrl,
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('basedOnReturnCode','allow','suppress','force')]
+    [string]$RestartBehavior = 'basedOnReturnCode',
+
+    [Parameter(Mandatory = $false)]
+    [string]$ReturnCodesJson,
+
+    [Parameter(Mandatory = $false)]
+    [string]$RequirementRulesJson,
+
+    [Parameter(Mandatory = $false)]
+    [string]$MinimumSupportedOperatingSystemJson,
+
+    [Parameter(Mandatory = $false)]
+    [ValidateRange(0, 1440)]
+    [int]$MaxRunTimeInMinutes = 0,
+
+    [Parameter(Mandatory = $false)]
+    [string]$CategoryIdsJson,
+
+    [Parameter(Mandatory = $false)]
+    [string]$CategoryNamesJson
 )
 
 $ErrorActionPreference = "Stop"
@@ -70,6 +105,7 @@ function Resolve-ApplicableArchitectures {
         'x86'             { return 'x86' }
         'x64'             { return 'x64' }
         'arm64'           { return 'arm64' }
+        'x86-x64'         { return 'x86,x64' }
         'x64-arm64'       { return 'x64,arm64' }
         'x86-x64-arm64'   { return 'x86,x64,arm64' }
         default           { return 'x64' }
@@ -155,8 +191,12 @@ function Ensure-IntuneWinAppUtil {
     New-Item -ItemType Directory -Force -Path $toolsDir | Out-Null
     $utilPath = Join-Path $toolsDir "IntuneWinAppUtil.exe"
     if (-not (Test-Path -LiteralPath $utilPath -PathType Leaf)) {
-        $url = "https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/raw/master/IntuneWinAppUtil.exe"
-        Write-Host "Downloading IntuneWinAppUtil.exe..."
+        # Pin the Microsoft Win32 Content Prep Tool to a tagged release instead of
+        # `master` so builds are reproducible and auditable. Bump deliberately by
+        # changing the tag (or override at dispatch time with INTUNEWIN_TOOL_REF).
+        $ref = if ($env:INTUNEWIN_TOOL_REF) { $env:INTUNEWIN_TOOL_REF } else { "v1.8.6" }
+        $url = "https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/raw/$ref/IntuneWinAppUtil.exe"
+        Write-Host "Downloading IntuneWinAppUtil.exe (pinned ref: $ref)..."
         Invoke-WebRequest -Uri $url -OutFile $utilPath -UseBasicParsing
     }
     $utilPath
@@ -425,14 +465,33 @@ try {
 
     # Precompute the detection rule so Windows PowerShell 5.1 doesn't have to
     # parse a nested `if/else` inside the hash literal (legal in PS7 but flaky
-    # in 5.1). Prefer the native MSI ProductCode rule when we have a code;
-    # otherwise fall back to the embedded detection script.
-    if ($offlineMetadata -and $offlineMetadata.productCode -and (@('msi','wix','burn') -contains $offlineMetadata.installerType)) {
+    # in 5.1). Detection precedence:
+    #   1. native MSI ProductCode rule (msi/wix/burn with a product code)
+    #   2. native versioned Registry rule on the marker we write post-install for
+    #      EXE-family installers (deterministic >= comparison; mirrors
+    #      Generate-InstallationScripts.ps1 marker key)
+    #   3. embedded PowerShell detection script (fallback / MSIX)
+    $ciInstallerType = if ($offlineMetadata) { ([string]$offlineMetadata.installerType).ToLowerInvariant() } else { '' }
+    $ciIsMsi  = @('msi','wix','burn') -contains $ciInstallerType
+    $ciIsMsix = @('msix','appx') -contains $ciInstallerType
+    $ciMarkerLeaf = ($PackageId -replace '[^A-Za-z0-9_.-]', '_')
+    if ($offlineMetadata -and $offlineMetadata.productCode -and $ciIsMsi) {
         $detectionRule = @{
             '@odata.type' = '#microsoft.graph.win32LobAppProductCodeRule'
             ruleType = 'detection'
             productCode = [string]$offlineMetadata.productCode
             productVersionOperator = 'notConfigured'
+        }
+    } elseif ($offlineMetadata -and $Version -and (-not $ciIsMsi) -and (-not $ciIsMsix)) {
+        $detectionRule = @{
+            '@odata.type' = '#microsoft.graph.win32LobAppRegistryRule'
+            ruleType = 'detection'
+            keyPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Vanguard\Detection\$ciMarkerLeaf"
+            valueName = 'Version'
+            operationType = 'version'
+            operator = 'greaterThanOrEqual'
+            comparisonValue = [string]$Version
+            check32BitOn64System = $false
         }
     } else {
         $detectionRule = @{
@@ -464,6 +523,59 @@ try {
             }
         }
     }
+    if (-not [string]::IsNullOrWhiteSpace($ReturnCodesJson)) {
+        try {
+            $parsedReturnCodes = @($ReturnCodesJson | ConvertFrom-Json)
+            $customReturnCodes = @()
+            $seenReturnCodes = [System.Collections.Generic.HashSet[int]]::new()
+            $allowedReturnCodeTypes = @('success','softReboot','hardReboot','retry','failed')
+            foreach ($entry in $parsedReturnCodes) {
+                if ($null -eq $entry.returnCode -or -not ([string]$entry.returnCode -match '^-?\d+$')) {
+                    throw "Return code must be an integer."
+                }
+                $code = [int]$entry.returnCode
+                $type = [string]$entry.type
+                if ($allowedReturnCodeTypes -notcontains $type) {
+                    throw "Unsupported return-code type '$type'."
+                }
+                if ($seenReturnCodes.Add($code)) {
+                    $customReturnCodes += ,(@{ returnCode = $code; type = $type })
+                }
+            }
+            if ($customReturnCodes.Count -eq 0) {
+                throw "At least one valid return code is required."
+            }
+            $returnCodes = $customReturnCodes
+        } catch {
+            throw "ReturnCodesJson is invalid: $($_.Exception.Message)"
+        }
+    }
+
+    $requirementRules = @()
+    if (-not [string]::IsNullOrWhiteSpace($RequirementRulesJson)) {
+        try {
+            $requirementRules = @($RequirementRulesJson | ConvertFrom-Json)
+            foreach ($rule in $requirementRules) {
+                if ($null -eq $rule -or -not $rule.'@odata.type') {
+                    throw "Every requirement rule needs an @odata.type."
+                }
+            }
+        } catch {
+            throw "RequirementRulesJson is invalid: $($_.Exception.Message)"
+        }
+    }
+
+    $minimumSupportedOperatingSystem = $null
+    if (-not [string]::IsNullOrWhiteSpace($MinimumSupportedOperatingSystemJson)) {
+        try {
+            $minimumSupportedOperatingSystem = $MinimumSupportedOperatingSystemJson | ConvertFrom-Json
+            if ($null -eq $minimumSupportedOperatingSystem -or $minimumSupportedOperatingSystem -is [array]) {
+                throw "Expected a JSON object."
+            }
+        } catch {
+            throw "MinimumSupportedOperatingSystemJson is invalid: $($_.Exception.Message)"
+        }
+    }
 
     $appData = @{
         '@odata.type' = '#microsoft.graph.win32LobApp'
@@ -478,7 +590,7 @@ try {
         installExperience = @{
             '@odata.type' = '#microsoft.graph.win32LobAppInstallExperience'
             runAsAccount = $InstallContext
-            deviceRestartBehavior = 'basedOnReturnCode'
+            deviceRestartBehavior = $RestartBehavior
         }
         applicableArchitectures = (Resolve-ApplicableArchitectures -Value $Architecture)
         minimumSupportedWindowsRelease = '1607'
@@ -486,12 +598,35 @@ try {
         returnCodes = $returnCodes
         notes = $notes
     }
+    if ($requirementRules.Count -gt 0) {
+        $appData.requirementRules = $requirementRules
+    }
+    if ($MaxRunTimeInMinutes -gt 0) {
+        $appData.installExperience.maxRunTimeInMinutes = $MaxRunTimeInMinutes
+    }
+    if ($minimumSupportedOperatingSystem) {
+        [void]$appData.Remove('minimumSupportedWindowsRelease')
+        $appData.minimumSupportedOperatingSystem = $minimumSupportedOperatingSystem
+    }
+    # Optional Intune app metadata from the upload wizard (Step 3). These are
+    # standard mobileApp properties; only send the ones the operator set.
+    if ($Developer) { $appData.developer = $Developer }
+    if ($Owner) { $appData.owner = $Owner }
+    if ($InformationUrl) { $appData.informationUrl = $InformationUrl }
+    if ($PrivacyInformationUrl) { $appData.privacyInformationUrl = $PrivacyInformationUrl }
     $iconPayload = Convert-AppIconBase64ToPayload -Value $AppIconBase64
     if ($iconPayload) {
         $appData.largeIcon = $iconPayload
     }
 
-    $app = Invoke-GraphJson -Method POST -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps" -Body $appData
+    # requirementRules and maxRunTimeInMinutes are beta-only today. Keep the
+    # remaining upload/content API calls on the configured v1.0 endpoint, but
+    # create the app shell through beta when one of those opt-in fields is set.
+    $appCreateApiUrl = $IntuneApiUrl
+    if (($requirementRules.Count -gt 0 -or $MaxRunTimeInMinutes -gt 0 -or $minimumSupportedOperatingSystem) -and $appCreateApiUrl -match '/v1\.0$') {
+        $appCreateApiUrl = $appCreateApiUrl -replace '/v1\.0$', '/beta'
+    }
+    $app = Invoke-GraphJson -Method POST -Uri "$appCreateApiUrl/deviceAppManagement/mobileApps" -Body $appData
     $appId = [string]$app.id
     $appDisplayName = [string]$app.displayName
     Write-Host "Created Win32 application shell: $appDisplayName (ID: $appId)"
@@ -523,6 +658,51 @@ try {
         '@odata.type' = '#microsoft.graph.win32LobApp'
         committedContentVersion = $contentVersionId
     } | Out-Null
+
+    if (
+        -not [string]::IsNullOrWhiteSpace($CategoryIdsJson) -or
+        -not [string]::IsNullOrWhiteSpace($CategoryNamesJson)
+    ) {
+        try {
+            $categoryIds = @()
+            if (-not [string]::IsNullOrWhiteSpace($CategoryIdsJson)) {
+                $categoryIds += @($CategoryIdsJson | ConvertFrom-Json) |
+                    ForEach-Object { [string]$_ } |
+                    Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+            }
+            if (-not [string]::IsNullOrWhiteSpace($CategoryNamesJson)) {
+                $wantedNames = @($CategoryNamesJson | ConvertFrom-Json) |
+                    ForEach-Object { ([string]$_).Trim() } |
+                    Where-Object { $_ }
+                $availableResponse = Invoke-GraphJson `
+                    -Method GET `
+                    -Uri "$IntuneApiUrl/deviceAppManagement/mobileAppCategories?`$top=999"
+                $available = @($availableResponse.value)
+                foreach ($wantedName in $wantedNames) {
+                    $match = $available | Where-Object {
+                        ([string]$_.displayName).Equals($wantedName, [StringComparison]::OrdinalIgnoreCase)
+                    } | Select-Object -First 1
+                    if (-not $match -or -not $match.id) {
+                        throw "Company Portal category '$wantedName' does not exist in the target tenant."
+                    }
+                    $categoryIds += [string]$match.id
+                }
+            }
+            $categoryIds = @($categoryIds | Select-Object -Unique)
+            foreach ($categoryId in $categoryIds) {
+                $escapedCategoryId = [Uri]::EscapeDataString($categoryId)
+                Invoke-GraphJson `
+                    -Method POST `
+                    -Uri "$IntuneApiUrl/deviceAppManagement/mobileApps/$appId/categories/`$ref" `
+                    -Body @{ '@odata.id' = "$IntuneApiUrl/deviceAppManagement/mobileAppCategories/$escapedCategoryId" } | Out-Null
+            }
+            if ($categoryIds.Count -gt 0) {
+                Write-Host "Assigned $($categoryIds.Count) Company Portal categor$(if ($categoryIds.Count -eq 1) { 'y' } else { 'ies' })."
+            }
+        } catch {
+            throw "Company Portal categories could not be applied: $($_.Exception.Message)"
+        }
+    }
 
     Write-Host "Successfully uploaded application content: $appDisplayName (ID: $appId)"
     Set-WorkflowOutput -Name "app_id" -Value $appId
