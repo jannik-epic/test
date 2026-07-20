@@ -438,17 +438,11 @@ catch
 
 try
 {
-    # Import any extensions shipped alongside the module before deploying.
-    Get-ChildItem -LiteralPath `$PSScriptRoot -Directory | & {
-        process
-        {
-            if (`$_.Name -match 'PSAppDeployToolkit\..+`$')
-            {
-                Get-ChildItem -LiteralPath `$_.FullName -Recurse -File | Unblock-File -ErrorAction Ignore
-                Import-Module -Name `$_.FullName -Force
-            }
-        }
-    }
+    # Vanguard-generated packages only use commands from the core PSADT module.
+    # Loading optional extension modules here can run third-party initialization
+    # hooks before the deployment function starts and has caused otherwise valid
+    # packages to hang in unattended validation.
+    Write-ADTLogEntry -Message 'Vanguard uses core PSADT commands; optional extensions are not loaded.' -Severity 1
 
     & "`$(`$adtSession.DeploymentType)-ADTDeployment"
     Close-ADTSession
