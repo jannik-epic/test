@@ -1,0 +1,32 @@
+{
+  "@odata.type": "#microsoft.graph.windowsIdentityProtectionConfiguration",
+  "id": "26c59561-8888-417d-90cf-d588c221629e",
+  "lastModifiedDateTime": "2026-07-08T09:22:33.9841491Z",
+  "roleScopeTagIds": [
+    "0"
+  ],
+  "supportsScopeTags": true,
+  "deviceManagementApplicabilityRuleOsEdition": null,
+  "deviceManagementApplicabilityRuleOsVersion": null,
+  "deviceManagementApplicabilityRuleDeviceMode": null,
+  "createdDateTime": "2026-07-08T09:22:33.9841491Z",
+  "description": "momentum:e2e — inert Windows Hello for Business pilot profile; intentionally created WITHOUT assignments so it applies to no device or user. Created by Momentum blueprint windows-hello-for-business; safe to delete.",
+  "displayName": "Momentum E2E — WHfB pilot profile",
+  "version": 1,
+  "useSecurityKeyForSignin": false,
+  "enhancedAntiSpoofingForFacialFeaturesEnabled": false,
+  "pinMinimumLength": null,
+  "pinMaximumLength": null,
+  "pinUppercaseCharactersUsage": "blocked",
+  "pinLowercaseCharactersUsage": "blocked",
+  "pinSpecialCharactersUsage": "blocked",
+  "pinExpirationInDays": null,
+  "pinPreviousBlockCount": null,
+  "pinRecoveryEnabled": false,
+  "securityDeviceRequired": false,
+  "unlockWithBiometricsEnabled": false,
+  "useCertificatesForOnPremisesAuthEnabled": false,
+  "windowsHelloForBusinessBlocked": null,
+  "assignments@odata.context": "https://graph.microsoft.com/beta/$metadata#deviceManagement/deviceConfigurations('26c59561-8888-417d-90cf-d588c221629e')/microsoft.graph.windowsIdentityProtectionConfiguration/assignments",
+  "assignments": []
+}

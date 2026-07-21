@@ -1,0 +1,43 @@
+{
+  "id": "e5ddcedf-c492-4d9a-8f56-9d99be9dd835",
+  "appId": "eceb544b-4314-4d2c-9da1-848079c2fceb",
+  "displayName": "Work IQ Consumer - JayRHa Badge",
+  "signInAudience": "AzureADMyOrg",
+  "createdDateTime": "2026-07-20T18:25:31Z",
+  "identifierUris": [],
+  "web": {
+    "homePageUrl": null,
+    "logoutUrl": null,
+    "redirectUris": [
+      "http://localhost:8765/callback"
+    ],
+    "implicitGrantSettings": {
+      "enableAccessTokenIssuance": false,
+      "enableIdTokenIssuance": false
+    },
+    "redirectUriSettings": [
+      {
+        "uri": "http://localhost:8765/callback",
+        "index": null
+      }
+    ]
+  },
+  "spa": {
+    "redirectUris": []
+  },
+  "publicClient": {
+    "redirectUris": []
+  },
+  "requiredResourceAccess": [
+    {
+      "resourceAppId": "fdcc1f02-fc51-4226-8753-f668596af7f7",
+      "resourceAccess": [
+        {
+          "id": "0b1715fd-f4bf-4c63-b16d-5be31f9847c2",
+          "type": "Scope"
+        }
+      ]
+    }
+  ],
+  "appRoles": []
+}

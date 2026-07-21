@@ -1,0 +1,13 @@
+{
+  "id": "b31fadcd-e7a6-4863-a14f-86a3a4dafc3a",
+  "displayName": "All Company",
+  "description": null,
+  "mailEnabled": true,
+  "securityEnabled": false,
+  "mailNickname": "AllCompany.38984474625.hmezkhif",
+  "groupTypes": [
+    "Unified"
+  ],
+  "visibility": "Public",
+  "createdDateTime": "2026-07-06T03:26:16Z"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "117bb957-fd60-4cda-9148-14e4497eac66",
+  "appId": "b8122eca-aac5-4f4b-81cb-cb3c8475c454",
+  "displayName": "gh-foundry-evals-demo",
+  "signInAudience": "AzureADMyOrg",
+  "createdDateTime": "2026-07-16T17:27:55Z",
+  "identifierUris": [],
+  "web": {
+    "homePageUrl": null,
+    "logoutUrl": null,
+    "redirectUris": [],
+    "implicitGrantSettings": {
+      "enableAccessTokenIssuance": false,
+      "enableIdTokenIssuance": false
+    },
+    "redirectUriSettings": []
+  },
+  "spa": {
+    "redirectUris": []
+  },
+  "publicClient": {
+    "redirectUris": []
+  },
+  "requiredResourceAccess": [],
+  "appRoles": []
+}

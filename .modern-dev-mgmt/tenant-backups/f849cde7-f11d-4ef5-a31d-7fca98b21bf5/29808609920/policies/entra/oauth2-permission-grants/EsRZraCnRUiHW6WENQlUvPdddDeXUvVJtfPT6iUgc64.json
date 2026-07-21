@@ -1,0 +1,8 @@
+{
+  "clientId": "ad59c412-a7a0-4845-875b-a584350954bc",
+  "consentType": "AllPrincipals",
+  "id": "EsRZraCnRUiHW6WENQlUvPdddDeXUvVJtfPT6iUgc64",
+  "principalId": null,
+  "resourceId": "37745df7-5297-49f5-b5f3-d3ea252073ae",
+  "scope": " Application.ReadWrite.All DelegatedPermissionGrant.ReadWrite.All offline_access profile openid"
+}
