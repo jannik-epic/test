@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "restorePlanId": "dd0d74b5-7b20-4da6-afe5-ac1649fd38d8",
+  "tenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+  "backupId": "30335402933",
+  "backupRef": ".modern-dev-mgmt/tenant-backups/f849cde7-f11d-4ef5-a31d-7fca98b21bf5/30335402933",
+  "mode": "dry_run",
+  "conflictStrategy": "create_new",
+  "includeAssignments": true,
+  "includeGroups": true,
+  "policies": [
+    {
+      "backupPolicyId": "81d36ad2-4e01-4065-97e2-f933177b1473",
+      "policyType": "ConditionalAccessPolicy",
+      "path": "policies/conditional-access/policies/81d36ad2-4e01-4065-97e2-f933177b1473.json",
+      "assignments": "selected",
+      "groups": "map-or-create"
+    }
+  ]
+}

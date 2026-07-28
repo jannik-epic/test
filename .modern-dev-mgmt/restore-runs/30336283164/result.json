@@ -1,0 +1,15 @@
+{
+  "skipped": [],
+  "applied": [
+    {
+      "backupPolicyId": "81d36ad2-4e01-4065-97e2-f933177b1473",
+      "policyType": "ConditionalAccessPolicy",
+      "path": "policies/conditional-access/policies/81d36ad2-4e01-4065-97e2-f933177b1473.json",
+      "status": "planned",
+      "targetEndpoint": "https://graph.microsoft.com/beta/identity/conditionalAccess/policies"
+    }
+  ],
+  "deferred": [],
+  "warnings": [],
+  "failed": []
+}
