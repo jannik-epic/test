@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-03T02:04:01Z",
+  "endDateTime": "2026-08-02T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T17:43:52.413Z",
+  "title": "Roadmap information for Microsoft Copilot Studio and agents transitioning to the Microsoft 365 Roadmap",
+  "id": "MC1413298",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

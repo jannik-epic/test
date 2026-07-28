@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-08T22:45:01Z",
+  "endDateTime": "2026-11-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-17T21:10:26.893Z",
+  "title": "(Updated) Microsoft Purview: Data loss prevention inline controls for prompts in Microsoft Foundry apps and agents",
+  "id": "MC1304291",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

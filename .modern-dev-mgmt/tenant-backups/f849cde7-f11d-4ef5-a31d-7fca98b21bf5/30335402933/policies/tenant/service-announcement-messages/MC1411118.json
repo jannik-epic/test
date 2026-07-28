@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T13:08:32Z",
+  "endDateTime": "2026-08-01T13:08:32Z",
+  "lastModifiedDateTime": "2026-07-01T13:10:51.467Z",
+  "title": "Power Automate - View machine and flow utilization in dashboards",
+  "id": "MC1411118",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Power Automate"
+  ]
+}

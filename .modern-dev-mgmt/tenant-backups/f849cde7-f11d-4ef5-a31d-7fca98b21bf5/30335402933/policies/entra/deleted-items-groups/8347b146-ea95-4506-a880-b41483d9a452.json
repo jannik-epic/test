@@ -1,0 +1,41 @@
+{
+  "id": "8347b146-ea95-4506-a880-b41483d9a452",
+  "deletedDateTime": "2026-07-03T09:26:53Z",
+  "classification": null,
+  "createdDateTime": "2026-07-03T09:25:12Z",
+  "creationOptions": [],
+  "description": "momentum:e2e — write slice for blueprint ms-teams-project-rooms; safe to delete",
+  "displayName": "Momentum E2E — Project Room Pilot",
+  "expirationDateTime": null,
+  "groupTypes": [
+    "Unified"
+  ],
+  "infoCatalogs": [],
+  "isAssignableToRole": null,
+  "mail": "momentumE2eProjectRoom@ModernDevMgmt.onmicrosoft.com",
+  "mailEnabled": true,
+  "mailNickname": "momentumE2eProjectRoom",
+  "membershipRule": null,
+  "membershipRuleProcessingState": null,
+  "onPremisesDomainName": null,
+  "onPremisesLastSyncDateTime": null,
+  "onPremisesNetBiosName": null,
+  "onPremisesSamAccountName": null,
+  "onPremisesSecurityIdentifier": null,
+  "onPremisesSyncEnabled": null,
+  "preferredDataLocation": null,
+  "preferredLanguage": null,
+  "proxyAddresses": [
+    "SMTP:momentumE2eProjectRoom@ModernDevMgmt.onmicrosoft.com"
+  ],
+  "renewedDateTime": "2026-07-03T09:25:12Z",
+  "resourceBehaviorOptions": [],
+  "resourceProvisioningOptions": [],
+  "securityEnabled": false,
+  "securityIdentifier": "S-1-12-1-2202513734-1158081173-347373736-1386535299",
+  "theme": null,
+  "uniqueName": null,
+  "visibility": "Private",
+  "onPremisesProvisioningErrors": [],
+  "serviceProvisioningErrors": []
+}

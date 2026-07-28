@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-30T11:40:58Z",
+  "endDateTime": "2026-07-30T11:40:58Z",
+  "lastModifiedDateTime": "2026-06-30T11:44:57.307Z",
+  "title": "Dynamics 365 Sales - Deploy multiple Sales Qualification Agents in a single environment",
+  "id": "MC1409975",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

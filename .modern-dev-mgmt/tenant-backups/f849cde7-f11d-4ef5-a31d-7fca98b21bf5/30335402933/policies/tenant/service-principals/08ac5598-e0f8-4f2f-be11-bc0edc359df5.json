@@ -1,0 +1,12 @@
+{
+  "id": "08ac5598-e0f8-4f2f-be11-bc0edc359df5",
+  "appId": "24b2c2bc-4e48-4b69-9c88-33f4cd04c867",
+  "displayName": "Planner Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

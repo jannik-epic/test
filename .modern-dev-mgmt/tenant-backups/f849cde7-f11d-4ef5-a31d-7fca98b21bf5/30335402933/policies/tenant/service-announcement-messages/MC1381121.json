@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-05T22:44:55Z",
+  "endDateTime": "2026-09-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-19T23:46:30.79Z",
+  "title": "(Updated) Microsoft Purview | Endpoint Data Loss Prevention: Policy sync and device health AI skill",
+  "id": "MC1381121",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

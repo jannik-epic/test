@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T13:45:35Z",
+  "endDateTime": "2026-08-15T13:45:35Z",
+  "lastModifiedDateTime": "2026-07-15T13:47:26.897Z",
+  "title": "Power Platform - Evaluation Tab in AgentOps Hub",
+  "id": "MC1428628",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Power Platform"
+  ]
+}

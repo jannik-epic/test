@@ -1,0 +1,13 @@
+{
+  "@odata.type": "#microsoft.graph.agentIdentityBlueprintPrincipal",
+  "id": "04dba3e3-1b08-4a3e-b71a-1032802f835a",
+  "appId": "b8c0f561-b592-4c5f-831d-e05c0a040589",
+  "displayName": "Intune Vulnerability Remediation Agent",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

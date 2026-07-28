@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-24T22:28:15Z",
+  "endDateTime": "2026-08-27T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-24T22:28:21.39Z",
+  "title": "Update to Microsoft Enterprise Content Delivery Network (eCDN) analytics data retention (360 days to 180 days)",
+  "id": "MC1403404",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

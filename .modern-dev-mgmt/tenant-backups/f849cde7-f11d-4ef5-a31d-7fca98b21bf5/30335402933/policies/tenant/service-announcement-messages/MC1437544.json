@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-23T21:16:52Z",
+  "endDateTime": "2026-10-23T23:59:00Z",
+  "lastModifiedDateTime": "2026-07-23T21:18:06.297Z",
+  "title": "Dynamics 365 Contact Center - Information regarding the end of support for Customer Intent Agent in Voice",
+  "id": "MC1437544",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

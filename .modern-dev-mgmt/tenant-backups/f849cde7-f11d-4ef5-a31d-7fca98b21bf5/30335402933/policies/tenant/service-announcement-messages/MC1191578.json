@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2025-12-02T20:55:40Z",
+  "endDateTime": "2026-11-02T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-10T22:14:17.51Z",
+  "title": "(Updated) Update to EWS Access for Kiosk / Frontline Worker Licenses",
+  "id": "MC1191578",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Exchange Online"
+  ]
+}

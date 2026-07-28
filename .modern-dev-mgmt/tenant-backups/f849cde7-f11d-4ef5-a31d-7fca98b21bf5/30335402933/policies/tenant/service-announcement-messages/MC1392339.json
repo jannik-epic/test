@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-15T17:51:54Z",
+  "endDateTime": "2026-08-31T17:51:00Z",
+  "lastModifiedDateTime": "2026-06-15T17:55:30.653Z",
+  "title": "Dynamics 365 Customer Service - Group Workforce Engagement Artifacts with Planning Groups",
+  "id": "MC1392339",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

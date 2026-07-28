@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-04-16T21:19:09Z",
+  "endDateTime": "2026-11-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T18:28:33.273Z",
+  "title": "(Updated) General Availability: Microsoft Entra passkeys on Windows",
+  "id": "MC1282568",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "65d47f25",
+  "title": "Attack Surface: CVE-2022-3602 - OpenSSL 3 Buffer Overflow on Certificate Validation of Email Address",
+  "createdDateTime": "2022-11-01T09:48:51Z",
+  "lastUpdatedDateTime": "2022-11-01T14:19:01.29Z",
+  "isFeatured": false
+}

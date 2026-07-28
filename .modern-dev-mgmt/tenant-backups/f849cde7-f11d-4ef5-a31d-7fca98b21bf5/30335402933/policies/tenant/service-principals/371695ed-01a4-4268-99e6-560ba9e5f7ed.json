@@ -1,0 +1,11 @@
+{
+  "id": "371695ed-01a4-4268-99e6-560ba9e5f7ed",
+  "appId": "a0e1e353-1a3e-42cf-a8ea-3a9746eec58c",
+  "displayName": "Microsoft AppSource",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableRequestingTenantedPassthroughTokens",
+    "disableAcceptingTenantedPassthroughTokens"
+  ]
+}

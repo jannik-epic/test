@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-27T22:42:45Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-14T16:48:51.003Z",
+  "title": "(Updated) Assign open shifts in Microsoft Teams Shifts",
+  "id": "MC1324280",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

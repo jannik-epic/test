@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:52:47Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-13T17:18:12.373Z",
+  "title": "Microsoft Outlook for iOS and Android: Clearer Copilot availability in multi-account experiences",
+  "id": "MC1423116",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Exchange Online"
+  ]
+}

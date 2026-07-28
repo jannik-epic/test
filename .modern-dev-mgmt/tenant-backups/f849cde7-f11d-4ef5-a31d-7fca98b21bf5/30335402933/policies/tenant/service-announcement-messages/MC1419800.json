@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-07T22:34:16Z",
+  "endDateTime": "2026-10-05T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T22:34:48.7Z",
+  "title": "SharePoint button web part: Add custom Copilot in SharePoint prompts or start Power Automate flows",
+  "id": "MC1419800",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online"
+  ]
+}

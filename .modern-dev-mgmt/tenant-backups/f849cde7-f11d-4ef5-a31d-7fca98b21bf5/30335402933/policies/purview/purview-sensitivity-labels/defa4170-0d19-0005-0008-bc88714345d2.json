@@ -1,0 +1,33 @@
+{
+  "id": "defa4170-0d19-0005-0008-bc88714345d2",
+  "name": "Trusted People",
+  "description": "",
+  "color": "",
+  "sensitivity": 5,
+  "tooltip": "Trusted People",
+  "isActive": true,
+  "isAppliable": true,
+  "contentFormats": [
+    "file",
+    "email"
+  ],
+  "hasProtection": true,
+  "parent@odata.context": "https://graph.microsoft.com/beta/$metadata#security/informationProtection/sensitivityLabels('defa4170-0d19-0005-0008-bc88714345d2')/parent/$entity",
+  "parent": {
+    "id": "defa4170-0d19-0005-0005-bc88714345d2",
+    "name": "Confidential",
+    "description": "",
+    "color": "",
+    "sensitivity": 5,
+    "tooltip": "Confidential",
+    "isActive": false,
+    "isAppliable": false,
+    "contentFormats": [
+      "file",
+      "email"
+    ],
+    "hasProtection": false,
+    "parent@odata.context": "https://graph.microsoft.com/beta/$metadata#security/informationProtection/sensitivityLabels('defa4170-0d19-0005-0008-bc88714345d2')/parent/parent/$entity",
+    "parent": null
+  }
+}

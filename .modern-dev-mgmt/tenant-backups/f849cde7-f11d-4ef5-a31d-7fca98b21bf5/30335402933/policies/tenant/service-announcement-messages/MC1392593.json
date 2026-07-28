@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-15T23:06:00Z",
+  "endDateTime": "2026-08-31T23:06:00Z",
+  "lastModifiedDateTime": "2026-06-15T23:12:46.08Z",
+  "title": "Power Platform - Information regarding the retirement of the OneDrive (Consumer) Connector",
+  "id": "MC1392593",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Power Platform"
+  ]
+}

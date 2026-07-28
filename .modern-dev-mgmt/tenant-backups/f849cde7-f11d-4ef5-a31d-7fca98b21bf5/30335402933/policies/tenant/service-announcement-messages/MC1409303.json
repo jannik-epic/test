@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-06-29T22:05:28Z",
+  "endDateTime": "2026-09-29T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T17:21:27.027Z",
+  "title": "Microsoft Edge enforces screen capture restrictions for sensitivity-labeled PDFs in OneDrive and SharePoint",
+  "id": "MC1409303",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online",
+    "Microsoft OneDrive"
+  ]
+}

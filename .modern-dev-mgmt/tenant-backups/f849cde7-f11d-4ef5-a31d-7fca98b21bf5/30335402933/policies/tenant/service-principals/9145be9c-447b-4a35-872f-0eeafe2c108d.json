@@ -1,0 +1,12 @@
+{
+  "id": "9145be9c-447b-4a35-872f-0eeafe2c108d",
+  "appId": "ec32cc4e-a086-4860-b15c-7b9d98722d20",
+  "displayName": "SharePoint Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

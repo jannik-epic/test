@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-22T22:23:16Z",
+  "endDateTime": "2026-09-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-25T16:19:44.757Z",
+  "title": "(Updated) Interact with your favorite apps on Teams using Slash ( / ) Commands",
+  "id": "MC1319214",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

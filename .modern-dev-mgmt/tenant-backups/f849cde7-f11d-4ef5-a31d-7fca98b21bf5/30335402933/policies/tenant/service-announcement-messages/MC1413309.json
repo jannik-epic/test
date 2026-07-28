@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-07-03T02:09:29Z",
+  "endDateTime": "2026-08-02T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-03T02:10:12.477Z",
+  "title": "Microsoft Purview enforcing one capturing group limit for custom sensitive information types",
+  "id": "MC1413309",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite",
+    "Microsoft Purview"
+  ]
+}

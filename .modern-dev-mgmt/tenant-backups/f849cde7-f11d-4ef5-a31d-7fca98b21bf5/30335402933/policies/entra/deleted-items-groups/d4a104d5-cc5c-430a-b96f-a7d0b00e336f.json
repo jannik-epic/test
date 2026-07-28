@@ -1,0 +1,42 @@
+{
+  "id": "d4a104d5-cc5c-430a-b96f-a7d0b00e336f",
+  "deletedDateTime": "2026-07-03T09:29:20Z",
+  "classification": null,
+  "createdDateTime": "2026-07-03T09:27:54Z",
+  "creationOptions": [],
+  "description": "momentum:e2e — supporting write slice for blueprint sharepoint-governance-and-site-lifecycle; safe to delete",
+  "displayName": "Momentum E2E — SharePoint Governance Pilot",
+  "expirationDateTime": null,
+  "groupTypes": [
+    "Unified"
+  ],
+  "infoCatalogs": [],
+  "isAssignableToRole": null,
+  "mail": "momentumE2eSpGovPilot@ModernDevMgmt.onmicrosoft.com",
+  "mailEnabled": true,
+  "mailNickname": "momentumE2eSpGovPilot",
+  "membershipRule": null,
+  "membershipRuleProcessingState": null,
+  "onPremisesDomainName": null,
+  "onPremisesLastSyncDateTime": null,
+  "onPremisesNetBiosName": null,
+  "onPremisesSamAccountName": null,
+  "onPremisesSecurityIdentifier": null,
+  "onPremisesSyncEnabled": null,
+  "preferredDataLocation": null,
+  "preferredLanguage": null,
+  "proxyAddresses": [
+    "SPO:SPO_52ff211d-14b0-4dea-8125-7bab89d5b324@SPO_f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "SMTP:momentumE2eSpGovPilot@ModernDevMgmt.onmicrosoft.com"
+  ],
+  "renewedDateTime": "2026-07-03T09:27:54Z",
+  "resourceBehaviorOptions": [],
+  "resourceProvisioningOptions": [],
+  "securityEnabled": false,
+  "securityIdentifier": "S-1-12-1-3567322325-1124781148-3500634041-1865617072",
+  "theme": null,
+  "uniqueName": null,
+  "visibility": "Private",
+  "onPremisesProvisioningErrors": [],
+  "serviceProvisioningErrors": []
+}

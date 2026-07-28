@@ -1,0 +1,11 @@
+{
+  "id": "4",
+  "status": "active",
+  "displayName": "Exfiltration incident involving one user",
+  "createdDateTime": "2026-03-04T19:10:13.57Z",
+  "lastUpdateDateTime": "2026-03-04T20:26:31.12Z",
+  "assignedTo": null,
+  "classification": "unknown",
+  "determination": "unknown",
+  "severity": "low"
+}

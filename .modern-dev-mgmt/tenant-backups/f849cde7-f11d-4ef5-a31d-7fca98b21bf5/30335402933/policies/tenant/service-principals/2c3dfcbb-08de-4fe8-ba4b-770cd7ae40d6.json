@@ -1,0 +1,9 @@
+{
+  "@odata.type": "#microsoft.graph.agentIdentity",
+  "id": "2c3dfcbb-08de-4fe8-ba4b-770cd7ae40d6",
+  "appId": "2c3dfcbb-08de-4fe8-ba4b-770cd7ae40d6",
+  "displayName": "iqjayrha-ai-ubmxw2wvtvigs-iqjayrha-project-AgentIdentity",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": []
+}

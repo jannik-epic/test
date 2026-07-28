@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-07T02:06:54Z",
+  "endDateTime": "2026-09-05T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T02:07:57.86Z",
+  "title": "Action required: Retirement of EWS-based Personal Bookings controls (Microsoft Bookings)",
+  "id": "MC1418559",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Bookings"
+  ]
+}

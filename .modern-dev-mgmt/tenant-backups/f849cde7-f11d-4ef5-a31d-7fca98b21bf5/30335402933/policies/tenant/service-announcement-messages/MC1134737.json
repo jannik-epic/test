@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2025-08-13T23:09:57Z",
+  "endDateTime": "2026-08-31T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T16:18:11.313Z",
+  "title": "(Updated) Microsoft Teams: Private channels increased limits and transition to group compliance",
+  "id": "MC1134737",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

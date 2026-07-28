@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-02-10T23:10:21Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-15T17:21:51.947Z",
+  "title": "(Updated) Microsoft Teams: Voice tethering",
+  "id": "MC1230459",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

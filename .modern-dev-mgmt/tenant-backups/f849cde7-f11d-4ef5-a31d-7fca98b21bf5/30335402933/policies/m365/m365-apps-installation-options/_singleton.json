@@ -1,0 +1,14 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#admin/microsoft365Apps/installationOptions/$entity",
+  "updateChannel": "current",
+  "appsForWindows": {
+    "isMicrosoft365AppsEnabled": true,
+    "isProjectEnabled": true,
+    "isSkypeForBusinessEnabled": true,
+    "isVisioEnabled": true
+  },
+  "appsForMac": {
+    "isMicrosoft365AppsEnabled": true,
+    "isSkypeForBusinessEnabled": true
+  }
+}

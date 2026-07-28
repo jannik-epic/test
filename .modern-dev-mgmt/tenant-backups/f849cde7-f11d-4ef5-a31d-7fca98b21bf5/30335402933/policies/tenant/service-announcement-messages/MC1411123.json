@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T13:21:41Z",
+  "endDateTime": "2026-08-01T13:21:41Z",
+  "lastModifiedDateTime": "2026-07-01T13:23:19.72Z",
+  "title": "Power Automate - Export work queue items to CSV",
+  "id": "MC1411123",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Power Automate"
+  ]
+}

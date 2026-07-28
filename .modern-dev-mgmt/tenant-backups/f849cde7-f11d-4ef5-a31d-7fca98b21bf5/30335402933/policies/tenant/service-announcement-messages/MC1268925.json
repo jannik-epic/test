@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-04-02T20:58:31Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-21T18:35:27.817Z",
+  "title": "(Updated) Microsoft Teams: Enhanced media quality for Direct Guest Join",
+  "id": "MC1268925",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

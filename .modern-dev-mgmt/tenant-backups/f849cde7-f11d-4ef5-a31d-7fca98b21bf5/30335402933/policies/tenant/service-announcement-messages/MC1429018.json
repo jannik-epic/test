@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T21:27:20Z",
+  "endDateTime": "2026-10-27T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T21:27:37.067Z",
+  "title": "Microsoft Teams: AI meeting archive file generation",
+  "id": "MC1429018",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

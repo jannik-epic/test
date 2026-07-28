@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-07-20T22:23:02Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:23:11.507Z",
+  "title": "Use OneDrive-stored user-defined custom skills in PowerPoint Copilot (Mac)",
+  "id": "MC1434581",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps",
+    "Microsoft 365 Copilot Chat"
+  ]
+}

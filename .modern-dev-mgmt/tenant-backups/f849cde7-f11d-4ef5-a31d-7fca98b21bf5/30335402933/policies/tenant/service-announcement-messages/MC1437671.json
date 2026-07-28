@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-23T22:39:23Z",
+  "endDateTime": "2026-11-23T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-23T22:39:34.487Z",
+  "title": "Microsoft Entra: Passwordless password change in My Sign-Ins",
+  "id": "MC1437671",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

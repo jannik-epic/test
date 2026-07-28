@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T23:14:33Z",
+  "endDateTime": "2027-08-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-01T23:14:46.843Z",
+  "title": "Remote Event Receivers in SharePoint Online will be retired",
+  "id": "MC1411726",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online"
+  ]
+}

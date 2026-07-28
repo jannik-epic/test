@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-21T22:20:11Z",
+  "endDateTime": "2026-12-20T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-23T17:34:48.433Z",
+  "title": "Microsoft Entra ID: Retirement of custom CSS positioning properties in custom branding",
+  "id": "MC1435782",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-30T12:00:49Z",
+  "endDateTime": "2026-07-30T12:00:49Z",
+  "lastModifiedDateTime": "2026-06-30T12:01:39.867Z",
+  "title": "Dynamics 365 Sales - Chat about sales opportunity agent insights from inside Sales agent",
+  "id": "MC1409981",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

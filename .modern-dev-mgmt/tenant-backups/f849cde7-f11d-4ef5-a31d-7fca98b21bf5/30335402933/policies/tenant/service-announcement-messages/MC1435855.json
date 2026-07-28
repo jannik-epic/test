@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-07-22T00:54:11Z",
+  "endDateTime": "2026-08-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-22T00:54:48.943Z",
+  "title": "Microsoft Purview: Reverting single capturing group enforcement for custom SIT regex",
+  "id": "MC1435855",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite",
+    "Microsoft Purview"
+  ]
+}

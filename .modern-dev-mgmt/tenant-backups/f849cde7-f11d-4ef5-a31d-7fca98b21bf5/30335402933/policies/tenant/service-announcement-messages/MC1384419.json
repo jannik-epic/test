@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-08T22:17:29Z",
+  "endDateTime": "2026-10-07T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-08T22:18:04.31Z",
+  "title": "Improved PDF preview in Outlook for iOS",
+  "id": "MC1384419",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Exchange Online"
+  ]
+}

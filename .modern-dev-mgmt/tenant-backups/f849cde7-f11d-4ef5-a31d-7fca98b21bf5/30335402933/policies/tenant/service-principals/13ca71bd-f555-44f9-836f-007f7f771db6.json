@@ -1,0 +1,11 @@
+{
+  "id": "13ca71bd-f555-44f9-836f-007f7f771db6",
+  "appId": "3b80cd3f-61ca-49b0-8d0f-7b6760e08705",
+  "displayName": "ZTNA Policy Service Graph Client ",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource"
+  ]
+}

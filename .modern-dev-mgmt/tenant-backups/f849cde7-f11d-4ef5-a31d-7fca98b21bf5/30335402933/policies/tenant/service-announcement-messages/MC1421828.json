@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T19:04:33Z",
+  "endDateTime": "2026-09-30T19:04:00Z",
+  "lastModifiedDateTime": "2026-07-09T19:05:55.327Z",
+  "title": "Dynamics 365 Customer Service - WEM in M365 Copilot for CSRs and Supervisors",
+  "id": "MC1421828",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-22T15:17:47Z",
+  "endDateTime": "2026-09-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:13:25.033Z",
+  "title": "(Updated) Microsoft Entra: Self-service password reset CAPTCHA protection updated",
+  "id": "MC1400824",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

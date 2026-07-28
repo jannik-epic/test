@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-20T22:24:44Z",
+  "endDateTime": "2026-09-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:24:54.973Z",
+  "title": "Microsoft 365 Copilot: Configure organization policy link for blocked Copilot Chat users",
+  "id": "MC1434583",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

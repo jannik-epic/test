@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:48:20Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T22:48:25.587Z",
+  "title": "Microsoft Entra: Improved restore experience for Authenticator passkeys on iOS",
+  "id": "MC1423108",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

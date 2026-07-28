@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-22T15:22:06Z",
+  "endDateTime": "2026-09-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-24T16:20:47.64Z",
+  "title": "(Updated) Microsoft Teams: Room optimization mode relocated to context-dependent option",
+  "id": "MC1400830",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-17T05:01:40Z",
+  "endDateTime": "2026-11-16T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-17T05:02:07.893Z",
+  "title": "Microsoft Purview: Insider Risk Management - Expanding note capabilities across alerts and cases",
+  "id": "MC1430534",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-09T22:20:27Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-09T22:20:44.17Z",
+  "title": "Microsoft Purview | Data Loss Prevention - Enriched Audit Data for Matched Rules in Exchange Online",
+  "id": "MC1385588",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

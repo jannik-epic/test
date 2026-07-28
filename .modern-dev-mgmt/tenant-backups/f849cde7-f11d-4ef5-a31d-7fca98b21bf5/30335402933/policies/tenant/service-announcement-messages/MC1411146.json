@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T13:40:09Z",
+  "endDateTime": "2026-08-01T13:40:09Z",
+  "lastModifiedDateTime": "2026-07-01T13:41:30.503Z",
+  "title": "Dynamics 365 Contact Center - Use enhanced customer-first direct callbacks",
+  "id": "MC1411146",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

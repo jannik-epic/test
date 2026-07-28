@@ -1,0 +1,12 @@
+{
+  "id": "2f0558c9-8483-4480-960d-b256ac04dc29",
+  "appId": "b0b2a2bb-6361-4549-a00c-a018417eb8e2",
+  "displayName": "Work IQ OneDrive MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

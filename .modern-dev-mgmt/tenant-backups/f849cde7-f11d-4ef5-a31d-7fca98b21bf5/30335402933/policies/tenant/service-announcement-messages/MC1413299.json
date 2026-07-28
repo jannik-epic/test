@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-03T02:04:38Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-03T02:04:44.287Z",
+  "title": "Custom templates in Microsoft Planner",
+  "id": "MC1413299",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Planner"
+  ]
+}

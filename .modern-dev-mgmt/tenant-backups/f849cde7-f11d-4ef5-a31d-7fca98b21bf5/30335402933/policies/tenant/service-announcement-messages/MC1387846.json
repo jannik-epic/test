@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-12T00:21:00Z",
+  "endDateTime": "2026-08-19T23:42:00Z",
+  "lastModifiedDateTime": "2026-06-12T00:21:26.743Z",
+  "title": "Dynamics 365 Customer Service - Enforce governance policy",
+  "id": "MC1387846",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

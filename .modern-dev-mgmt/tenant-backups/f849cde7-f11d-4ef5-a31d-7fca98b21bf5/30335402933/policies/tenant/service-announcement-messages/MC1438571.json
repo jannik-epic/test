@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-24T21:56:36Z",
+  "endDateTime": "2026-10-26T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-24T21:56:48.637Z",
+  "title": "Default visibility of additional profile card properties in Microsoft 365 profile cards",
+  "id": "MC1438571",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

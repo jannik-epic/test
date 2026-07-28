@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-24T22:27:11Z",
+  "endDateTime": "2026-10-24T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-24T22:27:24.69Z",
+  "title": "Plan for Change: Intune moving to support macOS 15 and higher later this year",
+  "id": "MC1403402",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Intune"
+  ]
+}

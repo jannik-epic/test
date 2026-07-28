@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T03:45:17.607Z",
+  "endDateTime": "2026-07-29T03:45:17.607Z",
+  "lastModifiedDateTime": "2026-07-15T03:45:18.74Z",
+  "title": "Updates available for Microsoft 365 Apps for all channels",
+  "id": "MC1428090",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

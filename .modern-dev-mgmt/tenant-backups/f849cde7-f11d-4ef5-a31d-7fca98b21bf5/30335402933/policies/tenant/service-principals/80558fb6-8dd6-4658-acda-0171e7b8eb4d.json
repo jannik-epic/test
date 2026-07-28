@@ -1,0 +1,12 @@
+{
+  "id": "80558fb6-8dd6-4658-acda-0171e7b8eb4d",
+  "appId": "02f0a7dc-fd55-4624-8d1b-0b15d2536e64",
+  "displayName": "Work IQ Calendar MCP Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-28T21:35:41Z",
+  "endDateTime": "2026-09-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-22T22:46:49.24Z",
+  "title": "(Updated) Microsoft 365 Copilot app: Simplified, chat-centered experience",
+  "id": "MC1325422",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "16197050-3e80-4586-af50-aa055d3ba39d",
+  "appId": "3e710f56-38f6-42a3-b32a-293205a5903c",
+  "displayName": "Microsoft 365 Admin MCP Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

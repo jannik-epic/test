@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-16T22:47:39Z",
+  "endDateTime": "2026-08-29T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T22:48:07.037Z",
+  "title": "Microsoft Teams: Graph API transcript access controls for administrators",
+  "id": "MC1393806",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

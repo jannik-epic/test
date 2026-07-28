@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:48:49Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T22:48:55.6Z",
+  "title": "Support for the “Get Diagnostics” feature visibility option within M365 Cloud Policy Service for Outlook Mobile and Mac",
+  "id": "MC1423109",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

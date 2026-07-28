@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-23T22:37:34Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-23T22:37:48.103Z",
+  "title": "Microsoft Outlook for iOS and Android: Insert signature images from OneDrive",
+  "id": "MC1437668",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Exchange Online"
+  ]
+}

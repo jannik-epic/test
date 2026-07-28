@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-16T11:51:03Z",
+  "endDateTime": "2026-08-16T11:51:00Z",
+  "lastModifiedDateTime": "2026-07-16T11:53:37.443Z",
+  "title": "Dynamics 365 Sales - Teams owned opportunities to be researched by Sales Opportunity Agent",
+  "id": "MC1429683",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

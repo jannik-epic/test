@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-20T23:44:20Z",
+  "endDateTime": "2026-09-03T23:44:00Z",
+  "lastModifiedDateTime": "2026-07-20T23:48:56.18Z",
+  "title": "Microsoft Power Platform governance and administration - Evaluation for AI Node",
+  "id": "MC1434634",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Power Platform"
+  ]
+}

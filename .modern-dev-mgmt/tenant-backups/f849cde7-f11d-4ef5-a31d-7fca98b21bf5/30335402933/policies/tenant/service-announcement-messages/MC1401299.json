@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-22T22:54:42Z",
+  "endDateTime": "2026-12-31T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-30T16:16:35.713Z",
+  "title": "(Updated) Automatic recording and transcription for Teams Call Queues",
+  "id": "MC1401299",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

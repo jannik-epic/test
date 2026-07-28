@@ -1,0 +1,11 @@
+{
+  "id": "bd11e231-3d1c-45b2-a502-e74fb21e57d5",
+  "appId": "632ec9eb-fad7-4cbd-993a-e72973ba2acc",
+  "displayName": "Spool-Resource-Provider",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationResource",
+    "disableLegacyUserImpersonationClient"
+  ]
+}

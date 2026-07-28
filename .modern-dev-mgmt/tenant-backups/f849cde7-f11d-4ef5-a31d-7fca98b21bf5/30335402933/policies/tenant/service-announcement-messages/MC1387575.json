@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-11T17:25:02Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T18:00:47.533Z",
+  "title": "(Updated) Microsoft Purview | Endpoint Data Loss Prevention: Scope Just-in-time audit by user or group",
+  "id": "MC1387575",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

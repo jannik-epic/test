@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-16T09:29:36Z",
+  "endDateTime": "2026-08-16T09:29:36Z",
+  "lastModifiedDateTime": "2026-07-16T09:30:55.12Z",
+  "title": "Dynamics 365 Project Operations - Manage exchange rate variances in cash advance transactions",
+  "id": "MC1429554",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

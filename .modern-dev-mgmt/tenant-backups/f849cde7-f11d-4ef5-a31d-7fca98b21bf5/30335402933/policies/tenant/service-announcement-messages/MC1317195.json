@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-05-20T23:10:10Z",
+  "endDateTime": "2026-08-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T17:40:27.68Z",
+  "title": "(Updated) Microsoft Copilot Notebooks: Introducing Infographics",
+  "id": "MC1317195",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps",
+    "Microsoft 365 Copilot Chat"
+  ]
+}

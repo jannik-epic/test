@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-15T22:11:46Z",
+  "endDateTime": "2026-12-01T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-15T22:12:06.383Z",
+  "title": "Microsoft Defender for Endpoint: Support for Amazon Linux 2 (ARM64) retiring October 31, 2026",
+  "id": "MC1392568",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Defender XDR"
+  ]
+}

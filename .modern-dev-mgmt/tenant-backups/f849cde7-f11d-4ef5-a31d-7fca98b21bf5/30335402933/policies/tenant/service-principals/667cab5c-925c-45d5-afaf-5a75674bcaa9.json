@@ -1,0 +1,12 @@
+{
+  "id": "667cab5c-925c-45d5-afaf-5a75674bcaa9",
+  "appId": "16b1878d-62c7-4009-aa25-68989d63bbad",
+  "displayName": "Work IQ Mail MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

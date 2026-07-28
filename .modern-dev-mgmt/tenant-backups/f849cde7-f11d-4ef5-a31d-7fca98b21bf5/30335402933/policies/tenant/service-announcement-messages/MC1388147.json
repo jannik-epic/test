@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-12T02:45:26Z",
+  "endDateTime": "2026-08-22T02:45:00Z",
+  "lastModifiedDateTime": "2026-06-12T02:51:38.563Z",
+  "title": "Power Platform admin center - Environment Group Rules Gallery",
+  "id": "MC1388147",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Power Platform"
+  ]
+}

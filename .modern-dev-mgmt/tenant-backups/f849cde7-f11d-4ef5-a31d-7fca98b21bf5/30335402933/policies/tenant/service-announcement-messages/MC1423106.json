@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:46:49Z",
+  "endDateTime": "2026-10-04T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T22:47:49.003Z",
+  "title": "Introducing cross-tenant message recall in Exchange Online",
+  "id": "MC1423106",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Exchange Online"
+  ]
+}

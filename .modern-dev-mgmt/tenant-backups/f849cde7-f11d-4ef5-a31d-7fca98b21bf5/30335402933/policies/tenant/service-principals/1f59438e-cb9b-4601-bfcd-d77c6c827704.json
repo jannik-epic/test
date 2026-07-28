@@ -1,0 +1,12 @@
+{
+  "id": "1f59438e-cb9b-4601-bfcd-d77c6c827704",
+  "appId": "ab7c82de-7946-4454-ac28-70249d17c95e",
+  "displayName": "Work IQ Copilot MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

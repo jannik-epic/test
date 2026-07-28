@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-14T22:17:43Z",
+  "endDateTime": "2026-09-27T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-14T22:17:50.82Z",
+  "title": "Network best practices for Teams town halls and live events with third‑party providers",
+  "id": "MC1427962",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

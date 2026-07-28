@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T03:52:05Z",
+  "endDateTime": "2026-08-09T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-09T03:52:19.473Z",
+  "title": "Microsoft Viva: GitHub Copilot spend and usage insights in Copilot Analytics",
+  "id": "MC1420991",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

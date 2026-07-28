@@ -1,0 +1,12 @@
+{
+  "id": "89227461-dab7-4349-9643-eb7f8025ab52",
+  "appId": "2dbeefeb-6462-48a4-abe6-1c4989699319",
+  "displayName": "Microsoft 365 Admin Center MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-08T23:12:17Z",
+  "endDateTime": "2026-08-27T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-13T17:18:47.253Z",
+  "title": "Viva Glint: Copilot-enhanced topic assignment for employee feedback comments",
+  "id": "MC1420897",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

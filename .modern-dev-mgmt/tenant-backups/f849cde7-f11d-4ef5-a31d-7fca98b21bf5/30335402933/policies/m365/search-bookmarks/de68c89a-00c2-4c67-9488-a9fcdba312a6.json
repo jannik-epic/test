@@ -1,0 +1,79 @@
+{
+  "displayName": "Azure Portal",
+  "description": "Build, manage, and monitor everything from simple web apps to complex cloud apps.",
+  "categories": [
+    "Microsoft suggests",
+    " Microsoft Recommends"
+  ],
+  "availabilityStartDateTime": null,
+  "availabilityEndDateTime": null,
+  "languageTags": [],
+  "platforms": [],
+  "powerAppIds": [],
+  "state": "published",
+  "isSuggested": false,
+  "groupIds": [],
+  "id": "de68c89a-00c2-4c67-9488-a9fcdba312a6",
+  "webUrl": "https://portal.azure.com/",
+  "lastModifiedDateTime": "2023-04-17T18:27:48Z",
+  "keywords": {
+    "keywords": [
+      "microsoft azure",
+      "azure"
+    ],
+    "reservedKeywords": [],
+    "matchSimilarKeywords": true
+  },
+  "targetedVariations": [
+    {
+      "displayName": "Azure-Portal",
+      "webUrl": null,
+      "description": "Erstellen, verwalten und überwachen Sie alles von einfachen Web-Apps bis hin zu komplexen Cloud-Apps.",
+      "languageTag": "de-de",
+      "platform": null
+    },
+    {
+      "displayName": null,
+      "webUrl": null,
+      "description": "Cree, administre y supervise todo, desde aplicaciones web sencillas hasta aplicaciones complejas en la nube.",
+      "languageTag": "es-es",
+      "platform": null
+    },
+    {
+      "displayName": "Portail Azure",
+      "webUrl": null,
+      "description": "Créez, gérez et surveillez tout, des applications web simples aux applications cloud complexes.",
+      "languageTag": "fr-fr",
+      "platform": null
+    },
+    {
+      "displayName": "Portale di Azure",
+      "webUrl": null,
+      "description": "Consente di creare, gestire e monitorare tutto, da semplici app Web ad app cloud complesse.",
+      "languageTag": "it-it",
+      "platform": null
+    },
+    {
+      "displayName": "Azure portal",
+      "webUrl": null,
+      "description": "単純な Web アプリから複雑なクラウド アプリまで、あらゆるものを構築、管理、監視します。",
+      "languageTag": "ja-jp",
+      "platform": null
+    },
+    {
+      "displayName": "Portal do Azure",
+      "webUrl": null,
+      "description": "Crie, gerencie e monitore tudo, desde aplicativos Web simples até aplicativos de nuvem complexos.",
+      "languageTag": "pt-br",
+      "platform": null
+    }
+  ],
+  "lastModifiedBy": {
+    "application": null,
+    "device": null,
+    "user": {
+      "displayName": "",
+      "id": ""
+    }
+  }
+}

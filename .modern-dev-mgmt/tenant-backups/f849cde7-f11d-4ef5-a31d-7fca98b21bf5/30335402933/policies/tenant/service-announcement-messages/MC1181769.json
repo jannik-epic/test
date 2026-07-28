@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2025-10-31T00:09:48Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-17T16:15:40.203Z",
+  "title": "Microsoft Purview: Integration with Entra GSA Internet Access to enable sensitive file filtering at the network layer",
+  "id": "MC1181769",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

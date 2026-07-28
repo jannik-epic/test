@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-17T05:05:30Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-17T05:05:43.637Z",
+  "title": "Microsoft Excel: Summarize text columns and generate categories with Copilot",
+  "id": "MC1430543",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

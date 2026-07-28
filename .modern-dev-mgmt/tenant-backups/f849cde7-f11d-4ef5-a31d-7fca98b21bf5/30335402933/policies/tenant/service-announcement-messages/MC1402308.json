@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-23T22:07:48Z",
+  "endDateTime": "2026-07-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-23T22:07:59.273Z",
+  "title": "Microsoft Teams: Speed dial improvements on Teams mobile",
+  "id": "MC1402308",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "7fce3a16-4b80-4449-a3ad-1c7f0762170a",
+  "appId": "7990d040-726a-4eff-8340-2c1e09fb60d3",
+  "displayName": "my-foundry-resource-jr/projects/my-foundry-project",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "AgentCreatedBy:Foundry",
+    "AgenticInstance"
+  ]
+}

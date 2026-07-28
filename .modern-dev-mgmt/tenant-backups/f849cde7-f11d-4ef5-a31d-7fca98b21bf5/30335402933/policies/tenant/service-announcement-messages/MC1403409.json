@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-24T22:30:53Z",
+  "endDateTime": "2026-08-24T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-24T22:31:07.36Z",
+  "title": "Required update for organizational authentication in Excel Power Query (Entra ID)",
+  "id": "MC1403409",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

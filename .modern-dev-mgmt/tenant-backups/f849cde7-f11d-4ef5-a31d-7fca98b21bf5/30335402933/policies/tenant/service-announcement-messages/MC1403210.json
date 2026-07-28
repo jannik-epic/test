@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-24T16:52:10Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-26T18:41:16.37Z",
+  "title": "Data Privacy: Microsoft Online Services Subprocessor Disclosure",
+  "id": "MC1403210",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:44:56Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-21T17:44:27.803Z",
+  "title": "(Updated) Copilot Notebooks now supports Markdown (.md) files as grounding sources",
+  "id": "MC1423103",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

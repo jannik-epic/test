@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-05T22:40:14Z",
+  "endDateTime": "2026-08-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-12T16:24:37.117Z",
+  "title": "(Updated) OneDrive: Retention enforcement for unlicensed OneDrive accounts",
+  "id": "MC1381110",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft OneDrive"
+  ]
+}

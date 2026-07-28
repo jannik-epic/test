@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-09T22:16:28Z",
+  "endDateTime": "2026-08-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-09T22:16:40.63Z",
+  "title": "Notifications Delivery Tracker for immediate Community announcements",
+  "id": "MC1385582",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

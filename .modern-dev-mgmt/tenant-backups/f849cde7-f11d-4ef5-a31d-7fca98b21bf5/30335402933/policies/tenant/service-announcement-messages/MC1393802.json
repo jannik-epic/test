@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-16T22:46:21Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T22:47:17.717Z",
+  "title": "Outlook for iOS and Android: Send Availability feature to be retired",
+  "id": "MC1393802",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Exchange Online"
+  ]
+}

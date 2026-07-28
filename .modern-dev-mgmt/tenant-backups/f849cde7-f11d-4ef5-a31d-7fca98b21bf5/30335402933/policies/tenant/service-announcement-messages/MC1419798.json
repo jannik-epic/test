@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-07T22:32:56Z",
+  "endDateTime": "2026-10-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:37:04.02Z",
+  "title": "(Updated) Microsoft Teams Rooms: Identify in-room participants with IntelliFrame people labels",
+  "id": "MC1419798",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

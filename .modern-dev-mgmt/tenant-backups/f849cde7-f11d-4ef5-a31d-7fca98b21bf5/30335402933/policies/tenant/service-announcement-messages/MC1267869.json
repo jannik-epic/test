@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-04-01T22:13:33Z",
+  "endDateTime": "2026-08-21T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T19:07:32.923Z",
+  "title": "Microsoft Purview compliance portal: Enforce DLP protection on new content before it’s saved",
+  "id": "MC1267869",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-25T21:40:27Z",
+  "endDateTime": "2026-08-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-13T16:58:14.433Z",
+  "title": "(Updated) Microsoft Viva: Copilot Analytics – Manager role license requirement update for team views",
+  "id": "MC1404310",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

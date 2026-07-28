@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-14T22:44:11Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-14T22:44:17.903Z",
+  "title": "Microsoft SharePoint: Restricted content discovery enhancements for Copilot and Microsoft 365 search",
+  "id": "MC1427972",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online"
+  ]
+}

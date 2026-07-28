@@ -1,0 +1,11 @@
+{
+  "id": "6",
+  "status": "redirected",
+  "displayName": "DLP-Block Credit Cards",
+  "createdDateTime": "2026-03-04T19:10:13.61Z",
+  "lastUpdateDateTime": "2026-03-04T19:15:23.8Z",
+  "assignedTo": null,
+  "classification": "unknown",
+  "determination": "unknown",
+  "severity": "low"
+}

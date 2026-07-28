@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:41:53Z",
+  "endDateTime": "2026-08-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T22:43:14.85Z",
+  "title": "M365 Copilot usage reports – updated reporting experience, faster refresh, and more Copilot usage metrics in Graph API",
+  "id": "MC1423101",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

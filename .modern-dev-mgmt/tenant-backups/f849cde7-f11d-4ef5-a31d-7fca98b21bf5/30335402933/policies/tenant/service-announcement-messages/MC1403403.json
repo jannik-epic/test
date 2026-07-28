@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-24T22:27:42Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-24T22:27:51.313Z",
+  "title": "Microsoft Purview compliance portal: View-only role management enhancements",
+  "id": "MC1403403",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

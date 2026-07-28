@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T12:33:18Z",
+  "endDateTime": "2026-08-15T12:33:18Z",
+  "lastModifiedDateTime": "2026-07-15T12:35:22.747Z",
+  "title": "Power Automate - Automate PowerPoint presentations in desktop flows",
+  "id": "MC1428573",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Power Automate"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "@odata.type": "#microsoft.graph.agentIdentityBlueprintPrincipal",
+  "id": "3ac74906-2e60-4d4f-95c5-f7010c1ffc66",
+  "appId": "ead3c78d-d929-412f-93d4-3ab95bc68fe2",
+  "displayName": "my-foundry-resource-jr-my-foundry-project-AgentIdentityBlueprint",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": []
+}

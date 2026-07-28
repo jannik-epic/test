@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T21:45:32Z",
+  "endDateTime": "2026-09-13T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-09T21:45:46.69Z",
+  "title": "Microsoft Planner: Task details side pane experience",
+  "id": "MC1422054",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Planner"
+  ]
+}

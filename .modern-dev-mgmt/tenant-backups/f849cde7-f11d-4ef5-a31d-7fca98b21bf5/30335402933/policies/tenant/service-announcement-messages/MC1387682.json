@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-11T21:01:55Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-13T16:06:23.627Z",
+  "title": "Microsoft Purview Data Loss Prevention default protection controls for Exchange Online when classification fails",
+  "id": "MC1387682",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

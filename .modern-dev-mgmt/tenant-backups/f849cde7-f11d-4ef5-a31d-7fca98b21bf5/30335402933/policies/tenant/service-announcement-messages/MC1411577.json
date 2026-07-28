@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T18:32:59Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-01T18:33:15.307Z",
+  "title": "Microsoft Defender: Automated investigation and response (AIR) integrated into antivirus with manual triggering removed",
+  "id": "MC1411577",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Defender XDR"
+  ]
+}

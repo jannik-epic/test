@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-07T22:33:42Z",
+  "endDateTime": "2026-09-07T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T22:33:50.62Z",
+  "title": "Configurable recovery window for Microsoft 365 Backup",
+  "id": "MC1419799",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "2bb2a6b6-8d9d-49e5-a5bc-2ca9762882f4",
+  "appId": "822f7873-1b52-48f2-8f56-9458c3fac264",
+  "displayName": "PowerPlatform-a365copilotchatmcp-Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

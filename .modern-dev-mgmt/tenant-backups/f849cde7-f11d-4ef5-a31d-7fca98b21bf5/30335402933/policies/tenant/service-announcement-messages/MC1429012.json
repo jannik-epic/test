@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T21:24:25Z",
+  "endDateTime": "2026-10-04T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T21:24:34.18Z",
+  "title": "Microsoft Teams: Enhanced delegated calling with delegate call access restrictions and join notifications",
+  "id": "MC1429012",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

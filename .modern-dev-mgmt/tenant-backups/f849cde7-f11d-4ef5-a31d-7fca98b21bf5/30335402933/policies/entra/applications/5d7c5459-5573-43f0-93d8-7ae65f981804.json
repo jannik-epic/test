@@ -1,0 +1,26 @@
+{
+  "id": "5d7c5459-5573-43f0-93d8-7ae65f981804",
+  "appId": "6e9003cf-b25d-49b0-a18b-49c9e4a19b43",
+  "displayName": "momentum-blueprint-runner",
+  "signInAudience": "AzureADMyOrg",
+  "createdDateTime": "2026-07-03T04:44:16Z",
+  "identifierUris": [],
+  "web": {
+    "homePageUrl": null,
+    "logoutUrl": null,
+    "redirectUris": [],
+    "implicitGrantSettings": {
+      "enableAccessTokenIssuance": false,
+      "enableIdTokenIssuance": false
+    },
+    "redirectUriSettings": []
+  },
+  "spa": {
+    "redirectUris": []
+  },
+  "publicClient": {
+    "redirectUris": []
+  },
+  "requiredResourceAccess": [],
+  "appRoles": []
+}

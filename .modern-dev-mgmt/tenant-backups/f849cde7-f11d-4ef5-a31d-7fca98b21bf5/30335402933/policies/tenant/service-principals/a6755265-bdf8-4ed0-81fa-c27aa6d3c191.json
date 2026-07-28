@@ -1,0 +1,12 @@
+{
+  "id": "a6755265-bdf8-4ed0-81fa-c27aa6d3c191",
+  "appId": "292cff14-c0e8-4116-9e3b-99934ae05766",
+  "displayName": "Work IQ SharePoint MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

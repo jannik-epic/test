@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T21:48:58Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-14T16:13:31.5Z",
+  "title": "(Updated) Measure Copilot sentiment in the Copilot Dashboard with Viva Pulse",
+  "id": "MC1422058",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T13:28:06Z",
+  "endDateTime": "2026-08-01T13:28:06Z",
+  "lastModifiedDateTime": "2026-07-01T13:29:25.713Z",
+  "title": "Power Automate – UI automation repair agent",
+  "id": "MC1411132",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Power Automate"
+  ]
+}

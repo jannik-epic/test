@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-16T09:36:52Z",
+  "endDateTime": "2026-08-16T09:36:52Z",
+  "lastModifiedDateTime": "2026-07-16T09:37:52.49Z",
+  "title": "Dynamics 365 Customer Service - Next Best Actions with Customer Intent Agent",
+  "id": "MC1429563",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

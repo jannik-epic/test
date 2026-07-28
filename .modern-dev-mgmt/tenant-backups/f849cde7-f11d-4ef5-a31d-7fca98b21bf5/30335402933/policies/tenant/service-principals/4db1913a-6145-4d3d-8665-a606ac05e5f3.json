@@ -1,0 +1,12 @@
+{
+  "id": "4db1913a-6145-4d3d-8665-a606ac05e5f3",
+  "appId": "822153a9-3909-4624-b1d2-f8b646fb39a6",
+  "displayName": "PowerPlatform-a365wordmcp-Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

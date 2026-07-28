@@ -1,0 +1,86 @@
+{
+  "@odata.type": "#microsoft.graph.agentIdentityBlueprint",
+  "id": "1570fd02-f3b4-45a5-9ee6-c57fa9d05795",
+  "deletedDateTime": "2026-07-20T18:17:09Z",
+  "appId": "1570fd02-f3b4-45a5-9ee6-c57fa9d05795",
+  "applicationTemplateId": null,
+  "disabledByMicrosoftStatus": null,
+  "createdByAppId": "0736f41a-0425-4b46-bdb5-1563eff02385",
+  "createdDateTime": "2026-07-20T18:10:06Z",
+  "displayName": "iqjayrha-ai-ubmxw2wvtvigs-iqjayrha-project-earth-at-night-agent-dee0f-AgentIdentityBlueprint",
+  "description": null,
+  "groupMembershipClaims": null,
+  "identifierUris": [],
+  "isDeviceOnlyAuthSupported": null,
+  "isDisabled": null,
+  "isFallbackPublicClient": null,
+  "nativeAuthenticationApisEnabled": null,
+  "notes": null,
+  "publisherDomain": "ModernDevMgmt.onmicrosoft.com",
+  "serviceManagementReference": "e7b29361-682b-434b-916b-1f4061bc5edc",
+  "signInAudience": "AzureADMyOrg",
+  "tags": [
+    "region:westus3",
+    "virtualWorkspaceId:a9b64ee9-909f-4a00-82ad-97270ffbbe2b",
+    "projectId:iqjayrha-ai-ubmxw2wvtvigs@iqjayrha-project@AML"
+  ],
+  "tokenEncryptionKeyId": null,
+  "uniqueName": null,
+  "samlMetadataUrl": null,
+  "defaultRedirectUri": null,
+  "certification": null,
+  "optionalClaims": null,
+  "requestSignatureVerification": null,
+  "addIns": [],
+  "api": {
+    "acceptMappedClaims": null,
+    "knownClientApplications": [],
+    "requestedAccessTokenVersion": 2,
+    "oauth2PermissionScopes": [],
+    "preAuthorizedApplications": []
+  },
+  "appRoles": [],
+  "info": {
+    "logoUrl": null,
+    "marketingUrl": null,
+    "privacyStatementUrl": null,
+    "supportUrl": null,
+    "termsOfServiceUrl": null
+  },
+  "keyCredentials": [],
+  "parentalControlSettings": {
+    "countriesBlockedForMinors": [],
+    "legalAgeGroupRule": "Allow"
+  },
+  "passwordCredentials": [],
+  "publicClient": {
+    "redirectUris": []
+  },
+  "requiredResourceAccess": [],
+  "verifiedPublisher": {
+    "displayName": null,
+    "verifiedPublisherId": null,
+    "addedDateTime": null
+  },
+  "web": {
+    "homePageUrl": null,
+    "logoutUrl": null,
+    "redirectUris": [],
+    "implicitGrantSettings": {
+      "enableAccessTokenIssuance": false,
+      "enableIdTokenIssuance": false
+    },
+    "redirectUriSettings": []
+  },
+  "servicePrincipalLockConfiguration": {
+    "isEnabled": true,
+    "allProperties": true,
+    "credentialsWithUsageVerify": null,
+    "credentialsWithUsageSign": null,
+    "identifierUris": null,
+    "tokenEncryptionKeyId": null
+  },
+  "spa": {
+    "redirectUris": []
+  }
+}

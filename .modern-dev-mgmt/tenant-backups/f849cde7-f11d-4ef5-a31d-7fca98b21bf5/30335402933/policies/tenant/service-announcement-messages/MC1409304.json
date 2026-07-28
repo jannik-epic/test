@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-29T22:06:05Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-30T19:44:32.717Z",
+  "title": "(Updated) Microsoft Teams: Facilitator proactively detects and resolves knowledge gaps in meetings",
+  "id": "MC1409304",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

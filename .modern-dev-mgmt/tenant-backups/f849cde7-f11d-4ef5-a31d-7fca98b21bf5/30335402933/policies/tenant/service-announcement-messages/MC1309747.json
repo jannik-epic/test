@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-05-13T23:11:57Z",
+  "endDateTime": "2026-08-24T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T16:26:54.92Z",
+  "title": "(Updated) Planner is now available in Outlook and Microsoft 365 Copilot",
+  "id": "MC1309747",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Exchange Online",
+    "Planner"
+  ]
+}

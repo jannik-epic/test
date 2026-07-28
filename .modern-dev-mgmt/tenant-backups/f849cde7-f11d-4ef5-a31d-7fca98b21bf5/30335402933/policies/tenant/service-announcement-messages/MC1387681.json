@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-11T21:00:59Z",
+  "endDateTime": "2027-02-22T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T17:09:34.51Z",
+  "title": "(Updated) Microsoft Purview | Insider Risk Management: Policy recommendation panel in IRM",
+  "id": "MC1387681",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

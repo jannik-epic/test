@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-03T02:06:11Z",
+  "endDateTime": "2026-09-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T22:36:53.61Z",
+  "title": "(Updated) Viva Engage: New Recent feed in Home",
+  "id": "MC1413304",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-02-05T00:08:26Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-14T16:37:27.063Z",
+  "title": "(Updated) Events in Meet app – Introducing a redesigned, unified Events experience in Microsoft Teams",
+  "id": "MC1227087",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

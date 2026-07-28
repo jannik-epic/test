@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-16T22:53:30Z",
+  "endDateTime": "2026-07-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T22:53:41.7Z",
+  "title": "Microsoft Excel: File selector for Copilot Excel Agent",
+  "id": "MC1393810",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

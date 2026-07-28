@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-13T22:04:43Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-13T22:04:53.917Z",
+  "title": "Neutral-themed SharePoint UI in page editing and property panes",
+  "id": "MC1426716",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-08T23:15:59Z",
+  "endDateTime": "2026-09-07T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-08T23:16:14.673Z",
+  "title": "Exchange Online will prevent creation of duplicate Dynamic Distribution Groups",
+  "id": "MC1420903",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Exchange Online"
+  ]
+}

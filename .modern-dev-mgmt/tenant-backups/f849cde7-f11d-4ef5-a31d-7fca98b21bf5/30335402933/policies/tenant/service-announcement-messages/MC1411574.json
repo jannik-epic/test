@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T18:32:23Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-09T18:20:59.34Z",
+  "title": "(Updated) Microsoft Entra: System-preferred authentication now applies to first-factor authentication",
+  "id": "MC1411574",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-11T16:57:25Z",
+  "endDateTime": "2026-09-27T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T18:44:21.763Z",
+  "title": "(Updated) Microsoft Edge moving to a 2-week release cycle starting with Edge 152",
+  "id": "MC1387532",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

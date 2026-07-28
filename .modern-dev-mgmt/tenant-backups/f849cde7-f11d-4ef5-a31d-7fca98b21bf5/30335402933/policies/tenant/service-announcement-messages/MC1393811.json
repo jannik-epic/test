@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-16T22:54:08Z",
+  "endDateTime": "2026-07-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T22:54:19.873Z",
+  "title": "Microsoft 365 Copilot: Excel agent enterprise search",
+  "id": "MC1393811",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

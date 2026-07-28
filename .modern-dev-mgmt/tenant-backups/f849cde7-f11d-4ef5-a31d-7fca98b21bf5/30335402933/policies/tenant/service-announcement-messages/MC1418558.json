@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-07T02:06:26Z",
+  "endDateTime": "2026-08-27T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T02:06:33.19Z",
+  "title": "Change to taskbar pinning behavior for M365 Copilot and companion apps",
+  "id": "MC1418558",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

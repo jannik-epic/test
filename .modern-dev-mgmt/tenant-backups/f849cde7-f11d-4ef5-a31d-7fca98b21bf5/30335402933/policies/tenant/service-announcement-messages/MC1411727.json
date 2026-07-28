@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T23:15:04Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T23:13:34.093Z",
+  "title": "(Updated) Copilot Notebooks: Suggested artifacts for faster content creation",
+  "id": "MC1411727",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

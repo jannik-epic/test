@@ -1,0 +1,13 @@
+{
+  "@odata.type": "#microsoft.graph.agentUser",
+  "id": "a25fd80d-148e-4d33-b634-ee7ca1ae1353",
+  "displayName": "Intune Vulnerability Remediation Agent (Security Copilot)",
+  "userPrincipalName": "SecurityCopilotAgentUser-eb7dee6b-11df-43eb-a490-23ed0c76b365@ModernDevMgmt.onmicrosoft.com",
+  "mail": null,
+  "accountEnabled": true,
+  "userType": "Member",
+  "createdDateTime": "2026-07-22T10:26:13Z",
+  "department": null,
+  "jobTitle": null,
+  "usageLocation": null
+}

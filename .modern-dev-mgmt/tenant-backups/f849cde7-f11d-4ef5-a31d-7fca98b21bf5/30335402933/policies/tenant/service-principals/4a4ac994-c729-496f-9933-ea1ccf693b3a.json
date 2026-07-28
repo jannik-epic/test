@@ -1,0 +1,12 @@
+{
+  "id": "4a4ac994-c729-496f-9933-ea1ccf693b3a",
+  "appId": "969ec24d-a136-4cc5-85a8-363e8cef1973",
+  "displayName": "OneDrive for Business Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

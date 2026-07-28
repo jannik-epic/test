@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-22T22:44:20Z",
+  "endDateTime": "2026-08-18T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T17:28:22.74Z",
+  "title": "Microsoft 365 Admin agent is now generally available for all admins",
+  "id": "MC1436831",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

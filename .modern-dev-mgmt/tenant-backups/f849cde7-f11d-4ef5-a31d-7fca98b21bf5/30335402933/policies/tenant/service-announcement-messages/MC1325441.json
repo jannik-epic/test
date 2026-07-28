@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-28T22:04:22Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:04:56.723Z",
+  "title": "(Updated) Microsoft Purview | Data Lifecycle Management - Archive OneDrive and SharePoint files under retention",
+  "id": "MC1325441",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:46:07Z",
+  "endDateTime": "2026-10-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T22:46:15.203Z",
+  "title": "Introducing Auto-Attendant Call Flow Visualizer in Teams Admin Center",
+  "id": "MC1423105",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-12T16:55:40Z",
+  "endDateTime": "2026-11-16T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-16T16:57:45.213Z",
+  "title": "(Updated) Microsoft Teams: Granular channel notification settings",
+  "id": "MC1388719",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

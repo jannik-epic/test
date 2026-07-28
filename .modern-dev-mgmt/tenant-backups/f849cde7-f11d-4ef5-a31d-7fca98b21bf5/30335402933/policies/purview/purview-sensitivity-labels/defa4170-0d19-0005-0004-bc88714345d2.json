@@ -1,0 +1,33 @@
+{
+  "id": "defa4170-0d19-0005-0004-bc88714345d2",
+  "name": "All Employees (unrestricted)",
+  "description": "",
+  "color": "",
+  "sensitivity": 2,
+  "tooltip": "All Employees (unrestricted)",
+  "isActive": true,
+  "isAppliable": true,
+  "contentFormats": [
+    "file",
+    "email"
+  ],
+  "hasProtection": false,
+  "parent@odata.context": "https://graph.microsoft.com/beta/$metadata#security/informationProtection/sensitivityLabels('defa4170-0d19-0005-0004-bc88714345d2')/parent/$entity",
+  "parent": {
+    "id": "defa4170-0d19-0005-0002-bc88714345d2",
+    "name": "General",
+    "description": "",
+    "color": "",
+    "sensitivity": 2,
+    "tooltip": "General",
+    "isActive": false,
+    "isAppliable": false,
+    "contentFormats": [
+      "file",
+      "email"
+    ],
+    "hasProtection": false,
+    "parent@odata.context": "https://graph.microsoft.com/beta/$metadata#security/informationProtection/sensitivityLabels('defa4170-0d19-0005-0004-bc88714345d2')/parent/parent/$entity",
+    "parent": null
+  }
+}

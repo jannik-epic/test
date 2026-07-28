@@ -1,0 +1,8 @@
+{
+  "clientId": "4f2ef398-64bc-4737-99f1-1042c7e12b29",
+  "consentType": "AllPrincipals",
+  "id": "mPMuT7xkN0eZ8RBCx-ErKXR8AcH9ThpNiNxM2sMKSiE",
+  "principalId": null,
+  "resourceId": "c1017c74-4efd-4d1a-88dc-4cdac30a4a21",
+  "scope": "McpServers.Planner.All McpServers.Files.All McpServers.Dataverse.All McpServers.Management.All McpServers.CopilotMCP.All McpServers.OneDriveSharepoint.All McpServers.Mail.All McpServers.Teams.All McpServers.Me.All McpServers.Calendar.All McpServers.SharepointLists.All McpServers.Excel.All McpServers.Word.All McpServers.PowerPoint.All"
+}

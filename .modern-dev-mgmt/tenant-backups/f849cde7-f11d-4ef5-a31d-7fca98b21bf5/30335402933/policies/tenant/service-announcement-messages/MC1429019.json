@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T21:27:55Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T21:28:01.82Z",
+  "title": "Microsoft SharePoint Online: Restricted access control for sites enforced across Microsoft 365 search",
+  "id": "MC1429019",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online"
+  ]
+}

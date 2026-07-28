@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-10T22:51:38Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T22:51:47.223Z",
+  "title": "Microsoft Teams: Stricter external access controls for federated chats",
+  "id": "MC1423114",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

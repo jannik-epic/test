@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-15T22:06:38Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-08T23:08:39.337Z",
+  "title": "(Updated) OneDrive transitions to the cloud.microsoft domain",
+  "id": "MC1392563",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft OneDrive"
+  ]
+}

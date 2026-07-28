@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-29T22:07:12Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-29T22:07:49.597Z",
+  "title": "Microsoft Purview Data Loss Prevention: User-based aggregation of DLP alerts",
+  "id": "MC1409307",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

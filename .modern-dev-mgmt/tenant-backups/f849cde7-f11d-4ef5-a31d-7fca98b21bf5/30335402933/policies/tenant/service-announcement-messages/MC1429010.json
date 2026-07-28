@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T21:23:40Z",
+  "endDateTime": "2027-02-11T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T21:24:03.5Z",
+  "title": "Retirement notice: Instances policy location in Microsoft Purview Data Loss Prevention",
+  "id": "MC1429010",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

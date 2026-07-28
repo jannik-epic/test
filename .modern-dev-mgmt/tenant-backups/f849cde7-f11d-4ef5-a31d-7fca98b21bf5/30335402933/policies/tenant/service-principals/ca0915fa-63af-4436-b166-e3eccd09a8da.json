@@ -1,0 +1,12 @@
+{
+  "id": "ca0915fa-63af-4436-b166-e3eccd09a8da",
+  "appId": "ef1e3bba-b59c-45c6-93dd-c7fc96e274e3",
+  "displayName": "Microsoft To-Do Business Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

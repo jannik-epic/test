@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-08T22:19:49Z",
+  "endDateTime": "2026-09-17T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-08T22:19:55.957Z",
+  "title": "Rolling out a simplified, consistent design and navigation experience in Viva Engage",
+  "id": "MC1384422",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

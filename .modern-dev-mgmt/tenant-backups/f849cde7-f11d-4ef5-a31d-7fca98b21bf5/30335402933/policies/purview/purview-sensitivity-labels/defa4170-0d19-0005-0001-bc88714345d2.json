@@ -1,0 +1,17 @@
+{
+  "id": "defa4170-0d19-0005-0001-bc88714345d2",
+  "name": "Public",
+  "description": "",
+  "color": "",
+  "sensitivity": 1,
+  "tooltip": "Public",
+  "isActive": true,
+  "isAppliable": true,
+  "contentFormats": [
+    "file",
+    "email"
+  ],
+  "hasProtection": false,
+  "parent@odata.context": "https://graph.microsoft.com/beta/$metadata#security/informationProtection/sensitivityLabels('defa4170-0d19-0005-0001-bc88714345d2')/parent/$entity",
+  "parent": null
+}

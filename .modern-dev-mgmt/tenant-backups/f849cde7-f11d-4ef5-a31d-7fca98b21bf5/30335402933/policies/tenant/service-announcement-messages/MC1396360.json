@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-18T23:08:51Z",
+  "endDateTime": "2026-08-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-18T23:09:20.527Z",
+  "title": "Microsoft Fabric: Create support tickets from within Fabric",
+  "id": "MC1396360",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Power BI"
+  ]
+}

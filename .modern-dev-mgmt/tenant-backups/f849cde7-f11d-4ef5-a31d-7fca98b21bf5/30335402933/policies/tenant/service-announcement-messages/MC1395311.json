@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-18T05:02:28Z",
+  "endDateTime": "2027-03-02T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-18T05:03:06.303Z",
+  "title": "Microsoft SharePoint Online: Retirement of Restricted SharePoint Search",
+  "id": "MC1395311",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-06-08T22:21:01Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-02T18:49:28.45Z",
+  "title": "(Updated) Copilot Notebooks available in Microsoft 365 Copilot Chat for Basic users",
+  "id": "MC1384425",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps",
+    "Microsoft 365 Copilot Chat"
+  ]
+}

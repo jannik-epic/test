@@ -1,0 +1,8 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#tenantRelationships/multiTenantOrganization/$entity",
+  "id": "06ee9032-1633-4e70-b68d-0e2a94ba7283",
+  "createdDateTime": null,
+  "state": "inactive",
+  "displayName": null,
+  "description": null
+}

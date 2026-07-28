@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2025-09-18T17:07:29Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-09T16:38:26.837Z",
+  "title": "(Updated) Viva Engage: Agents in Viva Engage communities Public Preview",
+  "id": "MC1155311",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

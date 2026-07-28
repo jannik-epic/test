@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-11T17:24:30Z",
+  "endDateTime": "2026-08-25T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-21T16:55:20.873Z",
+  "title": "(Updated) Microsoft Teams: Governance for built-in agents in the Teams admin center",
+  "id": "MC1387573",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

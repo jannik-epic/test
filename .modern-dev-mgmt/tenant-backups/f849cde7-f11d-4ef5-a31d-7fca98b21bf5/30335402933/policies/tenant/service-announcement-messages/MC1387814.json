@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-11T23:24:56Z",
+  "endDateTime": "2027-01-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T17:18:27.393Z",
+  "title": "(Updated) Microsoft Teams: RTMP-In port and domain changes required",
+  "id": "MC1387814",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

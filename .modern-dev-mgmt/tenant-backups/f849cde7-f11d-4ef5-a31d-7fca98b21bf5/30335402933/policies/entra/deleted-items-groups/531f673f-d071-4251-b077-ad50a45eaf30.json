@@ -1,0 +1,42 @@
+{
+  "id": "531f673f-d071-4251-b077-ad50a45eaf30",
+  "deletedDateTime": "2026-07-03T06:34:34Z",
+  "classification": null,
+  "createdDateTime": "2026-07-03T06:33:57Z",
+  "creationOptions": [],
+  "description": "momentum:e2e — write slice for blueprint microsoft-teams-shifts; safe to delete",
+  "displayName": "Momentum E2E — Shifts Pilot Team",
+  "expirationDateTime": null,
+  "groupTypes": [
+    "Unified"
+  ],
+  "infoCatalogs": [],
+  "isAssignableToRole": null,
+  "mail": "momentumE2eShifts@ModernDevMgmt.onmicrosoft.com",
+  "mailEnabled": true,
+  "mailNickname": "momentumE2eShifts",
+  "membershipRule": null,
+  "membershipRuleProcessingState": null,
+  "onPremisesDomainName": null,
+  "onPremisesLastSyncDateTime": null,
+  "onPremisesNetBiosName": null,
+  "onPremisesSamAccountName": null,
+  "onPremisesSecurityIdentifier": null,
+  "onPremisesSyncEnabled": null,
+  "preferredDataLocation": null,
+  "preferredLanguage": null,
+  "proxyAddresses": [
+    "SPO:SPO_32163fbd-fc3a-47c3-8bab-1182485e7885@SPO_f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "SMTP:momentumE2eShifts@ModernDevMgmt.onmicrosoft.com"
+  ],
+  "renewedDateTime": "2026-07-03T06:33:57Z",
+  "resourceBehaviorOptions": [],
+  "resourceProvisioningOptions": [],
+  "securityEnabled": false,
+  "securityIdentifier": "S-1-12-1-1394566975-1112658033-1353545648-816799396",
+  "theme": null,
+  "uniqueName": null,
+  "visibility": "Private",
+  "onPremisesProvisioningErrors": [],
+  "serviceProvisioningErrors": []
+}

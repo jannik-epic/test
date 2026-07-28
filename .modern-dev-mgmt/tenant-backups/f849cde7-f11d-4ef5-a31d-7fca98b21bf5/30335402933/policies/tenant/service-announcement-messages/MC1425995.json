@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-13T10:47:41Z",
+  "endDateTime": "2026-08-13T10:47:41Z",
+  "lastModifiedDateTime": "2026-07-13T10:48:23.76Z",
+  "title": "Dynamics 365 Project Operations - Enable time zone independent behavior on Time Entry Grid",
+  "id": "MC1425995",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

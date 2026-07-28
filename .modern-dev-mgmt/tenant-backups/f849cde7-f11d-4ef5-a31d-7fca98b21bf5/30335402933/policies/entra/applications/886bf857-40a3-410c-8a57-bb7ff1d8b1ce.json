@@ -1,0 +1,26 @@
+{
+  "id": "886bf857-40a3-410c-8a57-bb7ff1d8b1ce",
+  "appId": "464bc7cc-8a2f-469d-bc7a-bee9cc31c107",
+  "displayName": "GSA-Internettrafficforwardingprofile",
+  "signInAudience": "AzureADMyOrg",
+  "createdDateTime": "2026-07-02T20:20:18Z",
+  "identifierUris": [],
+  "web": {
+    "homePageUrl": null,
+    "logoutUrl": null,
+    "redirectUris": [],
+    "implicitGrantSettings": {
+      "enableAccessTokenIssuance": false,
+      "enableIdTokenIssuance": false
+    },
+    "redirectUriSettings": []
+  },
+  "spa": {
+    "redirectUris": []
+  },
+  "publicClient": {
+    "redirectUris": []
+  },
+  "requiredResourceAccess": [],
+  "appRoles": []
+}

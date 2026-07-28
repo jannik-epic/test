@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-09T22:18:34Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-09T22:19:10.94Z",
+  "title": "OneDrive: New Shortcuts folder option when adding shortcuts",
+  "id": "MC1385585",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft OneDrive"
+  ]
+}

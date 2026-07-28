@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-22T15:19:39Z",
+  "endDateTime": "2026-07-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-22T16:12:40.597Z",
+  "title": "Microsoft Viva: New Copilot usage and cost insights",
+  "id": "MC1400825",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "dl90ce26d5-f510-10f4-2400-08de7a22bfe3",
+  "providerAlertId": "90ce26d5-f510-10f4-2400-08de7a22bfe3",
+  "incidentId": "4",
+  "status": "new",
+  "severity": "low",
+  "classification": null,
+  "determination": null,
+  "serviceSource": "dataLossPrevention",
+  "detectionSource": "microsoftDataLossPrevention",
+  "productName": "Microsoft Data Loss Prevention",
+  "detectorId": "6c6605b3-c4e4-415e-9f0a-db8aab9b17a3",
+  "tenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+  "title": "DLP-Block IBAN",
+  "description": "",
+  "recommendedActions": "",
+  "category": "Exfiltration",
+  "categories": [
+    "Exfiltration"
+  ],
+  "assignedTo": null,
+  "alertWebUrl": "https://security.microsoft.com/alerts/dl90ce26d5-f510-10f4-2400-08de7a22bfe3?tid=f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+  "incidentWebUrl": "https://security.microsoft.com/incident2/4/overview?tid=f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+  "actorDisplayName": null,
+  "threatDisplayName": null,
+  "threatFamilyName": null,
+  "mitreTechniques": [],
+  "createdDateTime": "2026-03-04T19:18:26.1966667Z",
+  "lastUpdateDateTime": "2026-03-04T20:26:30.04Z",
+  "resolvedDateTime": null,
+  "firstActivityDateTime": "2026-03-04T19:17:00Z",
+  "lastActivityDateTime": "2026-03-04T19:18:00Z",
+  "systemTags": [
+    "Critical asset"
+  ],
+  "alertPolicyId": "cefbd039-18bc-431e-b60c-3c246c4dbeb1",
+  "investigationState": "unsupportedAlertType",
+  "comments": [],
+  "customDetails": {},
+  "evidence": [
+    {
+      "@odata.type": "#microsoft.graph.security.userEvidence",
+      "createdDateTime": "2026-03-04T19:18:26.3066667Z",
+      "verdict": "suspicious",
+      "remediationStatus": "none",
+      "remediationStatusDetails": null,
+      "roles": [],
+      "detailedRoles": [],
+      "tags": [
+        "Critical asset"
+      ],
+      "stream": null,
+      "userAccount": {
+        "accountName": "jannikreinhard",
+        "domainName": null,
+        "userSid": "S-1-12-1-328534916-1109860750-1333058484-2823097140",
+        "azureAdUserId": "13950b84-218e-4227-b4db-744f340b45a8",
+        "tenantId": "f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+        "userPrincipalName": "jannikreinhard@ModernDevMgmt.onmicrosoft.com",
+        "displayName": "Jannik Reinhard (Admin)",
+        "activeDirectoryObjectGuid": null,
+        "resourceAccessEvents": []
+      }
+    }
+  ],
+  "additionalData": {
+    "DlpAlertType": "ModernDlpAlert",
+    "AlertPolicyTitle": "Purview DLP Test",
+    "Intent@odata.type": "#Int64",
+    "Intent": 1024
+  }
+}

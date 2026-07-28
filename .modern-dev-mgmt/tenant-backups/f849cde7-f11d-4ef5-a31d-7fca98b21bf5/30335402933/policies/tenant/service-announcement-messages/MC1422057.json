@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T21:48:30Z",
+  "endDateTime": "2026-09-13T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-09T21:48:37.693Z",
+  "title": "Update Exchange Web Services (EWS) allow list configuration for calendar",
+  "id": "MC1422057",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

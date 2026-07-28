@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-08T12:57:45Z",
+  "endDateTime": "2026-08-08T12:57:45Z",
+  "lastModifiedDateTime": "2026-07-08T12:58:31.657Z",
+  "title": "Dynamics 365 Sales - Enable Automatic CRM Record Linking and Suggested Updates for Accounts, Contacts, and Leads",
+  "id": "MC1420564",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

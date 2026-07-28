@@ -1,0 +1,12 @@
+{
+  "id": "f42d22f8-df07-42fa-a91a-7c34817dfb88",
+  "displayName": "General",
+  "uniqueName": null,
+  "description": "Built-in catalog.",
+  "catalogType": "serviceDefault",
+  "state": "published",
+  "isExternallyVisible": true,
+  "createdDateTime": "2026-03-18T15:32:35.233Z",
+  "modifiedDateTime": "2026-03-18T15:32:35.233Z",
+  "serviceManagementReference": null
+}

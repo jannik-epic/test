@@ -1,0 +1,8 @@
+{
+  "clientId": "4f2ef398-64bc-4737-99f1-1042c7e12b29",
+  "consentType": "AllPrincipals",
+  "id": "mPMuT7xkN0eZ8RBCx-ErKfdddDeXUvVJtfPT6iUgc64",
+  "principalId": null,
+  "resourceId": "37745df7-5297-49f5-b5f3-d3ea252073ae",
+  "scope": "ChannelMessage.Read.All Chat.Read ExternalItem.Read.All Mail.Read OnlineMeetingTranscript.Read.All People.Read.All Sites.Read.All"
+}

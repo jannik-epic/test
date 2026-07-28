@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T15:24:20Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:01:44.057Z",
+  "title": "Microsoft 365 Copilot: Domain exclusion for web grounding",
+  "id": "MC1411435",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

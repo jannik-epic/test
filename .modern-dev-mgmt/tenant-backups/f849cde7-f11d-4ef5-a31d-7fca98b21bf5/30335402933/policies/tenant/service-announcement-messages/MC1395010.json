@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-17T22:09:05Z",
+  "endDateTime": "2026-09-03T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-17T22:09:11.207Z",
+  "title": "Microsoft Teams: Interpreter simultaneous mode enhancements",
+  "id": "MC1395010",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

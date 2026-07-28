@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-24T21:54:34Z",
+  "endDateTime": "2027-01-31T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-24T21:55:05.2Z",
+  "title": "Microsoft Purview | Insider Risk Management triage agent summaries available in Microsoft Defender",
+  "id": "MC1438568",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

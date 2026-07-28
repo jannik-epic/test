@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-26T19:58:33Z",
+  "endDateTime": "2026-09-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-26T19:58:34.593Z",
+  "title": "Microsoft Teams: Assistant information now available in Organization view",
+  "id": "MC1405501",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

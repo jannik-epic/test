@@ -1,0 +1,9 @@
+{
+  "@odata.type": "#microsoft.graph.agentIdentityBlueprintPrincipal",
+  "id": "82077091-a01b-4e28-932f-9a86850cdd9f",
+  "appId": "89c1a43e-a6f8-418f-adb5-ab38c9777cad",
+  "displayName": "iqjayrha-ai-ubmxw2wvtvigs-iqjayrha-project-AgentIdentityBlueprint",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": []
+}

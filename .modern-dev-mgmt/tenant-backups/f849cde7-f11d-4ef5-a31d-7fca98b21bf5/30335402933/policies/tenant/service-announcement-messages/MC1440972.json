@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-27T22:59:03Z",
+  "endDateTime": "2026-10-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T22:59:19.17Z",
+  "title": "Microsoft Edge: Upgraded Copilot new tab page",
+  "id": "MC1440972",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "displayName": "Social media",
+  "description": null,
+  "categories": [
+    "Microsoft suggests",
+    " Microsoft Recommends"
+  ],
+  "availabilityStartDateTime": null,
+  "availabilityEndDateTime": null,
+  "languageTags": [],
+  "platforms": [],
+  "powerAppIds": [],
+  "state": "published",
+  "isSuggested": true,
+  "groupIds": [],
+  "id": "47dc0468-d6d0-441f-b1d6-36122ae12476",
+  "webUrl": "",
+  "lastModifiedDateTime": "2022-08-02T04:25:50Z",
+  "keywords": {
+    "keywords": [
+      "company linkedin",
+      "company facebook page",
+      "company twitter",
+      "linkedin de la empresa",
+      "página de facebook de la empresa",
+      "twitter de la empresa",
+      "le linkedin de la compagnie",
+      "la page facebook de la compagnie",
+      "le twitter de la compagnie",
+      "azienda linkedin",
+      "pagina dell'azienda facebook",
+      "azienda twitter",
+      "会社のlinkedin",
+      "会社のfacebookページ",
+      "会社のtwitter",
+      "linkedin empresas",
+      "página do facebook da companhia",
+      "twitter da companhia"
+    ],
+    "reservedKeywords": [],
+    "matchSimilarKeywords": true
+  },
+  "targetedVariations": [
+    {
+      "displayName": "Soziale Medien",
+      "webUrl": null,
+      "description": null,
+      "languageTag": "de-de",
+      "platform": null
+    },
+    {
+      "displayName": "Redes sociales",
+      "webUrl": null,
+      "description": null,
+      "languageTag": "es-es",
+      "platform": null
+    },
+    {
+      "displayName": "Des médias sociaux",
+      "webUrl": null,
+      "description": null,
+      "languageTag": "fr-fr",
+      "platform": null
+    },
+    {
+      "displayName": "ソーシャルメディア",
+      "webUrl": null,
+      "description": null,
+      "languageTag": "ja-jp",
+      "platform": null
+    },
+    {
+      "displayName": "Mídias Sociais",
+      "webUrl": null,
+      "description": null,
+      "languageTag": "pt-br",
+      "platform": null
+    }
+  ],
+  "lastModifiedBy": {
+    "application": null,
+    "device": null,
+    "user": {
+      "displayName": "",
+      "id": ""
+    }
+  }
+}

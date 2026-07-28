@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-08T22:18:40Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T18:06:00.09Z",
+  "title": "Microsoft Purview | Endpoint Data Loss Prevention - Ability to protect files stored in the excluded folders in Windows",
+  "id": "MC1384420",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

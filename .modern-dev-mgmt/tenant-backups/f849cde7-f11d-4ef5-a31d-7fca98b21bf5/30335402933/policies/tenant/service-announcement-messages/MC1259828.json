@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-03-23T23:31:30Z",
+  "endDateTime": "2026-12-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T18:20:53.847Z",
+  "title": "(Updated) Microsoft Purview: Credential scanning in Data Security Posture Agent",
+  "id": "MC1259828",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

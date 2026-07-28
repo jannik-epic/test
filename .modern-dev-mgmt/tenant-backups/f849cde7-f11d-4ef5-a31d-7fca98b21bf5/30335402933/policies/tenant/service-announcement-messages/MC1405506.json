@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-26T20:00:20Z",
+  "endDateTime": "2026-10-18T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-26T20:00:29.16Z",
+  "title": "Microsoft OneNote: Multimodal recording in Copilot Notebooks on Windows",
+  "id": "MC1405506",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

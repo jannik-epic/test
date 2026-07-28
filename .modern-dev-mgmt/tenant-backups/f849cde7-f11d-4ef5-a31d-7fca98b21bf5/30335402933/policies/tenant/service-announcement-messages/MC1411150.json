@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T13:46:52Z",
+  "endDateTime": "2026-08-01T13:46:52Z",
+  "lastModifiedDateTime": "2026-07-01T13:49:09.7Z",
+  "title": "Dynamics 365 Project Operations - Track real project progress from field execution",
+  "id": "MC1411150",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

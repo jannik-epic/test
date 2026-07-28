@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-15T22:05:10Z",
+  "endDateTime": "2026-09-21T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:51:48.477Z",
+  "title": "(Updated) Microsoft Teams: Known issue affecting screen sharing on macOS",
+  "id": "MC1392559",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

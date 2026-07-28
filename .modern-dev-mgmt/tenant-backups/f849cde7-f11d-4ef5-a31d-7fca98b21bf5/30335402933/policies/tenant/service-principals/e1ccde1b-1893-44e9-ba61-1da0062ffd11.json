@@ -1,0 +1,10 @@
+{
+  "id": "e1ccde1b-1893-44e9-ba61-1da0062ffd11",
+  "appId": "19f086d8-fc92-44a3-a92d-bb31feb0d740",
+  "displayName": "Vanguard MSP Control Plane - Epic Fusion Labs",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "WindowsAzureActiveDirectoryIntegratedApp"
+  ]
+}

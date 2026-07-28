@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-27T23:01:11Z",
+  "endDateTime": "2026-09-22T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T23:01:26.22Z",
+  "title": "Microsoft 365 Copilot: Retirement of role-to-skill mapping files in People Skills",
+  "id": "MC1440976",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite"
+  ]
+}

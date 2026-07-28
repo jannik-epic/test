@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T11:56:51Z",
+  "endDateTime": "2026-08-01T11:56:51Z",
+  "lastModifiedDateTime": "2026-07-01T11:57:59.233Z",
+  "title": "Dynamics 365 Project Operations - Create work orders from project tasks",
+  "id": "MC1411079",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

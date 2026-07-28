@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-08T22:11:44Z",
+  "endDateTime": "2026-07-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-08T22:11:54.62Z",
+  "title": "Outlook Actionable Messages onboarding portal refresh: new experience and updated URL",
+  "id": "MC1384409",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

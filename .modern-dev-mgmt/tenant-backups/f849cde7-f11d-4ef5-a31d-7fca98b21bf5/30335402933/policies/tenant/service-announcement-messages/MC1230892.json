@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-02-11T23:19:18Z",
+  "endDateTime": "2026-08-24T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-13T16:09:33.61Z",
+  "title": "(Updated) Microsoft 365 Copilot: Updated handling of entity inserts in the Copilot Chat input box",
+  "id": "MC1230892",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

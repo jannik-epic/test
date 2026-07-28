@@ -1,0 +1,12 @@
+{
+  "id": "ac37ceaa-dbad-4638-b661-3e09471ead86",
+  "appId": "c2d0c2b6-8013-4346-9f8b-b81d3b754a29",
+  "displayName": "Work IQ Word MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

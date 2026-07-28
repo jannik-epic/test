@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-06T10:39:06Z",
+  "endDateTime": "2026-08-06T10:39:06Z",
+  "lastModifiedDateTime": "2026-07-06T10:40:24.347Z",
+  "title": "Dynamics 365 Contact Center - Bullseye routing with User groups",
+  "id": "MC1417473",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

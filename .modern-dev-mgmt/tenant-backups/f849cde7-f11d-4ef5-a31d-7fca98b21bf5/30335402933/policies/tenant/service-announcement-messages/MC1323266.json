@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-26T22:12:34Z",
+  "endDateTime": "2026-09-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-13T16:14:41.457Z",
+  "title": "(Updated) Power BI integration with Microsoft 365 Copilot",
+  "id": "MC1323266",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Power BI"
+  ]
+}

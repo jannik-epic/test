@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T21:36:38Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:44:41.977Z",
+  "title": "(Updated) Web content setting in Microsoft 365 Copilot expands across Copilot experiences and moves to Settings",
+  "id": "MC1421919",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

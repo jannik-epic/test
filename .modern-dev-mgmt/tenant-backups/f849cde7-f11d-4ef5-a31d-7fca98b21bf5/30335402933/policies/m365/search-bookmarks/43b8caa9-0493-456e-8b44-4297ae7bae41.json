@@ -1,0 +1,40 @@
+{
+  "displayName": "COVID-19 Resources",
+  "description": "Get the latest information and guidance on our response to COVID-19.",
+  "categories": [
+    "Microsoft suggests",
+    " Microsoft Recommends"
+  ],
+  "availabilityStartDateTime": null,
+  "availabilityEndDateTime": null,
+  "languageTags": [],
+  "platforms": [],
+  "powerAppIds": [],
+  "state": "published",
+  "isSuggested": true,
+  "groupIds": [],
+  "id": "43b8caa9-0493-456e-8b44-4297ae7bae41",
+  "webUrl": "",
+  "lastModifiedDateTime": "2022-08-02T04:25:50Z",
+  "keywords": {
+    "keywords": [
+      "covid",
+      "covid-19",
+      "coronavirus",
+      "corona virus",
+      "covid virus",
+      "pandemic"
+    ],
+    "reservedKeywords": [],
+    "matchSimilarKeywords": true
+  },
+  "targetedVariations": [],
+  "lastModifiedBy": {
+    "application": null,
+    "device": null,
+    "user": {
+      "displayName": "",
+      "id": ""
+    }
+  }
+}

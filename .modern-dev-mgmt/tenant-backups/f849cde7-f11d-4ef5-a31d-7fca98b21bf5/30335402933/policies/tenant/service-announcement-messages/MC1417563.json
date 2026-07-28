@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-06T12:45:17Z",
+  "endDateTime": "2026-08-06T12:45:17Z",
+  "lastModifiedDateTime": "2026-07-06T12:47:16.923Z",
+  "title": "Microsoft Power Platform governance and administration - Latency Evaluation Checks",
+  "id": "MC1417563",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Power Platform"
+  ]
+}

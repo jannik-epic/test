@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-07-17T05:03:20Z",
+  "endDateTime": "2026-09-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-17T05:03:25.023Z",
+  "title": "Copilot in Excel: Brand Kit skill",
+  "id": "MC1430537",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps",
+    "Microsoft 365 Copilot Chat"
+  ]
+}

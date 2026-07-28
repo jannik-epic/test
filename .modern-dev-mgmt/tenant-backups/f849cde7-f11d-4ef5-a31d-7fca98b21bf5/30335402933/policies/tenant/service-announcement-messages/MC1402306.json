@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-23T22:06:38Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-23T22:06:49.197Z",
+  "title": "Microsoft Teams: Use multiple phone lines on Teams mobile",
+  "id": "MC1402306",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

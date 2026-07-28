@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-08T23:14:22Z",
+  "endDateTime": "2026-09-16T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T23:17:56.997Z",
+  "title": "(Updated) Notebooks in the M365 Copilot App",
+  "id": "MC1420901",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

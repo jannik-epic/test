@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-30T12:34:32Z",
+  "endDateTime": "2026-07-30T12:34:32Z",
+  "lastModifiedDateTime": "2026-06-30T12:43:33.107Z",
+  "title": "Power Automate - Restore accidentally deleted flows",
+  "id": "MC1409993",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Power Automate"
+  ]
+}

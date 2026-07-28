@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T21:20:05Z",
+  "endDateTime": "2026-08-31T21:20:00Z",
+  "lastModifiedDateTime": "2026-07-01T21:21:35.933Z",
+  "title": "Dynamics 365 – Customer Insights – Data – Target right audience based on signals from earlier campaigns",
+  "id": "MC1411681",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

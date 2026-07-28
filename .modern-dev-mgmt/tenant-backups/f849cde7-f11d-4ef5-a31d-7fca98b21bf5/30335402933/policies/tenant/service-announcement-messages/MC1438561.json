@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-24T21:49:44Z",
+  "endDateTime": "2026-10-07T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-24T21:50:06.797Z",
+  "title": "Microsoft Purview Data loss prevention: debug tools activity now visible in managed app rules",
+  "id": "MC1438561",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

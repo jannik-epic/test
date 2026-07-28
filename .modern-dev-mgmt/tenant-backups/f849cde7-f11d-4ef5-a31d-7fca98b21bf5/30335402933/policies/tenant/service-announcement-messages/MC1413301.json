@@ -1,0 +1,14 @@
+{
+  "startDateTime": "2026-07-03T02:05:11Z",
+  "endDateTime": "2026-08-17T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-03T02:05:16.35Z",
+  "title": "New in Catalog Management: Create custom group of sites",
+  "id": "MC1413301",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite",
+    "SharePoint Online",
+    "Microsoft OneDrive"
+  ]
+}

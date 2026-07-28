@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-07-09T21:38:13Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-09T21:38:25.457Z",
+  "title": "Set and edit your work location from your Outlook Mobile calendar",
+  "id": "MC1421966",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Exchange Online",
+    "Microsoft 365 apps"
+  ]
+}

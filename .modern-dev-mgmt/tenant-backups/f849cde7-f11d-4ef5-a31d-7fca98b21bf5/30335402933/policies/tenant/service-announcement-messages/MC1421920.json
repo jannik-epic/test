@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T21:37:15Z",
+  "endDateTime": "2026-09-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T22:58:41.673Z",
+  "title": "(Updated) Surveys agent retirement and transition to Copilot in Microsoft Forms",
+  "id": "MC1421920",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Forms"
+  ]
+}

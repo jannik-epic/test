@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-25T21:43:18Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-25T21:43:29.133Z",
+  "title": "Microsoft Teams for the web will respect Microsoft Entra “Keep Me Signed In” (KMSI) settings",
+  "id": "MC1404315",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

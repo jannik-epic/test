@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-13T23:47:27Z",
+  "endDateTime": "2026-08-15T23:47:00Z",
+  "lastModifiedDateTime": "2026-06-22T23:11:09.647Z",
+  "title": "Dynamics 365 Project Operations - Post project invoice proposals using multithreaded batch tasks",
+  "id": "MC1390348",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

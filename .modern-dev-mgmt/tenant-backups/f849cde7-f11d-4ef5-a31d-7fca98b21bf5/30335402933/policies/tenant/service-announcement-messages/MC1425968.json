@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-13T10:21:22Z",
+  "endDateTime": "2026-08-13T10:21:22Z",
+  "lastModifiedDateTime": "2026-07-13T10:22:13.263Z",
+  "title": "Dynamics 365 Project Operations - Configure Maximum Daily Time Entry Duration",
+  "id": "MC1425968",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

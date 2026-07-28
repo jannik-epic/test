@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-15T23:13:42Z",
+  "endDateTime": "2026-10-12T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-29T19:57:55.22Z",
+  "title": "(Updated) Security Detection Report in Teams Admin Center",
+  "id": "MC1311977",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

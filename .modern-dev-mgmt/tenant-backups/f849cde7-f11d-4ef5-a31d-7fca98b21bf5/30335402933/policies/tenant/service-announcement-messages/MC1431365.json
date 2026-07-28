@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-17T21:37:26Z",
+  "endDateTime": "2026-10-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-17T21:37:44.757Z",
+  "title": "Copilot Analytics - Agent 365 dashboard for managers",
+  "id": "MC1431365",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

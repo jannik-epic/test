@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T11:48:54Z",
+  "endDateTime": "2026-08-01T11:48:54Z",
+  "lastModifiedDateTime": "2026-07-01T11:53:44.04Z",
+  "title": "Dynamics 365 Field Service – Create work orders from project tasks",
+  "id": "MC1411077",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

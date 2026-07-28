@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-04-08T22:17:03Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-14T16:44:00.453Z",
+  "title": "(Updated) Microsoft Teams: Quick access to read items while using unread only mode",
+  "id": "MC1274550",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

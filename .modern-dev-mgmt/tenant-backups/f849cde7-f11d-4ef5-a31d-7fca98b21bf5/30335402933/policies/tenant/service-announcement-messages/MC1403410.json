@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-24T22:31:28Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-24T22:31:34.963Z",
+  "title": "Microsoft Viva: Agent flexible query in Analytics Workbench",
+  "id": "MC1403410",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

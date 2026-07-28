@@ -1,0 +1,11 @@
+{
+  "id": "fefeb6d0-8985-4c3a-8fc7-45c97af78ce8",
+  "appId": "2ddfbe71-ed12-4123-b99b-d5fc8a062a79",
+  "displayName": "Microsoft Teams Admin Portal Service",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationResource",
+    "disableLegacyUserImpersonationClient"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T21:50:12Z",
+  "endDateTime": "2026-10-08T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-09T21:50:21.793Z",
+  "title": "Microsoft Defender for Office 365: Prompt injection protection for email",
+  "id": "MC1422060",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Defender XDR"
+  ]
+}

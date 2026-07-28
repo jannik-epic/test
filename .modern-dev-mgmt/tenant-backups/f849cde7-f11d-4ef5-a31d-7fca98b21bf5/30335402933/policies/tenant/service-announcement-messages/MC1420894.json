@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-08T23:10:55Z",
+  "endDateTime": "2026-08-10T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-08T23:11:06.483Z",
+  "title": "Microsoft 365 Copilot Notebooks: Support for TXT and RTF files as notebook references",
+  "id": "MC1420894",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

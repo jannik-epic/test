@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T13:40:48Z",
+  "endDateTime": "2026-08-15T13:40:48Z",
+  "lastModifiedDateTime": "2026-07-15T13:41:33.803Z",
+  "title": "Dataverse - Enhance Dataverse record descriptions for Copilot /mention",
+  "id": "MC1428623",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Dataverse"
+  ]
+}

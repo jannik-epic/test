@@ -1,0 +1,37 @@
+{
+  "displayName": "Azure Boards",
+  "description": "Azure Boards enable you to plan, track, and discuss work across your teams. Monitor project development, create and track work items, and use URLs to get previews.",
+  "categories": [
+    "Microsoft suggests",
+    " Microsoft Recommends"
+  ],
+  "availabilityStartDateTime": null,
+  "availabilityEndDateTime": null,
+  "languageTags": [],
+  "platforms": [],
+  "powerAppIds": [],
+  "state": "published",
+  "isSuggested": false,
+  "groupIds": [],
+  "id": "d92bc5db-112d-476b-ba84-aecc2f22c9f0",
+  "webUrl": "https://azure.microsoft.com/services/devops/boards",
+  "lastModifiedDateTime": "2022-08-02T04:25:50Z",
+  "keywords": {
+    "keywords": [
+      "azure boards",
+      "azureboards",
+      "ms boards"
+    ],
+    "reservedKeywords": [],
+    "matchSimilarKeywords": true
+  },
+  "targetedVariations": [],
+  "lastModifiedBy": {
+    "application": null,
+    "device": null,
+    "user": {
+      "displayName": "",
+      "id": ""
+    }
+  }
+}

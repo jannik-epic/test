@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-07T22:12:20Z",
+  "endDateTime": "2026-08-15T23:59:00Z",
+  "lastModifiedDateTime": "2026-07-07T22:11:13.797Z",
+  "title": "Microsoft Power Platform governance and administration - Safety Grader",
+  "id": "MC1419786",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Power Platform"
+  ]
+}

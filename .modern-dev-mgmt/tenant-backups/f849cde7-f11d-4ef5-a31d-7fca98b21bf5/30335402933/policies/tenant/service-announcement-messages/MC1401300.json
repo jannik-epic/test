@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-22T22:55:16Z",
+  "endDateTime": "2026-12-31T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-22T22:55:20.167Z",
+  "title": "Microsoft Teams: Location-Based Routing update blocks OS default location for Operator Connect in India",
+  "id": "MC1401300",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

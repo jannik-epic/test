@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-03-31T23:04:29Z",
+  "endDateTime": "2026-10-26T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T22:14:40.837Z",
+  "title": "(Updated) Microsoft 365 Copilot: Intelligent Summaries in Copilot Dashboard",
+  "id": "MC1266912",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T21:26:09Z",
+  "endDateTime": "2026-11-16T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T21:26:58.38Z",
+  "title": "Microsoft Purview: Enhanced user profile in Insider Risk Management alerts",
+  "id": "MC1429017",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

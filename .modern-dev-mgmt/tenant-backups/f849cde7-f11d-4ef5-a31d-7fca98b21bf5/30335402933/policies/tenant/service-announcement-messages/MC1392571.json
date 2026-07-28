@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-06-15T22:13:43Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T16:24:11.3Z",
+  "title": "(Updated) Connect Teams meeting to existing Planner Plans",
+  "id": "MC1392571",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Planner",
+    "Microsoft Teams"
+  ]
+}

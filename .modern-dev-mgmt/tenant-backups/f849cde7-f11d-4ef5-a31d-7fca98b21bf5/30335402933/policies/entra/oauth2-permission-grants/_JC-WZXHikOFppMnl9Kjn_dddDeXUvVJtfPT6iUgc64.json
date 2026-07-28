@@ -1,0 +1,8 @@
+{
+  "clientId": "59be90fc-c795-438a-85a6-932797d2a39f",
+  "consentType": "AllPrincipals",
+  "id": "_JC-WZXHikOFppMnl9Kjn_dddDeXUvVJtfPT6iUgc64",
+  "principalId": null,
+  "resourceId": "37745df7-5297-49f5-b5f3-d3ea252073ae",
+  "scope": "Calendars.Read Calendars.ReadWrite CallAiInsights.Read.All CallDelegation.Read CallDelegation.ReadWrite CallEvents.Read CallRecordings.Read.All CallTranscripts.Read.All Channel.ReadBasic.All ChannelMessage.Read.All Chat.Read Chat.ReadWrite ChatMessage.Send Contacts.Read Device.Read.All DeviceManagementApps.Read.All DeviceManagementApps.ReadWrite.All DeviceManagementConfiguration.Read.All DeviceManagementConfiguration.ReadWrite.All DeviceManagementManagedDevices.Read.All DeviceManagementManagedDevices.ReadWrite.All DeviceManagementRBAC.Read.All DeviceManagementServiceConfig.Read.All DeviceManagementServiceConfig.ReadWrite.All Files.Read.All Files.ReadWrite.All Group.Read.All Mail.Read Mail.Read.Shared Mail.ReadWrite Mail.ReadWrite.Shared Mail.Send Mail.Send.Shared MailboxSettings.Read OnlineMeetingArtifact.Read.All OnlineMeetingRecording.Read.All OnlineMeetingTranscript.Read.All OnlineMeetings.Read ServiceHealth.Read.All ServiceMessage.Read.All Sites.Read.All Sites.ReadWrite.All Tasks.Read Tasks.ReadWrite Team.ReadBasic.All User.Read User.ReadBasic.All profile openid email offline_access Calendars.Read.Shared ChannelMessage.Send"
+}

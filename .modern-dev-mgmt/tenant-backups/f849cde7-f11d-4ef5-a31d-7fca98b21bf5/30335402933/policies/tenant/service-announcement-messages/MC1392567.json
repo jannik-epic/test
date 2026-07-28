@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-15T22:10:54Z",
+  "endDateTime": "2026-11-15T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-15T22:11:10.56Z",
+  "title": "Microsoft Planner: Start date and due date are no longer constrained",
+  "id": "MC1392567",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Planner"
+  ]
+}

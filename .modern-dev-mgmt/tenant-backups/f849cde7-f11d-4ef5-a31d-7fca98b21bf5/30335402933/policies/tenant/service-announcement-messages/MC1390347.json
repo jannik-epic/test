@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-13T23:47:23Z",
+  "endDateTime": "2026-08-15T23:47:00Z",
+  "lastModifiedDateTime": "2026-06-13T23:57:34.717Z",
+  "title": "Dynamics 365 Project Operations - Enable project resources on general journal entries for modern projects",
+  "id": "MC1390347",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

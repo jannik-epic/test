@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-16T22:52:00Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-16T22:52:12.02Z",
+  "title": "Microsoft Teams: Experience improvements to Voice apps configuration wizard in Teams admin center",
+  "id": "MC1393808",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

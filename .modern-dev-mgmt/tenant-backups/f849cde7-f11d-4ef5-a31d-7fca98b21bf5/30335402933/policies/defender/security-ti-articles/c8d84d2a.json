@@ -1,0 +1,7 @@
+{
+  "id": "c8d84d2a",
+  "title": "CVE-2023-23397: Microsoft Outlook elevation of privilege vulnerability leads to NTLM credential theft",
+  "createdDateTime": "2023-03-14T00:00:00Z",
+  "lastUpdatedDateTime": "2025-10-14T17:11:11.72Z",
+  "isFeatured": true
+}

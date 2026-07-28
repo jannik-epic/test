@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-07T22:35:17Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T22:35:24.857Z",
+  "title": "Microsoft Viva Insights: Is Active filter no longer applied by default in new Advanced Insights queries",
+  "id": "MC1419801",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

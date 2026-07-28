@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-23T22:07:15Z",
+  "endDateTime": "2026-08-07T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-23T22:07:28.1Z",
+  "title": "Microsoft Defender for Cloud Apps: Improvements to threat protection capabilities",
+  "id": "MC1402307",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Defender XDR"
+  ]
+}

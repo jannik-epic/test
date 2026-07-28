@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-17T04:56:29Z",
+  "endDateTime": "2026-08-16T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-17T04:56:35.717Z",
+  "title": "Microsoft Teams: Enhanced file filtering in channel Shared tabs",
+  "id": "MC1430523",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

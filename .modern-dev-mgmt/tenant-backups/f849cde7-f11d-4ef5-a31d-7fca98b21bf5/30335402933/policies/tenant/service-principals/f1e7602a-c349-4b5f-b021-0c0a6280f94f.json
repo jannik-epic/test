@@ -1,0 +1,12 @@
+{
+  "id": "f1e7602a-c349-4b5f-b021-0c0a6280f94f",
+  "appId": "ce5029ee-c1d3-45c0-bdcc-efb5a4245687",
+  "displayName": "Work IQ Teams MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-27T16:31:12Z",
+  "endDateTime": "2026-12-28T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T16:31:28.627Z",
+  "title": "MDO Encrypted email attachment protection",
+  "id": "MC1440701",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Defender XDR"
+  ]
+}

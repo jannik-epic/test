@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T15:23:52Z",
+  "endDateTime": "2026-09-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-01T15:24:01.537Z",
+  "title": "Viva Engage: Reducing reply notification volume on mobile",
+  "id": "MC1411434",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

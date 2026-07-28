@@ -1,0 +1,17 @@
+{
+  "id": "defa4170-0d19-0005-0009-bc88714345d2",
+  "name": "Highly Confidential ",
+  "description": "",
+  "color": "",
+  "sensitivity": 9,
+  "tooltip": "Highly Confidential ",
+  "isActive": false,
+  "isAppliable": false,
+  "contentFormats": [
+    "file",
+    "email"
+  ],
+  "hasProtection": false,
+  "parent@odata.context": "https://graph.microsoft.com/beta/$metadata#security/informationProtection/sensitivityLabels('defa4170-0d19-0005-0009-bc88714345d2')/parent/$entity",
+  "parent": null
+}

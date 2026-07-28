@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-13T22:00:31Z",
+  "endDateTime": "2026-09-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T16:14:59.03Z",
+  "title": "(Updated) End of support for OneDrive sync app on Windows 10 21H2 and earlier",
+  "id": "MC1426708",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft OneDrive"
+  ]
+}

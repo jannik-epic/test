@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-23T22:09:10Z",
+  "endDateTime": "2026-07-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-23T22:09:24.723Z",
+  "title": "Configurable alerts for new Microsoft Teams desktop client version releases",
+  "id": "MC1402311",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

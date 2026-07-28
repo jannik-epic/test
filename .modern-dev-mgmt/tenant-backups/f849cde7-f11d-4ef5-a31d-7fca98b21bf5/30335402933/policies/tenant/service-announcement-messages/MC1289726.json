@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-04-23T22:39:13Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-15T23:14:04.123Z",
+  "title": "(Updated) Microsoft Purview: eDiscovery - CMK (Customer managed key) for eDiscovery direct export",
+  "id": "MC1289726",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

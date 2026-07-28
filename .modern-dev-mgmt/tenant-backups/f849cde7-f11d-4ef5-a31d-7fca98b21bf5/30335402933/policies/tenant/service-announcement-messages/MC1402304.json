@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-23T22:04:43Z",
+  "endDateTime": "2027-01-31T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-23T22:04:52.347Z",
+  "title": "Power Query tenant setting supports ODBC to ADBC transition",
+  "id": "MC1402304",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Power BI"
+  ]
+}

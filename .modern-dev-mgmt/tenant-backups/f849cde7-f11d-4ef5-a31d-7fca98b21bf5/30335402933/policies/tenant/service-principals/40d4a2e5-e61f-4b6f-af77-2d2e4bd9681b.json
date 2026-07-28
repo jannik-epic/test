@@ -1,0 +1,13 @@
+{
+  "@odata.type": "#microsoft.graph.agentIdentity",
+  "id": "40d4a2e5-e61f-4b6f-af77-2d2e4bd9681b",
+  "appId": "40d4a2e5-e61f-4b6f-af77-2d2e4bd9681b",
+  "displayName": "my-foundry-resource-jr-my-foundry-project-MyAgent-AgentIdentity",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "region:swedencentral",
+    "virtualWorkspaceId:45782afd-0445-4344-a43e-e03351f7f626",
+    "projectId:my-foundry-resource-jr@my-foundry-project@AML"
+  ]
+}

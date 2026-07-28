@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-23T10:10:00Z",
+  "endDateTime": "2026-08-23T10:10:00Z",
+  "lastModifiedDateTime": "2026-07-23T10:17:16.017Z",
+  "title": "Dynamics 365 Customer Insights – Journeys - Enable advanced personalization using simple formulas",
+  "id": "MC1437301",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

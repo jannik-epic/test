@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-27T22:53:27Z",
+  "endDateTime": "2026-09-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-27T22:53:36.71Z",
+  "title": "Microsoft Entra ID: Optimizations for passkey registration experience",
+  "id": "MC1440968",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

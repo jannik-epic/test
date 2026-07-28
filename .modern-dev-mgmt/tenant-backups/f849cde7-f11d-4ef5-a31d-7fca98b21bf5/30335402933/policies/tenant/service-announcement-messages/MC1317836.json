@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-05-21T16:16:07Z",
+  "endDateTime": "2026-10-05T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-29T16:17:36.71Z",
+  "title": "(Updated) Microsoft Teams: Unblock users to send message while file is uploading in the background",
+  "id": "MC1317836",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

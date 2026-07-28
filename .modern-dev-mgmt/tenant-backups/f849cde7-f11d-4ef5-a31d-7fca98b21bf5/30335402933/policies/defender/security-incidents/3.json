@@ -1,0 +1,11 @@
+{
+  "id": "3",
+  "status": "redirected",
+  "displayName": "DLP-Block User Credentials",
+  "createdDateTime": "2026-03-04T19:10:13.57Z",
+  "lastUpdateDateTime": "2026-03-04T19:15:23.18Z",
+  "assignedTo": null,
+  "classification": "unknown",
+  "determination": "unknown",
+  "severity": "low"
+}

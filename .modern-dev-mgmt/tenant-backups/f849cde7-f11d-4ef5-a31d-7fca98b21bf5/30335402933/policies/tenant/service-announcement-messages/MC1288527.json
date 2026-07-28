@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-04-22T22:32:16Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-21T18:18:13.387Z",
+  "title": "(Updated) Microsoft Purview: Data Loss Prevention – File Quarantine action for SharePoint and OneDrive",
+  "id": "MC1288527",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

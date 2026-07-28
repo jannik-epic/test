@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-24T21:52:54Z",
+  "endDateTime": "2026-08-24T21:52:54Z",
+  "lastModifiedDateTime": "2026-07-24T21:53:42.14Z",
+  "title": "Action Required: Defer Upgrade to Microsoft Defender for Endpoint on Linux Build 101.26052.0009",
+  "id": "MC1438566",
+  "category": "preventOrFixIssue",
+  "severity": "normal",
+  "services": [
+    "Microsoft Defender XDR"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "b591a0d1-a582-4b0b-b6e2-9bb0bf02934d",
+  "appId": "02d637f4-6bed-46c2-aa72-274c8c5e0782",
+  "displayName": "Microsoft Dataverse Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

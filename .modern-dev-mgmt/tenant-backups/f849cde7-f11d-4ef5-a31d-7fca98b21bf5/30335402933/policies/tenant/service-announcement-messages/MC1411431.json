@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T15:20:52Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-02T18:45:51.077Z",
+  "title": "(Updated) Microsoft Purview compliance portal: Admin assignment time limit",
+  "id": "MC1411431",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Purview"
+  ]
+}

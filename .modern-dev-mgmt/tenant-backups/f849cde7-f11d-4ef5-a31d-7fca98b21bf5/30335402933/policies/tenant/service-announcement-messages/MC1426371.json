@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-13T17:02:10Z",
+  "endDateTime": "2027-02-28T08:00:00Z",
+  "lastModifiedDateTime": "2026-07-16T18:55:54.04Z",
+  "title": "Microsoft Entra: Passkeys by default and retirement of Microsoft-provided SMS and voice authentication",
+  "id": "MC1426371",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

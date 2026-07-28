@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-01T13:39:25Z",
+  "endDateTime": "2026-08-01T13:39:25Z",
+  "lastModifiedDateTime": "2026-07-01T13:42:48.28Z",
+  "title": "Power Apps - Use CLI to discover, create, and wire connectors in code apps",
+  "id": "MC1411144",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Power Apps"
+  ]
+}

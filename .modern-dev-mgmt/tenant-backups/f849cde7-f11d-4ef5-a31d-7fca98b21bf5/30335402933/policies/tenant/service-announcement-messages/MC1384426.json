@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-08T22:21:25Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-08T22:21:31.223Z",
+  "title": "Microsoft 365 Copilot in Word: Improved support for complex edits",
+  "id": "MC1384426",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps"
+  ]
+}

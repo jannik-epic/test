@@ -1,0 +1,42 @@
+{
+  "id": "31bb837f-347c-45e1-9cd8-d25f6e9c21d6",
+  "deletedDateTime": "2026-07-03T09:26:36Z",
+  "classification": null,
+  "createdDateTime": "2026-07-03T06:32:53Z",
+  "creationOptions": [],
+  "description": "momentum:e2e — supporting write slice for blueprint onedrive-migration; safe to delete",
+  "displayName": "Momentum E2E — OneDrive Migration Pilot",
+  "expirationDateTime": null,
+  "groupTypes": [
+    "Unified"
+  ],
+  "infoCatalogs": [],
+  "isAssignableToRole": null,
+  "mail": "momentumE2eOnedrivePilot@ModernDevMgmt.onmicrosoft.com",
+  "mailEnabled": true,
+  "mailNickname": "momentumE2eOnedrivePilot",
+  "membershipRule": null,
+  "membershipRuleProcessingState": null,
+  "onPremisesDomainName": null,
+  "onPremisesLastSyncDateTime": null,
+  "onPremisesNetBiosName": null,
+  "onPremisesSamAccountName": null,
+  "onPremisesSecurityIdentifier": null,
+  "onPremisesSyncEnabled": null,
+  "preferredDataLocation": null,
+  "preferredLanguage": null,
+  "proxyAddresses": [
+    "SPO:SPO_042c533d-8856-4937-bd2b-a91a8745842c@SPO_f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "SMTP:momentumE2eOnedrivePilot@ModernDevMgmt.onmicrosoft.com"
+  ],
+  "renewedDateTime": "2026-07-03T06:32:53Z",
+  "resourceBehaviorOptions": [],
+  "resourceProvisioningOptions": [],
+  "securityEnabled": false,
+  "securityIdentifier": "S-1-12-1-834372479-1172386940-1607653532-3592526958",
+  "theme": null,
+  "uniqueName": null,
+  "visibility": "Private",
+  "onPremisesProvisioningErrors": [],
+  "serviceProvisioningErrors": []
+}

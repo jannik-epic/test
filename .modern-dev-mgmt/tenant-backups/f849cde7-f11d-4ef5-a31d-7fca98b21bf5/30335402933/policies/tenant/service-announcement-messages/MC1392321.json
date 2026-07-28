@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-15T15:46:36Z",
+  "endDateTime": "2026-07-31T15:46:00Z",
+  "lastModifiedDateTime": "2026-06-15T17:29:26.143Z",
+  "title": "Dynamics 365 Customer Service- Auto regenerate evaluation summary based on final outcomes",
+  "id": "MC1392321",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

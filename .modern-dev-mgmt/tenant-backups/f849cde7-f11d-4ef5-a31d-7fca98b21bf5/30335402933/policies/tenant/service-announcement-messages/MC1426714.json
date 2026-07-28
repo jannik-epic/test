@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-13T22:03:22Z",
+  "endDateTime": "2026-10-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T16:23:05.797Z",
+  "title": "Microsoft Viva: Create and customize Power BI reports",
+  "id": "MC1426714",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Viva"
+  ]
+}

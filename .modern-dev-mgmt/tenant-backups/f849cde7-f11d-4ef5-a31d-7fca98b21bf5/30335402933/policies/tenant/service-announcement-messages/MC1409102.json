@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-06-29T17:54:29Z",
+  "endDateTime": "2026-09-28T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-30T17:47:40.65Z",
+  "title": "Enabling group support for M365 Copilot Release preferences experience",
+  "id": "MC1409102",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 suite",
+    "Microsoft 365 Copilot Chat"
+  ]
+}

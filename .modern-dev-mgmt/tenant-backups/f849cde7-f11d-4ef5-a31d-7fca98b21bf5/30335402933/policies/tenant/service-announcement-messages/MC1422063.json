@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-09T21:51:47Z",
+  "endDateTime": "2026-09-15T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-20T23:27:15.107Z",
+  "title": "(Updated) OneDrive for Business: Improved Windows Desktop sync error messages for max path length",
+  "id": "MC1422063",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft OneDrive"
+  ]
+}

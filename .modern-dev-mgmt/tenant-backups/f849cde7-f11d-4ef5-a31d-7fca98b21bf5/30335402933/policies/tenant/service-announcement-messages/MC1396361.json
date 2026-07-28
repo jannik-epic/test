@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-18T23:09:43Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-18T23:09:57.867Z",
+  "title": "Microsoft 365 Copilot: Publish organization prompts to Copilot Chat",
+  "id": "MC1396361",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 Copilot Chat"
+  ]
+}

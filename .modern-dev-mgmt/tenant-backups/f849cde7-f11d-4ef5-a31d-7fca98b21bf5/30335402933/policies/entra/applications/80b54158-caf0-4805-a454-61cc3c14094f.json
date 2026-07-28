@@ -1,0 +1,60 @@
+{
+  "id": "80b54158-caf0-4805-a454-61cc3c14094f",
+  "appId": "92582f64-7d36-49cb-9d26-86a31eae2dc0",
+  "displayName": "momentum-blueprint-runner",
+  "signInAudience": "AzureADMyOrg",
+  "createdDateTime": "2026-07-21T18:18:13Z",
+  "identifierUris": [],
+  "web": {
+    "homePageUrl": null,
+    "logoutUrl": null,
+    "redirectUris": [],
+    "implicitGrantSettings": {
+      "enableAccessTokenIssuance": false,
+      "enableIdTokenIssuance": false
+    },
+    "redirectUriSettings": []
+  },
+  "spa": {
+    "redirectUris": []
+  },
+  "publicClient": {
+    "redirectUris": []
+  },
+  "requiredResourceAccess": [
+    {
+      "resourceAppId": "00000003-0000-0000-c000-000000000000",
+      "resourceAccess": [
+        {
+          "id": "06a5fe6d-c49d-46a7-b082-56b1b14103c7",
+          "type": "Role"
+        },
+        {
+          "id": "230c1aed-a721-4c5d-9cb4-a90514e508ef",
+          "type": "Role"
+        },
+        {
+          "id": "246dd0d5-5bd0-4def-940b-0421030a5b68",
+          "type": "Role"
+        },
+        {
+          "id": "2f51be20-0bb4-4fed-bf7b-db946066c75e",
+          "type": "Role"
+        },
+        {
+          "id": "498476ce-e0fe-48b0-b801-37ba7e2685c6",
+          "type": "Role"
+        },
+        {
+          "id": "7ab1d382-f21e-4acd-a863-ba3e13f7da61",
+          "type": "Role"
+        },
+        {
+          "id": "dc377aa6-52d8-4e23-b271-2a7ae04cedf3",
+          "type": "Role"
+        }
+      ]
+    }
+  ],
+  "appRoles": []
+}

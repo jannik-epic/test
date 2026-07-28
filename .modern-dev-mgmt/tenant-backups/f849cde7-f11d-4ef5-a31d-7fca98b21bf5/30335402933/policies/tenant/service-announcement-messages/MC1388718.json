@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-12T16:55:03Z",
+  "endDateTime": "2026-08-31T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-12T16:55:13.797Z",
+  "title": "Microsoft Defender for Endpoint: Update to Linux connectivity requirements with new service URLs to allowlist",
+  "id": "MC1388718",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Defender XDR"
+  ]
+}

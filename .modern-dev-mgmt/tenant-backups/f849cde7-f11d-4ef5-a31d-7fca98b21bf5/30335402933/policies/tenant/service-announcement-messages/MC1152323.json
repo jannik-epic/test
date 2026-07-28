@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2025-09-12T23:10:52Z",
+  "endDateTime": "2026-08-28T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-15T17:09:27.8Z",
+  "title": "(Updated) Microsoft 365 Copilot Apps installation on devices with Microsoft 365 Apps",
+  "id": "MC1152323",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft 365 apps",
+    "Microsoft 365 Copilot Chat"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-03-30T21:51:02Z",
+  "endDateTime": "2026-09-14T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-07T16:52:51.467Z",
+  "title": "(Updated) Microsoft Teams: New experience when users minimize the meeting window",
+  "id": "MC1266027",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

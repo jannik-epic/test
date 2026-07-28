@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-15T21:31:56Z",
+  "endDateTime": "2026-08-15T21:31:56Z",
+  "lastModifiedDateTime": "2026-07-15T21:33:42.66Z",
+  "title": "Dynamics 365 Customer Service and Contact Center - New \"After Conversation Work\" presence for representatives in wrap-up",
+  "id": "MC1429024",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}

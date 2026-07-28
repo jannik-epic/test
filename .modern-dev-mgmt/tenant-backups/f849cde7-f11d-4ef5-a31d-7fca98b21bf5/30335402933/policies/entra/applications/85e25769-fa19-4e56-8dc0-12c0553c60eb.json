@@ -1,0 +1,26 @@
+{
+  "id": "85e25769-fa19-4e56-8dc0-12c0553c60eb",
+  "appId": "eed0aee0-fd35-4bad-a608-deaa3b060e7e",
+  "displayName": "Momentum E2E — Workload Identity Probe",
+  "signInAudience": "AzureADMyOrg",
+  "createdDateTime": "2026-07-08T09:22:22Z",
+  "identifierUris": [],
+  "web": {
+    "homePageUrl": null,
+    "logoutUrl": null,
+    "redirectUris": [],
+    "implicitGrantSettings": {
+      "enableAccessTokenIssuance": false,
+      "enableIdTokenIssuance": false
+    },
+    "redirectUriSettings": []
+  },
+  "spa": {
+    "redirectUris": []
+  },
+  "publicClient": {
+    "redirectUris": []
+  },
+  "requiredResourceAccess": [],
+  "appRoles": []
+}

@@ -1,0 +1,12 @@
+{
+  "id": "c5659c04-fa49-4762-a21a-bc3aa4dcb116",
+  "appId": "01385440-dd45-4043-a286-07dd496bdf7c",
+  "displayName": "Office 365 Outlook Connector",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

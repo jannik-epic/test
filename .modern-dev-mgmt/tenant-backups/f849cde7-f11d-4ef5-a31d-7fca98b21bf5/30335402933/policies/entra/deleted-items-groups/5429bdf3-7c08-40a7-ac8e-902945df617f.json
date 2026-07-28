@@ -1,0 +1,42 @@
+{
+  "id": "5429bdf3-7c08-40a7-ac8e-902945df617f",
+  "deletedDateTime": "2026-07-03T09:26:09Z",
+  "classification": null,
+  "createdDateTime": "2026-07-03T06:33:07Z",
+  "creationOptions": [],
+  "description": "momentum:e2e — write slice for blueprint ms-teams-collaboration; safe to delete",
+  "displayName": "Momentum E2E — Teams Collaboration Pilot",
+  "expirationDateTime": null,
+  "groupTypes": [
+    "Unified"
+  ],
+  "infoCatalogs": [],
+  "isAssignableToRole": null,
+  "mail": "momentumE2eTeamsCollab@ModernDevMgmt.onmicrosoft.com",
+  "mailEnabled": true,
+  "mailNickname": "momentumE2eTeamsCollab",
+  "membershipRule": null,
+  "membershipRuleProcessingState": null,
+  "onPremisesDomainName": null,
+  "onPremisesLastSyncDateTime": null,
+  "onPremisesNetBiosName": null,
+  "onPremisesSamAccountName": null,
+  "onPremisesSecurityIdentifier": null,
+  "onPremisesSyncEnabled": null,
+  "preferredDataLocation": null,
+  "preferredLanguage": null,
+  "proxyAddresses": [
+    "SPO:SPO_a053f0c1-3d7a-4384-bf6d-fc4979e03551@SPO_f849cde7-f11d-4ef5-a31d-7fca98b21bf5",
+    "SMTP:momentumE2eTeamsCollab@ModernDevMgmt.onmicrosoft.com"
+  ],
+  "renewedDateTime": "2026-07-03T06:33:07Z",
+  "resourceBehaviorOptions": [],
+  "resourceProvisioningOptions": [],
+  "securityEnabled": false,
+  "securityIdentifier": "S-1-12-1-1412021747-1084718088-697339564-2137120581",
+  "theme": null,
+  "uniqueName": null,
+  "visibility": "Private",
+  "onPremisesProvisioningErrors": [],
+  "serviceProvisioningErrors": []
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-22T22:53:40Z",
+  "endDateTime": "2026-10-01T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-22T22:53:55.36Z",
+  "title": "Calendar widget in Student Hub retiring in July 2026",
+  "id": "MC1401297",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

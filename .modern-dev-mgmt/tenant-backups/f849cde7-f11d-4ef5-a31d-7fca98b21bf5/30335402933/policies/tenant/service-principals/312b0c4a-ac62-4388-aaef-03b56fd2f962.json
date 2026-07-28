@@ -1,0 +1,9 @@
+{
+  "@odata.type": "#microsoft.graph.agentIdentity",
+  "id": "312b0c4a-ac62-4388-aaef-03b56fd2f962",
+  "appId": "312b0c4a-ac62-4388-aaef-03b56fd2f962",
+  "displayName": "Intune Vulnerability Remediation Agent (Security Copilot)",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": []
+}

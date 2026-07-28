@@ -1,0 +1,13 @@
+{
+  "startDateTime": "2026-07-10T22:53:34Z",
+  "endDateTime": "2026-09-30T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-10T22:53:50.503Z",
+  "title": "Thumbnail view for PDFs is available in OneDrive and SharePoint on the web",
+  "id": "MC1423117",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "SharePoint Online",
+    "Microsoft OneDrive"
+  ]
+}

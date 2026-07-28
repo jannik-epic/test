@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-22T22:54:11Z",
+  "endDateTime": "2027-01-31T08:00:00Z",
+  "lastModifiedDateTime": "2026-06-22T22:54:23.397Z",
+  "title": "Retirement of Turnitin Similarity integration in Microsoft Teams Assignments",
+  "id": "MC1401298",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

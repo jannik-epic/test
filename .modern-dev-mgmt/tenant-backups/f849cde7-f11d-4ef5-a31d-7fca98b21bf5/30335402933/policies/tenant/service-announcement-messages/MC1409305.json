@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-29T22:06:36Z",
+  "endDateTime": "2026-09-24T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-29T22:06:48.1Z",
+  "title": "Microsoft Entra: Blocking new assignments to partner tier support roles",
+  "id": "MC1409305",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Entra"
+  ]
+}

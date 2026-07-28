@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-13T22:01:22Z",
+  "endDateTime": "2026-10-18T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-15T16:35:02.157Z",
+  "title": "Microsoft Teams: Custom recording and transcription notifications now available for 1:1 calls",
+  "id": "MC1426709",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fccabef7-3702-4f41-b8b5-2ad460f0ac75",
+  "appId": "147dc821-b413-44c0-8009-1a3098378012",
+  "displayName": "Work IQ User MCP",
+  "accountEnabled": true,
+  "appRoleAssignmentRequired": false,
+  "tags": [
+    "disableLegacyUserImpersonationClient",
+    "disableLegacyUserImpersonationResource",
+    "GitCreatedApp"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "id": "269da0ab",
+  "title": "Attack Surface: CVE-2022-41082 & CVE-2022-41040 - Microsoft Exchange Server Authenticated SSRF and PowerShell RCE",
+  "createdDateTime": "2022-09-30T10:09:45Z",
+  "lastUpdatedDateTime": "2025-04-24T18:51:02.89Z",
+  "isFeatured": true
+}

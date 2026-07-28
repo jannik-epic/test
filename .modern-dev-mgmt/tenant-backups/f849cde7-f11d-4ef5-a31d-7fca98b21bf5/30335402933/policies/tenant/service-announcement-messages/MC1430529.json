@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-07-17T04:59:03Z",
+  "endDateTime": "2026-09-20T07:00:00Z",
+  "lastModifiedDateTime": "2026-07-17T04:59:45.79Z",
+  "title": "Teams frontline mobile onboarding guide retirement",
+  "id": "MC1430529",
+  "category": "planForChange",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-18T23:07:29Z",
+  "endDateTime": "2026-08-29T07:00:00Z",
+  "lastModifiedDateTime": "2026-06-18T23:07:41.623Z",
+  "title": "Microsoft Teams: Open message links in new window",
+  "id": "MC1396359",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Microsoft Teams"
+  ]
+}

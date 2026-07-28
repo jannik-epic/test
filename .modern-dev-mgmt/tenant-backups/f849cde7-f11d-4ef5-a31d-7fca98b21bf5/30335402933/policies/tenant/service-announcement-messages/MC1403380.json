@@ -1,0 +1,12 @@
+{
+  "startDateTime": "2026-06-24T21:32:17Z",
+  "endDateTime": "2026-08-24T21:32:00Z",
+  "lastModifiedDateTime": "2026-06-24T21:33:07.483Z",
+  "title": "Dynamics 365 Contact Center - Evaluation Retry Capability",
+  "id": "MC1403380",
+  "category": "stayInformed",
+  "severity": "normal",
+  "services": [
+    "Dynamics 365 Apps"
+  ]
+}
