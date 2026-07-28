@@ -491,7 +491,7 @@ try {
         $detectionRule = @{
             '@odata.type' = '#microsoft.graph.win32LobAppRegistryRule'
             ruleType = 'detection'
-            keyPath = "$ciRegistryRoot\SOFTWARE\Vanguard\Detection\$ciMarkerLeaf"
+            keyPath = "$ciRegistryRoot\SOFTWARE\Tenoris\Detection\$ciMarkerLeaf"
             valueName = 'Version'
             operationType = 'version'
             operator = 'greaterThanOrEqual'

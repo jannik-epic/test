@@ -45,13 +45,13 @@ on:
         type: boolean
         default: true
       request_context_b64:
-        description: 'Base64 encoded Vanguard request context'
+        description: 'Base64 encoded Tenoris request context'
         required: false
         type: string
 
 env:
   AZURE_TENANT_ID: 'f849cde7-f11d-4ef5-a31d-7fca98b21bf5'
-  AZURE_BACKUP_CLIENT_ID: 'a34f2806-b6f7-4d11-98f6-b32894396ca8'
+  AZURE_BACKUP_CLIENT_ID: '49da6daf-f652-4384-af38-44fdbad5b686'
   GRAPH_BASE: 'https://graph.microsoft.com/v1.0'
   GRAPH_BETA_BASE: 'https://graph.microsoft.com/beta'
 
@@ -67,7 +67,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Resolve destination Azure tenant from Vanguard context
+      - name: Resolve destination Azure tenant from Tenoris context
         shell: bash
         env:
           REQUEST_CONTEXT_B64: ${{ github.event.inputs.request_context_b64 }}
@@ -80,7 +80,7 @@ jobs:
           # provisioning time and only point at the source tenant; without this
           # override a cross-tenant restore would write into the wrong tenant.
           if [[ -z "${REQUEST_CONTEXT_B64:-}" ]]; then
-            echo "no Vanguard context — keeping default AZURE_TENANT_ID/CLIENT_ID"
+            echo "no Tenoris context — keeping default AZURE_TENANT_ID/CLIENT_ID"
             exit 0
           fi
           decoded="$(printf '%s' "$REQUEST_CONTEXT_B64" | base64 --decode 2>/dev/null || true)"

@@ -1167,7 +1167,7 @@ def main(argv: list[str]) -> int:
     client = IntuneClient(config)
     display_name = normalize_display_name(args.display_name or metadata.bundle_name, metadata.version)
     description = args.description or (cask.desc if cask else None) or metadata.bundle_name
-    publisher = args.publisher or ("Homebrew" if cask else "Vanguard")
+    publisher = args.publisher or ("Homebrew" if cask else "Tenoris")
 
     # Build params dict, only including icon if it exists
     app_params = {

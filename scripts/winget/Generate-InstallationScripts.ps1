@@ -111,7 +111,7 @@ if ($offlineMetadata -and $offlineMetadata.fileName) {
     $useMarkerDetection = (-not $isMsi) -and (-not $isMsix)
     $markerLeaf = ($PackageId -replace '[^A-Za-z0-9_.-]', '_')
     $markerHive = if ($InstallContext -eq 'user') { 'HKCU:' } else { 'HKLM:' }
-    $markerKeyPath = "$markerHive\SOFTWARE\Vanguard\Detection\$markerLeaf"
+    $markerKeyPath = "$markerHive\SOFTWARE\Tenoris\Detection\$markerLeaf"
     $markerVersion = if ($Version) { $Version } elseif ($offlineMetadata.version) { [string]$offlineMetadata.version } else { '0.0.0' }
 
     # The Intune client extracts the .intunewin into a working directory and
@@ -242,7 +242,7 @@ try {
     }
 
     $installScript = @"
-## Vanguard offline Win32 deployment script
+## Tenoris offline Win32 deployment script
 ## App Name  - $AppName
 ## Publisher - $Publisher
 ## Version   - $Version
@@ -360,7 +360,7 @@ try {
     # directly, so it must not depend on a toolkit folder that is not present
     # in the generated package.
     $installScript = @"
-## Vanguard Winget deployment script
+## Tenoris Winget deployment script
 ## App Name - $AppName
 ## Publisher - $Publisher
 ## Version - $Version

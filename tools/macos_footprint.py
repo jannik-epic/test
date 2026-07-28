@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""macOS footprint capture + diff for Vanguard VM validation.
+"""macOS footprint capture + diff for Tenoris VM validation.
 
 This is the macOS analogue of Capture-WindowsFootprint.ps1 / Diff-WindowsFootprint.ps1.
 It runs directly on the GitHub-hosted macos-latest runner (an ephemeral clean VM),

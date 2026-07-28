@@ -187,7 +187,7 @@ $defaultDeployModeLiteral = if ($AllowDeferral -or $welcomeShouldPrompt) { "'Aut
 
 $entryScript = @"
 <#
-    Vanguard-generated PSAppDeployToolkit v4 deployment script.
+    Tenoris-generated PSAppDeployToolkit v4 deployment script.
     App: $AppName $Version ($Publisher)
 
     The app-specific install/uninstall logic lives in install-logic.ps1 /
@@ -228,7 +228,7 @@ param
     AppRebootExitCodes = @(1641, 3010)
     AppScriptVersion = '1.0.0'
     AppScriptDate = '$scriptDate'
-    AppScriptAuthor = 'Vanguard'
+    AppScriptAuthor = 'Tenoris'
 
     # Script variables.
     DeployAppScriptFriendlyName = `$MyInvocation.MyCommand.Name
@@ -242,7 +242,7 @@ param
 `$vanguardWelcomeShouldPrompt = $welcomeShouldPromptLiteral
 `$vanguardWelcomeBlockExecution = $welcomeBlockExecutionLiteral
 
-function Invoke-VanguardLogic
+function Invoke-TenorisLogic
 {
     param([System.String]`$LogicFile)
 
@@ -263,7 +263,7 @@ function Invoke-VanguardLogic
     return [System.Int32]`$proc.ExitCode
 }
 
-function Close-VanguardProcesses
+function Close-TenorisProcesses
 {
     if (`$vanguardCloseProcesses.Count -eq 0 -and -not `$vanguardAllowDeferral) { return }
     try
@@ -302,7 +302,7 @@ function Close-VanguardProcesses
     }
 }
 
-function Remove-VanguardResidue
+function Remove-TenorisResidue
 {
     # Sweep the residues a vendor uninstaller commonly leaves behind: install
     # directories named after the app and vendor/app registry keys. Anything
@@ -366,10 +366,10 @@ function Remove-VanguardResidue
 function Install-ADTDeployment
 {
     `$adtSession.InstallPhase = 'Pre-Install'
-    Close-VanguardProcesses
+    Close-TenorisProcesses
 
     `$adtSession.InstallPhase = 'Install'
-    `$exitCode = Invoke-VanguardLogic -LogicFile 'install-logic.ps1'
+    `$exitCode = Invoke-TenorisLogic -LogicFile 'install-logic.ps1'
     if (`$exitCode -notin (`$adtSession.AppSuccessExitCodes + `$adtSession.AppRebootExitCodes))
     {
         Write-ADTLogEntry -Message "Install logic failed with exit code `$exitCode" -Severity 3
@@ -387,10 +387,10 @@ function Install-ADTDeployment
 function Uninstall-ADTDeployment
 {
     `$adtSession.InstallPhase = 'Pre-Uninstall'
-    Close-VanguardProcesses
+    Close-TenorisProcesses
 
     `$adtSession.InstallPhase = 'Uninstall'
-    `$exitCode = Invoke-VanguardLogic -LogicFile 'uninstall-logic.ps1'
+    `$exitCode = Invoke-TenorisLogic -LogicFile 'uninstall-logic.ps1'
     if (`$exitCode -notin (`$adtSession.AppSuccessExitCodes + `$adtSession.AppRebootExitCodes))
     {
         Write-ADTLogEntry -Message "Uninstall logic failed with exit code `$exitCode" -Severity 3
@@ -398,13 +398,13 @@ function Uninstall-ADTDeployment
     }
 
     `$adtSession.InstallPhase = 'Post-Uninstall'
-    Remove-VanguardResidue
+    Remove-TenorisResidue
 }
 
 function Repair-ADTDeployment
 {
     `$adtSession.InstallPhase = 'Repair'
-    `$exitCode = Invoke-VanguardLogic -LogicFile 'install-logic.ps1'
+    `$exitCode = Invoke-TenorisLogic -LogicFile 'install-logic.ps1'
     if (`$exitCode -notin (`$adtSession.AppSuccessExitCodes + `$adtSession.AppRebootExitCodes))
     {
         Close-ADTSession -ExitCode `$exitCode
@@ -442,11 +442,11 @@ catch
 
 try
 {
-    # Vanguard-generated packages only use commands from the core PSADT module.
+    # Tenoris-generated packages only use commands from the core PSADT module.
     # Loading optional extension modules here can run third-party initialization
     # hooks before the deployment function starts and has caused otherwise valid
     # packages to hang in unattended validation.
-    Write-ADTLogEntry -Message 'Vanguard uses core PSADT commands; optional extensions are not loaded.' -Severity 1
+    Write-ADTLogEntry -Message 'Tenoris uses core PSADT commands; optional extensions are not loaded.' -Severity 1
 
     & "`$(`$adtSession.DeploymentType)-ADTDeployment"
     Close-ADTSession
@@ -466,7 +466,7 @@ Set-Content -LiteralPath (Join-Path $PackageRoot 'Invoke-AppDeployToolkit.ps1') 
 #    (setup file, Intune command lines, validation steps) stays untouched.
 # ---------------------------------------------------------------------------
 $installShim = @'
-# Vanguard PSADT v4 shim — the deployment runs inside Invoke-AppDeployToolkit.ps1.
+# Tenoris PSADT v4 shim — the deployment runs inside Invoke-AppDeployToolkit.ps1.
 $adtEntry = Join-Path $PSScriptRoot 'Invoke-AppDeployToolkit.ps1'
 if (-not (Test-Path -LiteralPath $adtEntry -PathType Leaf)) {
     Write-Error "PSADT entry script missing: $adtEntry"
