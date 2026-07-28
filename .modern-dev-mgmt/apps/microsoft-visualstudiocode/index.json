@@ -3,11 +3,24 @@
   "displayName": "Microsoft Visual Studio Code",
   "versions": [
     {
+      "version": "1.130.0",
+      "runs": [
+        {
+          "workflowRunId": "30353364714",
+          "createdAt": "2026-07-28T11:11:29.4399167Z",
+          "intuneAppId": "038f1723-e6c8-4c4b-a385-ec200030d5f1",
+          "catalogAppId": null,
+          "patchRunId": 34,
+          "status": "success"
+        }
+      ]
+    },
+    {
       "version": "1.129.0",
       "runs": [
         {
           "workflowRunId": "30353354466",
-          "createdAt": "2026-07-28T11:10:29.2823250Z",
+          "createdAt": "2026-07-28T11:10:29.282325Z",
           "intuneAppId": "022d8ea9-e917-4b37-bec2-a12b399b5864",
           "catalogAppId": null,
           "patchRunId": 32,
@@ -45,5 +58,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-07-28T11:10:29.5668060Z"
+  "updatedAt": "2026-07-28T11:11:29.7290160Z"
 }
