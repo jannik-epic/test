@@ -1,5 +1,5 @@
 {
-  "scannedAt": "2026-07-31T05:48:07.286Z",
+  "scannedAt": "2026-07-31T08:34:57.922Z",
   "results": [
     {
       "appId": 8059,
@@ -46,7 +46,7 @@
       "packageManager": "winget",
       "packageId": "Microsoft.OneDrive",
       "currentDeployedVersion": "24.221.1103.0003",
-      "latestUpstreamVersion": "26.113.0614.0004",
+      "latestUpstreamVersion": "26.123.0628.0001",
       "hasUpdate": true,
       "bumpType": "major",
       "releaseNotesUrl": "https://www.microsoft.com/microsoft-365/onedrive/download"
